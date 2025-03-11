@@ -24,5 +24,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('users/', include("users.urls")),
+    path('financials/', include("financials.urls")),
+
     
 ]

@@ -33,5 +33,9 @@ class CustomerSupplier(models.Model):
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_supplier_user_created', verbose_name="Criado por")
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_supplier_user_updated', verbose_name="Atualizado por")
 
+    class Meta:
+        verbose_name = 'Fornecedores Cliente'
+        db_table = 'customer_suppliers'
+
     def __str__(self):
         return self.name

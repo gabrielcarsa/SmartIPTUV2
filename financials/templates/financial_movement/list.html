@@ -1,0 +1,14 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+
+<div class="mt-3">
+
+    {% for movement in financialmovement_list %}
+    {{movement}}
+    {% endfor %}
+
+</div>
+
+{% endblock %}

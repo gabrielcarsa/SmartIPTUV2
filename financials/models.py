@@ -14,6 +14,10 @@ class CheckingAccount(models.Model):
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='checking_account_user_created', verbose_name="Criado por")
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='checking_account_user_updated', verbose_name="Atualizado por")
 
+    class Meta:
+        verbose_name = 'Contas Corrente'
+        db_table = 'checking_accounts'
+    
     def __str__(self):
         return f"{self.name} - {self.bank}"
 
@@ -24,6 +28,10 @@ class CheckingAccountBalance(models.Model):
     balance_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Saldo'
+        db_table = 'checking_account_balances'
 
     def __str__(self):
         return f"Saldo {self.balance} em {self.balance_date}"
@@ -44,6 +52,10 @@ class FinancialCategory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_category_user_created', verbose_name="Criado por")
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_category_user_updated', verbose_name="Atualizado por")
+
+    class Meta:
+        verbose_name = 'Financeiro Categoria'
+        db_table = 'financial_categories'
 
     def __str__(self):
         return self.name
@@ -69,6 +81,10 @@ class FinancialTransaction(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_user_created', verbose_name="Criado por")
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_user_updated', verbose_name="Atualizado por")
+    
+    class Meta:
+        verbose_name = 'Financeiro Conta'
+        db_table = 'financial_transactions'
 
     def __str__(self):
         return f"{self.description} ({self.get_type_display()})"
@@ -96,6 +112,10 @@ class FinancialTransactionInstallment(models.Model):
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_installment_user_updated', verbose_name="Atualizado por")
     marked_down_by_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="marked_installments")
 
+    class Meta:
+        verbose_name = 'Financeiro Parcela'
+        db_table = 'financial_transaction_installments'
+    
     def __str__(self):
         return f"Parcela {self.installment_number} - {self.amount}"
 
@@ -107,6 +127,10 @@ class FinancialMovement(models.Model):
         (OUTGOING, "Saída"),
         (INCOMING, "Entrada"),
     ]
+
+    class Meta:
+        verbose_name = 'Movimentações Financeira'
+        db_table = 'financial_movements'
 
     checking_account = models.ForeignKey(CheckingAccount, on_delete=models.CASCADE, related_name="movements")
     financial_transaction_installment = models.ForeignKey(FinancialTransactionInstallment, on_delete=models.CASCADE, related_name="movements")
