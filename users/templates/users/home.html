@@ -1,0 +1,42 @@
+{% extends 'guest_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg sticky-top bg-white shadow-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="{% static 'images/logo.png' %}" width="80px" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item mx-1">
+                    <a class="nav-link text-black">
+                        Termos e políticas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    {% if user.is_authenticated %}
+                    <a class=" nav-link btn-smart" href="{% url 'dashboard' %}">
+                        Dashboard
+                    </a>
+                    {% else %}
+                    <a class="nav-link btn-smart" href="{% url 'login' %}">
+                        Entrar
+                    </a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+{% endblock %}

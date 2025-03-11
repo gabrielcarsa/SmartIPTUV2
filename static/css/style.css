@@ -1,0 +1,63 @@
+/* ------------------
+GENERAL STYLE 
+-------------------*/
+
+* {
+    font-family: "Nunito Sans", sans-serif;
+}
+
+/* ------------------
+BUTTONS STYLE 
+-------------------*/
+
+.btn-smart{
+    background-color: #6702B4 !important;
+    padding: 10px !important;
+    color: #FFFF !important;
+    font-weight: 700;
+    border-radius: 0.2em !important;
+    border: 0 !important;
+    text-decoration: none;
+    width: 100%;
+}
+
+.btn-smart:hover{
+    background-color: #6702B4 !important;
+}
+
+
+/* ------------------
+FORMS STYLE 
+-------------------*/
+
+label {
+    color: #000; /* Cor do texto */
+    font-size: 1.2rem; /* Tamanho da fonte */
+    font-weight: 500; /* Peso da fonte */
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #c0c0c0; 
+    border-radius: 0.2em;
+    background-color: #FFFF; 
+    display: block;
+}
+
+input:focus {
+    border-color: #EDEDED;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); 
+}
+
+/* ------------------
+RESPONSIVE
+-------------------*/
+
+@media screen  and (max-width: 450px) {
+    .display-none-small-screen{
+        display: none;
+    }
+}

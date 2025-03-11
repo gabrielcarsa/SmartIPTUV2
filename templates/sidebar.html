@@ -1,0 +1,374 @@
+{% load static %}
+
+
+<!-- SIDEBAR -->
+<div class="collapse collapse-horizontal show sticky" id="collapseSidebar">
+
+    <div class="m-0 border-end bg-white min-vh-100 py-3">
+
+        <!-- LOGO -->
+        <a href="{% url 'dashboard' %}" class="d-flex justify-content-center">
+            <img src="{% static 'images/logo-black.png' %}" width="150px" alt="smart">
+        </a>
+        <!-- FIM LOGO -->
+
+        <!-- DROPDOWN SELECT STORE -->
+        <div class="dropdown mx-3 border bg-light rounded">
+            <a class="btn d-flex align-items-center justify-content-between dropdown-toggle" href="#" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Selecione uma Loja
+            </a>
+
+            <!-- UL DROPDOWN -->
+            <ul class="dropdown-menu p-3 bg-light dropdown-menu-end" style="width: 400px">
+
+                <!-- LI DROPDOWN -->
+                <li class="d-flex align-items-center justify-content-between rounded p-3">
+
+                    <span class="material-symbols-outlined me-2 fw-light text-danger"
+                        style="font-variation-settings: 'FILL' 1;">
+                        error
+                    </span>
+
+                    <div>
+                        <p class="fw-bold m-0">
+                            Teste
+                        </p>
+
+                        <p class="m-0 text-secondary">
+
+                            Loja fechada
+
+                        </p>
+                    </div>
+
+                    <form action="" method="post">
+                        <button type="submit" class="mx-2 btn-smart">
+                            Selecionar loja
+                        </button>
+                    </form>
+
+                </li>
+                <!-- END LI DROPDOWN -->
+
+            </ul>
+            <!-- END UL DROPDOWN -->
+
+        </div>
+        <!-- END DROPDOWN SELECT STORE -->
+
+        <hr>
+
+        <!-- ACCORDION -->
+        <div class="accordion accordion-flush" id="accordionSidebar">
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-orders" aria-controls="collapse-orders">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            receipt_long
+                        </span>
+                        Pedidos
+                    </a>
+                </div>
+                <div id="collapse-orders" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Painel de Pedidos
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Painel de Mesas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-customers"
+                        aria-controls="collapse-customers">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            groups
+                        </span>
+                        Clientes e Fornecedores
+                    </a>
+                </div>
+                <div id="collapse-customers" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Clientes
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Cashback
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Assinaturas
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Cupons
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Fornecedores
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-stores" aria-controls="collapse-stores">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            storefront
+                        </span>
+                        Lojas
+                    </a>
+                </div>
+                <div id="collapse-stores" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Sobre
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Horários de funcionamento
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Equipe
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Planos
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Integrações
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Mesas e comandas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-deliveries"
+                        aria-controls="collapse-deliveries">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            sports_motorsports
+                        </span>
+                        Delivery
+                    </a>
+                </div>
+                <div id="collapse-deliveries" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Taxas de entrega
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Áreas de entrega
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Aplicativo personalizado
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Notificações e marketing
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-menus" aria-controls="collapse-menus">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            restaurant_menu
+                        </span>
+                        Cardápio
+                    </a>
+                </div>
+                <div id="collapse-menus" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Categorias e produtos
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Visual do cardápio
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-payments" aria-controls="collapse-payments">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            payments
+                        </span>
+                        Financeiro
+                    </a>
+                </div>
+                <div id="collapse-payments" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Contas a receber
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Contas a pagar
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Movimentações
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Categorias
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Formas de pagamento
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Conta corrente
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fw-medium collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-stock" aria-controls="collapse-stock">
+                        <span class="material-symbols-outlined me-2 fw-light">
+                            package_2
+                        </span>
+                        Estoque
+                    </a>
+                </div>
+                <div id="collapse-stock" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
+                            style="border-left-width: 4px !important;">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Contas a receber
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Contas a pagar
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Movimentações
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Categorias
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Formas de pagamento
+                                </a>
+                            </li>
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none text-secondary" href="">
+                                    Conta corrente
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM ACCORDION ITEM -->
+
+        </div>
+        <!-- FIM ACCORDION -->
+
+    </div>
+</div>
+<!-- END SIDEBAR -->

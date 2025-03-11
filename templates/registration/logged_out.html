@@ -1,0 +1,17 @@
+{% extends 'guest_layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="vh-100 d-flex align-items-center justify-content-center">
+  <div>
+    <img src="{% static 'images/logo.png' %}" width="150px" alt="smart">
+    <p>
+      Você foi desconectado! Até a próxima...
+    </p>
+    <a href="{% url 'login'%}" class="btn-smart">
+      Ir para login
+    </a>
+  </div>
+</div>
+
+{% endblock %}
