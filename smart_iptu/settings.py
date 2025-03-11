@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'formtools',
     'users',
-    'financial'
+    'financials',
+    'customer_suppliers',
 ]
 
 MIDDLEWARE = [

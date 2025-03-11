@@ -1,0 +1,123 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+from customer_suppliers.models import CustomerSupplier
+
+class CheckingAccount(models.Model):
+    name = models.CharField(max_length=100)
+    bank = models.CharField(max_length=50)
+    initial_balance = models.DecimalField(max_digits=10, decimal_places=2)
+    agency = models.CharField(max_length=50)
+    account_number = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='checking_account_user_created', verbose_name="Criado por")
+    updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='checking_account_user_updated', verbose_name="Atualizado por")
+
+    def __str__(self):
+        return f"{self.name} - {self.bank}"
+
+
+class CheckingAccountBalance(models.Model):
+    checking_account = models.ForeignKey(CheckingAccount, on_delete=models.CASCADE, related_name="balances")
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    balance_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Saldo {self.balance} em {self.balance_date}"
+
+
+class FinancialCategory(models.Model):
+    EXPENSE = 0
+    INCOME = 1
+    CATEGORY_TYPE_CHOICES = [
+        (EXPENSE, "Despesa"),
+        (INCOME, "Receita"),
+    ]
+
+    type = models.BooleanField(choices=CATEGORY_TYPE_CHOICES)
+    is_default = models.BooleanField(default=False)
+    name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_category_user_created', verbose_name="Criado por")
+    updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_category_user_updated', verbose_name="Atualizado por")
+
+    def __str__(self):
+        return self.name
+
+class FinancialTransaction(models.Model):
+    PAYABLE = 0
+    RECEIVABLE = 1
+    TRANSACTION_TYPE_CHOICES = [
+        (PAYABLE, "A pagar"),
+        (RECEIVABLE, "A receber"),
+    ]
+
+    type = models.BooleanField(choices=TRANSACTION_TYPE_CHOICES)
+    description = models.CharField(max_length=255)
+    installment_value = models.DecimalField(max_digits=10, decimal_places=2)
+    down_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    due_date = models.DateField()
+    payment_date = models.DateTimeField(null=True, blank=True)
+    number_of_installments = models.IntegerField()
+    financial_category = models.ForeignKey(FinancialCategory, on_delete=models.CASCADE, related_name="transactions")
+    customer_supplier = models.ForeignKey(CustomerSupplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="transactions")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_user_created', verbose_name="Criado por")
+    updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_user_updated', verbose_name="Atualizado por")
+
+    def __str__(self):
+        return f"{self.description} ({self.get_type_display()})"
+
+
+class FinancialTransactionInstallment(models.Model):
+    UNPAID = 0
+    PAID = 1
+    STATUS_CHOICES = [
+        (UNPAID, "Não pago"),
+        (PAID, "Pago"),
+    ]
+
+    financial_transaction = models.ForeignKey(FinancialTransaction, on_delete=models.CASCADE, related_name="installments")
+    installment_number = models.IntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    due_date = models.DateField()
+    payment_date = models.DateTimeField(null=True, blank=True)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=UNPAID)
+    paid_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    settlement_date = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_installment_user_created', verbose_name="Criado por")
+    updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_installment_user_updated', verbose_name="Atualizado por")
+    marked_down_by_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="marked_installments")
+
+    def __str__(self):
+        return f"Parcela {self.installment_number} - {self.amount}"
+
+
+class FinancialMovement(models.Model):
+    OUTGOING = 0
+    INCOMING = 1
+    MOVEMENT_TYPE_CHOICES = [
+        (OUTGOING, "Saída"),
+        (INCOMING, "Entrada"),
+    ]
+
+    checking_account = models.ForeignKey(CheckingAccount, on_delete=models.CASCADE, related_name="movements")
+    financial_transaction_installment = models.ForeignKey(FinancialTransactionInstallment, on_delete=models.CASCADE, related_name="movements")
+    type = models.BooleanField(choices=MOVEMENT_TYPE_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    movement_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_movements_installment_user_created', verbose_name="Criado por")
+    updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_movements_installment_user_updated', verbose_name="Atualizado por")
+   
+    def __str__(self):
+        return f"{self.get_type_display()} de {self.amount} em {self.movement_date}"
+
