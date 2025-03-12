@@ -1,11 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 from customer_suppliers.models import CustomerSupplier
+
+class AccountHolder(models.Model):
+
+    customer_supplier = models.ForeignKey(CustomerSupplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="account_holders")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='account_holder_user_created', verbose_name="Criado por")
+    updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='account_holder_user_updated', verbose_name="Atualizado por")
+    
+    class Meta:
+        verbose_name = 'Titular conta'
+        db_table = 'account_holders'
+
+    def __str__(self):
+        return f"{self.customer_supplier}"
+    
 
 class CheckingAccount(models.Model):
     name = models.CharField(max_length=100)
     bank = models.CharField(max_length=50)
+    account_holder = models.ForeignKey(AccountHolder, on_delete=models.CASCADE, related_name="checking_accounts")
     initial_balance = models.DecimalField(max_digits=10, decimal_places=2)
     agency = models.CharField(max_length=50)
     account_number = models.CharField(max_length=50)
@@ -69,12 +85,12 @@ class FinancialTransaction(models.Model):
     ]
 
     type = models.BooleanField(choices=TRANSACTION_TYPE_CHOICES)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
     installment_value = models.DecimalField(max_digits=10, decimal_places=2)
     down_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     due_date = models.DateField()
-    payment_date = models.DateTimeField(null=True, blank=True)
     number_of_installments = models.IntegerField()
+    account_holder = models.ForeignKey(AccountHolder, on_delete=models.CASCADE, related_name="financial_transactions")
     financial_category = models.ForeignKey(FinancialCategory, on_delete=models.CASCADE, related_name="transactions")
     customer_supplier = models.ForeignKey(CustomerSupplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="transactions")
     created_at = models.DateTimeField(auto_now_add=True)

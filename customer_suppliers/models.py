@@ -13,9 +13,13 @@ class CustomerSupplier(models.Model):
 
     type = models.IntegerField(choices=PARTNER_TYPE_CHOICES)
     name = models.CharField(max_length=100)
-    cnpj = models.CharField(max_length=14, null=True, blank=True, unique=True)
-    cpf = models.CharField(max_length=11, null=True, blank=True, unique=True)
-    phone = models.CharField(max_length=11, null=True, blank=True)
+    cnpj = models.CharField(max_length=20, null=True, blank=True)
+    cpf = models.CharField(max_length=20, null=True, blank=True)
+    rg = models.CharField(max_length=20, null=True, blank=True)
+    phone1 = models.CharField(max_length=50, null=True, blank=True)
+    phone2 = models.CharField(max_length=50, null=True, blank=True)
+    marital_status = models.CharField(max_length=30, null=True, blank=True)
+    profession = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=100, null=True, blank=True)
     
     # Endereço
@@ -27,7 +31,7 @@ class CustomerSupplier(models.Model):
     state = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
     zip_code = models.CharField(max_length=20, null=True, blank=True)
-
+    date_birth = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_supplier_user_created', verbose_name="Criado por")
