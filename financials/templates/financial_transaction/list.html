@@ -75,8 +75,15 @@
 <div class="card-smart">
 
     <div class="card p-3">
-        <form method="GET" class="row">
-            {{ filter.form.as_p }}
+        <form method="GET" class="row g-3">
+            {% for field in filter.form %}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            </div>
+            {% endfor %}
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn-smart w-50">Filtrar</button>
             </div>
@@ -84,69 +91,74 @@
     </div>
 
 
-    <!-- TABLE installmentS  -->
-    <table class="table table-hover table-bordered text-center my-3">
-        <thead>
-            <tr>
-                <th scope="col">
-                    <input type="checkbox" id="selecionar_todos" name="selecionar_todos" />
-                </th>
-                <th scope="col">ID</th>
-                <th scope="col">Cliente/Fornecedor</th>
-                <th scope="col">Nº parcela</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Vencimento</th>
-                <th scope="col">Valor</th>
-                <th scope="col">Situação</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- installment -->
-            {% for installment in financialtransactioninstallment_list %}
-            <tr>
-                <td>
-                    <input data-bs-toggle="collapse" data-bs-target="#collapse{{installment.id}}" aria-expanded="false"
-                        aria-controls="collapse{{installment.id}}" type="checkbox" id="" name="checkboxes[]"
-                        value="{{ installment.id }}" />
-                </td>
-                <td>{{installment.id}}</td>
-                <td>{{installment.financial_transaction.customer_supplier.name}}</td>
-                <td>{{installment.installment_number}} / {{installment.financial_transaction.number_of_installments}}
-                </td>
-                <td>{{installment.financial_transaction.financial_category.name}}</td>
-                <td>{{installment.financial_transaction.description}}</td>
-                <td>{{installment.due_date}}</td>
-                <td>R$ {{installment.amount}}</td>
-                <td>{% if installment.status == 0 %}Em aberto{%else%}Pago{%endif%}</td>
-                <td>
-                    <a class="text-decoration-none text-padrao" data-bs-toggle="collapse"
-                        href="#collapseinstallment{{installment.id}}" role="button" aria-expanded="false"
-                        aria-controls="collapseinstallment{{installment.id}}">
-                        <span class="material-symbols-outlined">
-                            keyboard_arrow_down
-                        </span>
-                    </a>
-                </td>
-            </tr>
-            <td colspan="11" class="collapse" id="collapseinstallment{{installment.id}}">
-                <div class="p-3 text-start bg-gray-100">
-                    <p class="m-0">
-                        Lançado por
-                    </p>
-                    <p class="m-0">
-                        Lançado em
-                    </p>
+    <!-- TABLE -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered text-center my-3">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <input type="checkbox" id="selecionar_todos" name="selecionar_todos" />
+                    </th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Cliente/Fornecedor</th>
+                    <th scope="col">Nº parcela</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Vencimento</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Situação</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- installment -->
+                {% for installment in financialtransactioninstallment_list %}
+                <tr>
+                    <td>
+                        <input data-bs-toggle="collapse" data-bs-target="#collapse{{installment.id}}"
+                            aria-expanded="false" aria-controls="collapse{{installment.id}}" type="checkbox" id=""
+                            name="checkboxes[]" value="{{ installment.id }}" />
+                    </td>
+                    <td>{{installment.id}}</td>
+                    <td>{{installment.financial_transaction.customer_supplier.name}}</td>
+                    <td>{{installment.installment_number}} /
+                        {{installment.financial_transaction.number_of_installments}}
+                    </td>
+                    <td>{{installment.financial_transaction.financial_category.name}}</td>
+                    <td>{{installment.financial_transaction.description}}</td>
+                    <td>{{ installment.due_date|date:"d/m/Y" }}</td>
+                    <td>R$ {{installment.amount}}</td>
+                    <td>{% if installment.status == 0 %}Em aberto{%else%}Pago{%endif%}</td>
+                    <td>
+                        <a class="text-decoration-none text-padrao" data-bs-toggle="collapse"
+                            href="#collapseinstallment{{installment.id}}" role="button" aria-expanded="false"
+                            aria-controls="collapseinstallment{{installment.id}}">
+                            <span class="material-symbols-outlined">
+                                keyboard_arrow_down
+                            </span>
+                        </a>
+                    </td>
+                </tr>
+                <td colspan="11" class="collapse" id="collapseinstallment{{installment.id}}">
+                    <div class="p-3 text-start bg-gray-100">
+                        <p class="m-0">
+                            Lançado por
+                        </p>
+                        <p class="m-0">
+                            Lançado em
+                        </p>
 
-                </div>
-            </td>
-            {%endfor%}
-            <!-- END installment -->
+                    </div>
+                </td>
+                {%endfor%}
+                <!-- END installment -->
 
-        </tbody>
-    </table>
-    <!-- FIM TABLE installmentS -->
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- END TABLE -->
 
 
 </div>

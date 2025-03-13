@@ -5,21 +5,25 @@ from customer_suppliers.models import CustomerSupplier
 from .models import AccountHolder, FinancialCategory, FinancialTransactionInstallment
 
 class FinancialTransactionInstallmentFilter(django_filters.FilterSet):
-    
+
     financial_category = django_filters.ModelChoiceFilter(
         queryset=FinancialCategory.objects.all(),
         label="Categoria",
-        widget=forms.Select(attrs={"class": "form-control col"})
+        widget=forms.Select(attrs={"class": "form-control col"}),
+        field_name='financial_transaction__financial_category'
     )
     customer_supplier = django_filters.ModelChoiceFilter(
         queryset=CustomerSupplier.objects.all(),
         label="Cliente/Forncedor",
-        widget=forms.Select(attrs={"class": "form-control col"})
+        widget=forms.Select(attrs={"class": "form-control col"}),
+        field_name='financial_transaction__customer_supplier'
+
     )
     account_holder = django_filters.ModelChoiceFilter(
         queryset=AccountHolder.objects.all(),
         label="Titular da conta",
-        widget=forms.Select(attrs={"class": "form-control"})
+        widget=forms.Select(attrs={"class": "form-control"}),
+        field_name='financial_transaction__account_holder'
     )
     id = django_filters.CharFilter(
         lookup_expr='exact',
