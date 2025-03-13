@@ -1,10 +1,12 @@
 from django.contrib import admin
 
-from .models import CheckingAccount, CheckingAccountBalance, FinancialCategory, FinancialMovement, FinancialTransaction, FinancialTransactionInstallment
+from . import models
 
-admin.site.register(CheckingAccount)
-admin.site.register(CheckingAccountBalance)
-admin.site.register(FinancialCategory)
-admin.site.register(FinancialTransaction)
-admin.site.register(FinancialTransactionInstallment)
-admin.site.register(FinancialMovement)
+admin.site.register(models.CheckingAccount)
+admin.site.register(models.CheckingAccountBalance)
+admin.site.register(models.FinancialCategory)
+admin.site.register(models.FinancialTransaction)
+admin.site.register(models.FinancialTransactionInstallment)
+admin.site.register(models.FinancialMovement)
+admin.site.register(models.AccountHolder)
+

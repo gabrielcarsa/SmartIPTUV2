@@ -1,0 +1,319 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="row">
+    <div class="col">
+        <h2 class="my-3 fw-bolder fs-1">
+            Contas a Pagar e Receber
+        </h2>
+    </div>
+    <div class="col d-flex align-items-center justify-content-end p-0">
+        <a href="{% url 'financial_transaction_create' %}" class="btn-smart text-center mx-3">
+            Novo lançamento
+        </a>
+        <div class="dropdown w-100">
+            <button class="btn btn-outline-dark dropdown-toggle w-100" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Ações
+            </button>
+            <ul class="dropdown-menu">
+                <li class="border-bottom py-2">
+                    <a class="dropdown-item d-flex align-items-center" href="#" id="alterar-valor">
+                        <span class="material-symbols-outlined mr-2">
+                            attach_money
+                        </span>
+                        Alterar valor transaction
+                    </a>
+                </li>
+                <li class="border-bottom py-2">
+                    <a class="dropdown-item d-flex align-items-center" href="#" id="alterar-vencimento">
+                        <span class="material-symbols-outlined mr-2">
+                            edit_calendar
+                        </span>
+                        Alterar vencimento
+                    </a>
+                </li>
+                <li class="border-bottom py-2">
+                    <a class="dropdown-item d-flex align-items-center" href="#" id="baixar-transaction">
+                        <span class="material-symbols-outlined mr-2">
+                            payments
+                        </span>
+                        Baixar transaction
+                    </a>
+                </li>
+                <li class="border-bottom py-2">
+                    <a class="dropdown-item d-flex align-items-center" href="#" id="estornar-pagamento-recebimento">
+                        <span class="material-symbols-outlined mr-2">
+                            undo
+                        </span>
+                        Estornar recebimento ou pagamento
+                    </a>
+                </li>
+                <li class="py-2">
+                    <a class="dropdown-item d-flex align-items-center" href="#" id="estornar-transaction">
+                        <span class="material-symbols-outlined mr-2">
+                            delete
+                        </span>
+                        Estornar parcela
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <a class="btn bg-padrao text-white m-0 py-1 px-5 fw-bold d-flex align-items-center justify-content-center"
+            href="">
+            <span class="material-symbols-outlined mr-1">
+                add
+            </span>
+            Novo
+        </a>
+    </div>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+
+    <!-- FORM -->
+    <form action="" method="get" autocomplete="off">
+
+
+        <!-- CARD FORM -->
+        <div class="border rounded">
+
+            <!-- CARD FORM HEADER -->
+            <div class="p-3 border-bottom">
+                <p class="m-0 fs-5 fw-bold">
+                    Filtros para listagem
+                </p>
+            </div>
+            <!-- FIM CARD FORM HEADER -->
+
+            <!-- CARD FORM BODY -->
+            <div class="bg-white p-3">
+
+                <!-- ROW -->
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="inputCategoria" class="form-label">
+                            Categoria
+                        </label>
+                        <select id="inputCategoria" name="categoria_financeiro_id" class="form-select form-control">
+                            <option value="1" select>
+                                -- Selecione --
+                            </option>
+                            <option value="0">
+                                Não dísponivel
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="inputClienteFornecedor" class="form-label">
+                            Cliente / Fornecedor
+                        </label>
+                        <select id="inputClienteFornecedor" name="cliente_fornecedor_id"
+                            class="form-select form-control">
+                            <option value="1" select>
+                                -- Selecione --
+                            </option>
+                            <option value="0">
+                                Não dísponivel
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="inputContaBancaria" class="form-label">
+                            Conta bancária
+                        </label>
+                        <select id="inputContaBancaria" name="conta_bancaria_id" class="form-select form-control">
+                            <option value="1" select>
+                                -- Selecione --
+                            </option>
+                            <option value="0">
+                                Não dísponivel
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+                <!-- FIM ROW -->
+
+                <!-- ROW -->
+                <div class="row my-3">
+                    <div class="col-sm-2">
+                        <label for="inputIdtransaction" class="form-label">
+                            ID transaction
+                        </label>
+                        <input type="text" name="transaction_id" class="form-control" id="inputIdtransaction"
+                            placeholder="Ex.: 1584" value="">
+                    </div>
+                    <div class="col-sm-2">
+                        <label for="inputDataVencimentoDe" class="form-label">
+                            Data início
+                        </label>
+                        <input type="date" name="periodoDe" value="" class="form-control" id="inputDataVencimentoDe">
+                    </div>
+                    <div class="col-sm-2">
+                        <label for="inputDataVencimentoAte" class="form-label">
+                            Data fim
+                        </label>
+                        <input type="date" name="periodoAte" value="" class="form-control" id="inputDataVencimentoAte">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="inputsChecksTipoPeriodo" class="form-label">
+                            Tipo período
+                        </label>
+                        <div class="inputsChecksTipoPeriodo">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPeriodo" id="periodoLancamento"
+                                    value="0">
+                                <label class="form-check-label" for="periodoLancamento">
+                                    Lançamento
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPeriodo" id="periodoVencimento"
+                                    value="1">
+                                <label class="form-check-label" for="periodoVencimento">
+                                    Vencimento
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPeriodo" id="periodoPagamento"
+                                    value="2">
+                                <label class="form-check-label" for="periodoPagamento">
+                                    Pagamento
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPeriodo" id="periodoBaixa"
+                                    value="3">
+                                <label class="form-check-label" for="periodoBaixa">
+                                    Baixa
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROW -->
+                    <div class="row mt-3">
+                        <div class="col-sm-6">
+                            <label for="inputsChecksTipoPeriodo" class="form-label">
+                                Situação
+                            </label>
+                            <div class="inputsChecksTipoPeriodo">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="situacao" id="periodoLancamento"
+                                        value="3" checked>
+                                    <label class="form-check-label" for="periodoLancamento">
+                                        Todos
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="situacao" id="periodoVencimento"
+                                        value="0">
+                                    <label class="form-check-label" for="periodoVencimento">
+                                        A vencer
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="situacao" id="periodoRecebimento"
+                                        value="1">
+                                    <label class="form-check-label" for="periodoRecebimento">
+                                        Pagos
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- FIM ROW -->
+
+                </div>
+                <!-- FIM ROW -->
+
+                <div class="d-flex">
+                    <button type="submit" class="btn bg-padrao text-white px-4 fw-semibold">
+                        Consultar
+                    </button>
+                </div>
+
+            </div>
+            <!-- FIM CARD FORM BODY -->
+
+        </div>
+        <!-- FIM CARD FORM -->
+
+    </form>
+    <!-- FIM FORM -->
+
+    <!-- TABLE transactionS  -->
+    <table class="table table-hover table-bordered text-center">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <input type="checkbox" id="selecionar_todos" name="selecionar_todos" />
+                </th>
+                <th scope="col">ID</th>
+                <th scope="col">Cliente/Fornecedor</th>
+                <th scope="col">Nº transaction</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Vencimento</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Situação</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- TRANSACTION -->
+            {% for transaction in financialtransaction_list %}
+            <tr>
+                <td>
+                    <input data-bs-toggle="collapse" data-bs-target="#collapse{{transaction.id}}" aria-expanded="false"
+                        aria-controls="collapse{{transaction.id}}" type="checkbox" id="" name="checkboxes[]"
+                        value="{{ transaction.id }}" />
+                </td>
+                <td>{{transaction.id}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{transaction.description}}</td>
+                <td></td>
+                <td>R</td>
+                <td></td>
+                <td>
+                    <a class="text-decoration-none text-padrao" data-bs-toggle="collapse"
+                        href="#collapsetransaction{{transaction.id}}" role="button" aria-expanded="false"
+                        aria-controls="collapsetransaction{{transaction.id}}">
+                        <span class="material-symbols-outlined">
+                            keyboard_arrow_down
+                        </span>
+                    </a>
+                </td>
+            </tr>
+            <td colspan="11" class="collapse" id="collapsetransaction{{transaction.id}}">
+                <div class="p-3 text-start bg-gray-100">
+                    <p class="m-0">
+                        Lançado por
+                    </p>
+                    <p class="m-0">
+                        Lançado em
+                    </p>
+
+                </div>
+            </td>
+            {%endfor%}
+            <!-- END TRANSACTION -->
+
+        </tbody>
+    </table>
+    <!-- FIM TABLE transactionS -->
+
+
+</div>
+
+
+{% endblock %}
