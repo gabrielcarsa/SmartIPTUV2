@@ -12,8 +12,8 @@ from dateutil.relativedelta import relativedelta
 # FINANCIAL TRANSACTIONS
 # ----------------------------
 
-class FinancialTransactionView(LoginRequiredMixin, ListView):
-    model = models.FinancialTransaction
+class FinancialTransactionInstallmentListView(LoginRequiredMixin, ListView):
+    model = models.FinancialTransactionInstallment
     template_name = 'financial_transaction/list.html'
 
 

@@ -51,7 +51,11 @@ class FinancialTransactionForm(BaseForm):
         model = FinancialTransaction
         fields = ['type', 'description', 'installment_value', 'down_payment', 'due_date', 'number_of_installments', 'account_holder', 'financial_category', 'customer_supplier']
         widgets = {
-            'description': forms.TextInput(attrs={'placeholder': 'Ex.: Descrição', 'autocomplete': 'off'}),
+            'description': forms.TextInput(attrs={'placeholder': 'Ex.: salário mensal...', 'autocomplete': 'off'}),
+            'installment_value': forms.TextInput(attrs={'placeholder': 'Ex.: 2.500,00', 'autocomplete': 'off'}),
+            'down_payment': forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00 (se houver)', 'autocomplete': 'off'}),
+            'number_of_installments': forms.TextInput(attrs={'placeholder': 'Ex.: 12', 'autocomplete': 'off'}),
+            'installment_value': forms.TextInput(attrs={'placeholder': 'Ex.: 2.500,00', 'autocomplete': 'off'}),
             'due_date': forms.DateInput(attrs={'type': 'date'})
         }
         

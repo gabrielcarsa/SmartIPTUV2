@@ -6,6 +6,10 @@ GENERAL STYLE
     font-family: "Nunito Sans", sans-serif;
 }
 
+.fill-icon {
+    font-variation-settings: 'FILL'1;
+}
+
 .card-smart {
     background-color: #FFFF;
     border-radius: 1rem;
@@ -20,10 +24,10 @@ BUTTONS STYLE
 
 .btn-smart {
     background-color: #6702B4 !important;
-    padding: 8px 10px !important;
+    padding: 8px 15px !important;
     color: #FFFF !important;
     font-weight: 700;
-    border-radius: 0.2em !important;
+    border-radius: 0.3em !important;
     border: 0 !important;
     text-decoration: none;
     width: 100%;
