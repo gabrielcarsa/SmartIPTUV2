@@ -3,6 +3,7 @@ from pyexpat.errors import messages
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
+from financials.filters import FinancialTransactionInstallmentFilter
 from financials.forms import FinancialTransactionForm
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +16,21 @@ from dateutil.relativedelta import relativedelta
 class FinancialTransactionInstallmentListView(LoginRequiredMixin, ListView):
     model = models.FinancialTransactionInstallment
     template_name = 'financial_transaction/list.html'
+
+    def get_queryset(self):
+     
+        queryset = models.FinancialTransactionInstallment.objects.all()
+        
+        # Cria o filtro usando os parâmetros da requisição GET
+        self.filter = FinancialTransactionInstallmentFilter(self.request.GET, queryset=queryset)
+        
+        # Retorna o queryset filtrado
+        return self.filter.qs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["filter"] = self.filter  # filter for template
+        return context
 
 
 class FinancialMovementCreateView(LoginRequiredMixin, CreateView):
