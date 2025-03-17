@@ -6,61 +6,53 @@
 <div class="d-lg-flex justify-content-between m-3">
     <div class="">
         <h2 class="m-0 fw-bolder fs-3">
-            Contas a pagar e receber
+            Contas a pagar / receber
         </h2>
         <p class="m-0 text-secondary">
             Filtre e visualize as contas
         </p>
     </div>
     <div class="d-flex align-items-center">
-        <a href="{% url 'financial_transaction_create' %}"
-            class="btn-smart mx-3 icon-link d-flex justify-content-center">
-            <span class="material-symbols-outlined fill-icon">
-                add_circle
-            </span>
-            Novo
-        </a>
         <div class="dropdown">
-            <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+            <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Ações
             </button>
             <ul class="dropdown-menu">
                 <li class="border-bottom py-2">
-                    <a class="dropdown-item d-flex align-items-center" href="#" id="alterar-valor">
-                        <span class="material-symbols-outlined mr-2">
+                    <a class="dropdown-item icon-link" href="#" id="alterar-valor">
+                        <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             attach_money
                         </span>
-                        Alterar valor installment
+                        Alterar valor
                     </a>
                 </li>
                 <li class="border-bottom py-2">
-                    <a class="dropdown-item d-flex align-items-center" href="#" id="alterar-vencimento">
-                        <span class="material-symbols-outlined mr-2">
+                    <a class="dropdown-item icon-link" href="#" id="alterar-vencimento">
+                        <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             edit_calendar
                         </span>
                         Alterar vencimento
                     </a>
                 </li>
                 <li class="border-bottom py-2">
-                    <a class="dropdown-item d-flex align-items-center" href="#" id="baixar-installment">
-                        <span class="material-symbols-outlined mr-2">
+                    <a class="dropdown-item icon-link" href="#" id="baixar-installment">
+                        <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             payments
                         </span>
-                        Baixar installment
+                        Baixar parcelas
                     </a>
                 </li>
                 <li class="border-bottom py-2">
-                    <a class="dropdown-item d-flex align-items-center" href="#" id="estornar-pagamento-recebimento">
-                        <span class="material-symbols-outlined mr-2">
+                    <a class="dropdown-item icon-link" href="#" id="estornar-pagamento-recebimento">
+                        <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             undo
                         </span>
-                        Estornar recebimento ou pagamento
+                        Estornar recebimento / pagamento
                     </a>
                 </li>
                 <li class="py-2">
-                    <a class="dropdown-item d-flex align-items-center" href="#" id="estornar-installment">
-                        <span class="material-symbols-outlined mr-2">
+                    <a class="dropdown-item icon-link" href="#" id="estornar-installment">
+                        <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             delete
                         </span>
                         Estornar parcela
@@ -68,6 +60,13 @@
                 </li>
             </ul>
         </div>
+        <a href="{% url 'financial_transaction_create' %}"
+            class="btn-smart mx-3 icon-link d-flex justify-content-center">
+            <span class="material-symbols-outlined fill-icon">
+                add_circle
+            </span>
+            Novo
+        </a>
     </div>
 </div>
 <!-- FIM HEADER -->
@@ -96,9 +95,7 @@
         <table class="table table-hover table-bordered text-center my-3">
             <thead>
                 <tr>
-                    <th scope="col">
-                        <input type="checkbox" id="selecionar_todos" name="selecionar_todos" />
-                    </th>
+                    <th scope="col"></th>
                     <th scope="col">ID</th>
                     <th scope="col">Cliente/Fornecedor</th>
                     <th scope="col">Nº parcela</th>
@@ -107,7 +104,6 @@
                     <th scope="col">Vencimento</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Situação</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -115,9 +111,9 @@
                 {% for installment in financialtransactioninstallment_list %}
                 <tr>
                     <td>
-                        <input data-bs-toggle="collapse" data-bs-target="#collapse{{installment.id}}"
-                            aria-expanded="false" aria-controls="collapse{{installment.id}}" type="checkbox" id=""
-                            name="checkboxes[]" value="{{ installment.id }}" />
+                        <input data-bs-toggle="collapse" href="#collapseinstallment{{installment.id}}" role="button"
+                            aria-expanded="false" aria-controls="collapseinstallment{{installment.id}}" type="checkbox"
+                            id="" name="checkboxes[]" value="{{ installment.id }}" />
                     </td>
                     <td>{{installment.id}}</td>
                     <td>{{installment.financial_transaction.customer_supplier.name}}</td>
@@ -129,23 +125,14 @@
                     <td>{{ installment.due_date|date:"d/m/Y" }}</td>
                     <td>R$ {{installment.amount}}</td>
                     <td>{% if installment.status == 0 %}Em aberto{%else%}Pago{%endif%}</td>
-                    <td>
-                        <a class="text-decoration-none text-padrao" data-bs-toggle="collapse"
-                            href="#collapseinstallment{{installment.id}}" role="button" aria-expanded="false"
-                            aria-controls="collapseinstallment{{installment.id}}">
-                            <span class="material-symbols-outlined">
-                                keyboard_arrow_down
-                            </span>
-                        </a>
-                    </td>
                 </tr>
                 <td colspan="11" class="collapse" id="collapseinstallment{{installment.id}}">
-                    <div class="p-3 text-start bg-gray-100">
+                    <div class="p-3 text-start bg-light">
                         <p class="m-0">
-                            Lançado por
+                            Lançado por {{installment.created_by_user.first_name}}
                         </p>
                         <p class="m-0">
-                            Lançado em
+                            Lançado em {{installment.financial_transaction.created_at}}
                         </p>
 
                     </div>

@@ -18,6 +18,14 @@ GENERAL STYLE
     margin: 15px;
 }
 
+.text-smart{
+    color: #6702B4 !important;
+}
+
+.bg-smart{
+    background-color: #6702B4 !important;
+}
+
 /* ------------------
 BUTTONS STYLE 
 -------------------*/

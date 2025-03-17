@@ -21,10 +21,10 @@ class FinancialTransactionInstallmentListView(LoginRequiredMixin, ListView):
      
         queryset = models.FinancialTransactionInstallment.objects.all()
         
-        # Cria o filtro usando os parâmetros da requisição GET
+        # create the filter using parameters from GET
         self.filter = FinancialTransactionInstallmentFilter(self.request.GET, queryset=queryset)
         
-        # Retorna o queryset filtrado
+        # return queryset filter
         return self.filter.qs
     
     def get_context_data(self, **kwargs):
