@@ -35,7 +35,7 @@
                     </a>
                 </li>
                 <li class="border-bottom py-2">
-                    <a class="dropdown-item icon-link" href="#" id="baixar-installment">
+                    <a class="dropdown-item icon-link" href="#" id="settlement">
                         <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             payments
                         </span>
@@ -95,7 +95,9 @@
         <table class="table table-hover table-bordered text-center my-3">
             <thead>
                 <tr>
-                    <th scope="col"></th>
+                    <th scope="col">
+                        <input type="checkbox" id="select_all" name="select_all" />
+                    </th>
                     <th scope="col">ID</th>
                     <th scope="col">Cliente/Fornecedor</th>
                     <th scope="col">Nº parcela</th>
@@ -147,8 +149,121 @@
 
     <!-- END TABLE -->
 
-
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+
+        // capture the click on the 'Alterar valores'
+        $("#alterar-valor").click(function (event) {
+            event.preventDefault();
+
+            // Obtenha os valores dos checkboxes selecionados
+            var checkboxesSelecionados = [];
+
+            $("input[name='checkboxes[]']:checked").each(function () {
+                checkboxesSelecionados.push($(this).val());
+            });
+
+            // Crie a URL com os valores dos checkboxes como parâmetros de consulta
+            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" + checkboxesSelecionados
+                .join(',');
+
+            // Redirecione para a URL com os parâmetros
+            window.location.href = url;
+        });
+
+        // Captura o clique no Alterar Data Vencimento
+        $("#alterar-vencimento").click(function (event) {
+            event.preventDefault();
+
+            // Obtenha os valores dos checkboxes selecionados
+            var checkboxesSelecionados = [];
+
+            $("input[name='checkboxes[]']:checked").each(function () {
+                checkboxesSelecionados.push($(this).val());
+            });
+
+            // Crie a URL com os valores dos checkboxes como parâmetros de consulta
+            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" + checkboxesSelecionados
+                .join(',');
+
+            // Redirecione para a URL com os parâmetros
+            window.location.href = url;
+        });
+
+        $("#settlement").click(function (event) {
+            event.preventDefault();
+
+            // Obtenha os valores dos checkboxes selecionados
+            var checkboxesSelecionados = [];
+
+            $("input[name='checkboxes[]']:checked").each(function () {
+                checkboxesSelecionados.push($(this).val());
+            });
+
+            // Crie a URL com os valores dos checkboxes como parâmetros de consulta
+            var url = "{% url 'transaction_installment_settlement' %}?checkboxes=" + checkboxesSelecionados
+                .join(',');
+
+            // Redirecione para a URL com os parâmetros
+            window.location.href = url;
+        });
+
+        $("#estornar-pagamento-recebimento").click(function (event) {
+            event.preventDefault();
+
+            // Obtenha os valores dos checkboxes selecionados
+            var checkboxesSelecionados = [];
+
+            $("input[name='checkboxes[]']:checked").each(function () {
+                checkboxesSelecionados.push($(this).val());
+            });
+
+            // Crie a URL com os valores dos checkboxes como parâmetros de consulta
+            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" +
+                checkboxesSelecionados.join(',');
+
+            // Redirecione para a URL com os parâmetros
+            window.location.href = url;
+        });
+
+        $("#estornar-parcela").click(function (event) {
+            event.preventDefault();
+
+            // Obtenha os valores dos checkboxes selecionados
+            var checkboxesSelecionados = [];
+
+            $("input[name='checkboxes[]']:checked").each(function () {
+                checkboxesSelecionados.push($(this).val());
+            });
+
+            // Crie a URL com os valores dos checkboxes como parâmetros de consulta
+            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" + checkboxesSelecionados
+                .join(',');
+
+            // Redirecione para a URL com os parâmetros
+            window.location.href = url;
+        });
+
+
+        // Selecionar todos checkboxes
+        $("#select_all").click(function () {
+            // Obtém o estado atual do "Selecionar Todos" dentro da tabela atual
+            var selecionarTodos = $(this).prop('checked');
+
+            // Encontra os checkboxes individuais dentro da tabela atual e marca ou desmarca com base no estado do "Selecionar Todos"
+            $(this).closest('table').find("input[name='checkboxes[]']").prop('checked',
+                selecionarTodos);
+        });
+
+
+    });
+</script>
+
 
 
 {% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Parcelas
+    </h2>
+    <p class="m-0 text-secondary">
+        Baixar parcelas
+    </p>
+</div>
+<div class="card-smart">
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+        <div class="row">
+            <div class="col-md-3">
+                {{ form.id }}
+                {{ form.installment_number.label_tag }} {{ form.installment_number }}
+            </div>
+            <div class="col-md-3">
+                {{ form.id }}
+                {{ form.due_date.label_tag }} {{ form.due_date }}
+            </div>
+            <div class="col-md-3">
+                {{ form.id }}
+                {{ form.amount.label_tag }} {{ form.amount }}
+            </div>
+        </div>
+
+        {% endfor %}
+        <input type="submit" value="Atualizar valor" class="btn-smart my-3">
+    </form>
+</div>
+{% endblock %}

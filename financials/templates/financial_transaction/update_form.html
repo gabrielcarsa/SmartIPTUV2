@@ -1,0 +1,10 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="ids" value="{{ ids }}">
+    {{ form.as_p }}
+    <input type="submit" value="Atualizar valor" class="btn-smart">
+</form>
+{% endblock %}

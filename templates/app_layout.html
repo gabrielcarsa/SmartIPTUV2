@@ -94,12 +94,49 @@
     {% endblock %}
     <!-- END HEADER -->
 
+    <!-- TOAST MESSAGES -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast m-3 p-3 end-0 top-0 fixed-top show align-items-center 
+        {% if message.tags == 'error' %}text-bg-danger{% else %}text-bg-success{% endif %} 
+        border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body fs-6 fw-semibold">
+                {{ message }}
+
+                <!-- FORM ERRORS -->
+                {% if form.errors %}
+                <hr>
+                {% for field in form %}
+                {% if field.errors %}
+                <div>
+                    <strong>{{ field.label }}:</strong>
+                    <ul>
+                        {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                <!-- END FORM ERRORS -->
+
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- END TOAST MESSAGES -->
+
     <div class="d-lg-flex">
 
         <!-- SIDEBAR -->
         {% include "sidebar.html" %}
         <!-- END SIDEBAR -->
-        
+
         <!-- CONTENT -->
         <div class="container-fluid bg-body-tertiary min-vh-100">
             {% block content %}{% endblock %}

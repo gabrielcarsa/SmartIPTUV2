@@ -1,7 +1,7 @@
 import re
 from django import forms
 
-from financials.models import FinancialTransaction
+from financials.models import FinancialTransaction, FinancialTransactionInstallment
 
 # Helper function to clean numbers (remove non-digit characters)
 def clean_number(value):
@@ -45,7 +45,7 @@ class BaseForm(forms.ModelForm):
         return cleaned_data
     
 
-class FinancialTransactionForm(BaseForm):
+class TransactionForm(BaseForm):
 
     class Meta:
         model = FinancialTransaction
@@ -58,4 +58,21 @@ class FinancialTransactionForm(BaseForm):
             'installment_value': forms.TextInput(attrs={'placeholder': 'Ex.: 2.500,00', 'autocomplete': 'off'}),
             'due_date': forms.DateInput(attrs={'type': 'date'})
         }
-        
+
+
+class TransactionInstallmentAmountForm(forms.ModelForm):
+    class Meta:
+        model = FinancialTransactionInstallment
+        fields = ['amount']
+
+class TransactionInstallmentSettlementForm(forms.ModelForm):
+    class Meta:
+        model = FinancialTransactionInstallment
+        fields = ['due_date','installment_number','amount']
+
+# create ModelFormSet to update in bulk
+TransactionInstallmentSettlementFormSet = forms.modelformset_factory(
+    FinancialTransactionInstallment, 
+    form=TransactionInstallmentSettlementForm,
+    extra=0
+)

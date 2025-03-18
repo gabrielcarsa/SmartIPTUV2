@@ -1,19 +1,22 @@
 from datetime import datetime
-from pyexpat.errors import messages
+from django.contrib import messages
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from financials.filters import FinancialTransactionInstallmentFilter
-from financials.forms import FinancialTransactionForm
+from financials.forms import TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
 
-# -----------------
-# FINANCIAL TRANSACTIONS
-# ----------------------------
+# ----------------------
+# FINANCIAL TRANSACTION INSTALLMENTS
+# -----------------------------------
 
-class FinancialTransactionInstallmentListView(LoginRequiredMixin, ListView):
+# List View Transaction Installment
+class TransactionInstallmentListView(LoginRequiredMixin, ListView):
     model = models.FinancialTransactionInstallment
     template_name = 'financial_transaction/list.html'
 
@@ -31,11 +34,69 @@ class FinancialTransactionInstallmentListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["filter"] = self.filter  # filter for template
         return context
+    
+class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
+    model = models.FinancialTransactionInstallment
+    template_name = "financial_transaction/update_form.html"
+
+    def get(self, request):
+        ids = request.GET.get("checkboxes")
+        if not ids:
+            messages.error(request, 'Erro ao tentar selecionar parcela (s)!')
+            return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+
+        form = TransactionInstallmentAmountForm()
+
+        return render(request, self.template_name, {"form": form, "ids": ids})
+
+    def post(self, request):
+        form = TransactionInstallmentAmountForm(request.POST)
+        ids = request.POST.get("ids", "").split(",")
+
+        if form.is_valid():
+            amount = form.cleaned_data["amount"]
+
+            # update all selected registers
+            models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(amount=amount)
+
+            messages.success(request, "Parcelas atualizadas com sucesso!")
+            return redirect("financial_transaction_list")
+
+        return render(request, self.template_name, {"form": form})
+
+class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
+    template_name = "financial_transaction/settlement_form.html"
+
+    def get(self, request):
+        ids = request.GET.get("checkboxes")
+        if not ids:
+            messages.error(request, 'Erro ao tentar selecionar parcela (s)!')
+            return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+
+        ids = ids.split(",")  # Separando os IDs que vêm via GET
+        queryset = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
+        formset = TransactionInstallmentSettlementFormSet(queryset=queryset)
+
+        return render(request, self.template_name, {"formset": formset})
+
+    def post(self, request):
+        formset = TransactionInstallmentSettlementFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect("dashboard")
+
+        return render(request, self.template_name, {"formset": formset})
 
 
-class FinancialMovementCreateView(LoginRequiredMixin, CreateView):
+
+# ----------
+# FINANCIAL TRANSACTION
+# ----------------------
+
+# Create Transaction
+class TransactionCreateView(LoginRequiredMixin, CreateView):
     model = models.FinancialTransaction
-    form_class = FinancialTransactionForm
+    form_class = TransactionForm
     template_name = 'financial_transaction/form.html'
     success_url = reverse_lazy('dashboard')
 
@@ -86,6 +147,6 @@ class FinancialMovementCreateView(LoginRequiredMixin, CreateView):
     
 
 
-class FinancialMovementListView(LoginRequiredMixin, ListView):
+class MovementListView(LoginRequiredMixin, ListView):
     model = models.FinancialMovement
     template_name = 'financial_movement/list.html'
