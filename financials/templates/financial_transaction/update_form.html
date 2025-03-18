@@ -1,10 +1,54 @@
 {% extends 'app_layout.html' %}
 
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="ids" value="{{ ids }}">
-    {{ form.as_p }}
-    <input type="submit" value="Atualizar valor" class="btn-smart">
-</form>
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Parcelas
+    </h2>
+    <p class="m-0 text-secondary">
+        Alterar valor
+    </p>
+</div>
+
+<div class="card-smart">
+
+    <form method="post" class="w-75 mx-auto my-3">
+        {% csrf_token %}
+        <input type="hidden" name="ids" value="{{ ids }}">
+        {{ form.as_p }}
+        <input type="submit" value="Atualizar valor" class="btn-smart">
+    </form>
+
+    <p class="m-0 fs-5 fw-semibold">
+        Parcelas a serem alteradas:
+    </p>
+
+    <div class="table-responsive">
+
+        <table class="table text-center border">
+            <thead>
+                <tr>
+                    <th scope="col">Número parcela</th>
+                    <th scope="col">Vencimento</th>
+                    <th scope="col">Valor antigo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for installment in installments %}
+                <tr>
+                    <td>
+                        {{installment.installment_number}}/{{installment.financial_transaction.number_of_installments}}
+                    </td>
+                    <td>
+                        {{installment.due_date|date:"d/m/Y"}}
+                    </td>
+                    <td>R$ {{installment.amount}}</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
 {% endblock %}

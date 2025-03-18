@@ -64,6 +64,9 @@ class TransactionInstallmentAmountForm(forms.ModelForm):
     class Meta:
         model = FinancialTransactionInstallment
         fields = ['amount']
+        widgets = {
+            'amount': forms.TextInput(attrs={'placeholder': 'Ex.: 1.500,00', 'autocomplete': 'off'}),
+        }
 
 class TransactionInstallmentSettlementForm(forms.ModelForm):
     class Meta:

@@ -46,8 +46,11 @@ class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
         form = TransactionInstallmentAmountForm()
+        format_ids = ids.split(",")
 
-        return render(request, self.template_name, {"form": form, "ids": ids})
+        installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids)
+
+        return render(request, self.template_name, {"form": form, "ids": ids, "installments": installments})
 
     def post(self, request):
         form = TransactionInstallmentAmountForm(request.POST)
@@ -73,7 +76,7 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
             messages.error(request, 'Erro ao tentar selecionar parcela (s)!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
-        ids = ids.split(",")  # Separando os IDs que vêm via GET
+        ids = ids.split(",")
         queryset = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
         formset = TransactionInstallmentSettlementFormSet(queryset=queryset)
 
