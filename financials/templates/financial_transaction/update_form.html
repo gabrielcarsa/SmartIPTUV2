@@ -12,6 +12,17 @@
 
 <div class="card-smart">
 
+    <div class="icon-link border rounded p-2">
+        <button onclick="history.back()" class="bg-white border border-0 d-flex align-items-center">
+            <span class="material-symbols-outlined text-black m-0 p-0">
+                arrow_back
+            </span>
+        </button>
+        <p class="m-0 fs-5 fw-semibold">
+            Voltar
+        </p>
+    </div>
+
     <form method="post" class="w-75 mx-auto my-3">
         {% csrf_token %}
         <input type="hidden" name="ids" value="{{ ids }}">
@@ -25,12 +36,12 @@
 
     <div class="table-responsive">
 
-        <table class="table text-center border">
+        <table class="table table-primary text-center">
             <thead>
                 <tr>
                     <th scope="col">Número parcela</th>
                     <th scope="col">Vencimento</th>
-                    <th scope="col">Valor antigo</th>
+                    <th scope="col">Valor</th>
                 </tr>
             </thead>
             <tbody>
