@@ -111,9 +111,16 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
                 instance.marked_down_by_user = self.request.user
                 instance.save()
             
-
-            return redirect("dashboard")
-
+            return redirect("financial_transaction_list")
+        
+        if not formset.is_valid():
+            for form in formset:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{field}: {error}")
+            for error in formset.non_form_errors():
+                messages.error(request, error)
+                
         return render(request, self.template_name, {"formset": formset})
 
 
@@ -127,7 +134,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
     model = models.FinancialTransaction
     form_class = TransactionForm
     template_name = 'financial_transaction/form.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('financial_transaction_list')
 
     def form_valid(self, form):
 
@@ -168,7 +175,6 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
                 )
 
         return response 
-
 
     def form_invalid(self, form):
         messages.error(self.request, "Erro ao preencher o formulário. Verifique os campos.")
