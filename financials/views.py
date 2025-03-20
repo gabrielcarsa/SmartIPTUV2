@@ -22,7 +22,7 @@ class TransactionInstallmentListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
      
-        queryset = models.FinancialTransactionInstallment.objects.all()
+        queryset = models.FinancialTransactionInstallment.objects.all().order_by('due_date')
         
         # create the filter using parameters from GET
         self.filter = FinancialTransactionInstallmentFilter(self.request.GET, queryset=queryset)
