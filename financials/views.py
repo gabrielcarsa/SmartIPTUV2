@@ -34,7 +34,8 @@ class TransactionInstallmentListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["filter"] = self.filter  # filter for template
         return context
-    
+
+# Update installment
 class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
     model = models.FinancialTransactionInstallment
     template_name = "financial_transaction/update_form.html"
@@ -67,28 +68,50 @@ class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
 
         return render(request, self.template_name, {"form": form})
 
+
+# Settlement installment
 class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
     template_name = "financial_transaction/settlement_form.html"
 
     def get(self, request):
+        # get selected checkboxes IDs
         ids = request.GET.get("checkboxes")
+
+        # checking IDs
         if not ids:
             messages.error(request, 'Nenhuma parcela selecionada!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
+        # split into array 
         ids = ids.split(",")
+
         queryset = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
         formset = TransactionInstallmentSettlementFormSet(queryset=queryset)
 
+        # context to template
         account_holders = models.AccountHolder.objects.all()
         checking_accounts = models.CheckingAccount.objects.all()
 
         return render(request, self.template_name, {"formset": formset, "account_holders": account_holders, "checking_accounts": checking_accounts})
 
     def post(self, request):
+        # formset
         formset = TransactionInstallmentSettlementFormSet(request.POST)
+
+        # valid form
         if formset.is_valid():
-            formset.save()
+
+            # get object without save
+            instances = formset.save(commit=False)
+
+            # update fields
+            for instance in instances:
+                instance.status = 1
+                instance.settlement_date = datetime.now()
+                instance.marked_down_by_user = self.request.user
+                instance.save()
+            
+
             return redirect("dashboard")
 
         return render(request, self.template_name, {"formset": formset})
