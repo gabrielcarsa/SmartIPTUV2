@@ -8,7 +8,7 @@
         <h2 class="m-0 fw-bolder fs-3">
             Contas a pagar / receber
         </h2>
-        <p class="m-0 text-secondary">
+        <p class="m-0">
             Filtre e visualize as contas
         </p>
     </div>
@@ -103,7 +103,6 @@
                     <th scope="col">Cliente/Fornecedor</th>
                     <th scope="col">Nº parcela</th>
                     <th scope="col">Categoria</th>
-                    <th scope="col">Descrição</th>
                     <th scope="col">Vencimento</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Situação</th>
@@ -120,14 +119,14 @@
                     </td>
                     <td>
                         {% if installment.financial_transaction.type == 0 %}
-                        <p class="m-0 icon-link bg-danger-subtle p-2 rounded-4">
+                        <p class="m-0 icon-link bg-danger-subtle p-2 rounded-4 fs-7">
                             <span class="material-symbols-outlined me-1 text-danger">
                                 call_received
                             </span>
                             A pagar
                         </p>
                         {% else %}
-                        <p class="m-0 icon-link bg-success-subtle p-2 rounded-4">
+                        <p class="m-0 icon-link bg-success-subtle p-2 rounded-4 fs-7">
                             <span class="material-symbols-outlined me-1 text-success">
                                 call_made
                             </span>
@@ -141,14 +140,19 @@
                         {{installment.financial_transaction.number_of_installments}}
                     </td>
                     <td>{{installment.financial_transaction.financial_category.name}}</td>
-                    <td>{{installment.financial_transaction.description}}</td>
                     <td>{{ installment.due_date|date:"d/m/Y" }}</td>
                     <td>R$ {{installment.amount}}</td>
                     <td>{% if installment.status == 0 %}Em aberto{%else%}Pago{%endif%}</td>
                 </tr>
                 <td colspan="11" class="collapse" id="collapseinstallment{{installment.id}}">
                     <div class="p-3 text-start bg-light">
-                        <p class="m-0 fw-bold fs-5">
+                        <p class="m-0 fw-bold">
+                            Descrição
+                        </p>
+                        <p class="m-0">
+                            {{installment.financial_transaction.description}}
+                        </p>
+                        <p class="m-0 fw-bold mt-3">
                             Lançamento
                         </p>
                         <p class="m-0">
@@ -157,16 +161,19 @@
                         <p class="m-0">
                             Lançado em {{installment.financial_transaction.created_at}}
                         </p>
-                        <p class="m-0 fw-bold mt-3 fs-5">
+                        <p class="m-0 fw-bold mt-3">
                             Pagamento
                         </p>
                         <p class="m-0">
                             Baixado por {{installment.marked_down_by_user.first_name}}
                         </p>
                         <p class="m-0">
+                            Baixado em {{installment.settlement_date}}
+                        </p>
+                        <p class="m-0 fw-semibold">
                             Pago em {{installment.payment_date|date:"d/m/Y"}}
                         </p>
-                        <p class="m-0">
+                        <p class="m-0 fw-semibold">
                             Valor Pago {{installment.paid_amount|default:''}}
                         </p>
                     </div>
