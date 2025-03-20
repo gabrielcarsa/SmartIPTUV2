@@ -10,27 +10,148 @@
     </p>
 </div>
 <div class="card-smart">
+
+    <div class="icon-link border rounded p-2 mb-3">
+        <button onclick="history.back()" class="bg-white border border-0 d-flex align-items-center">
+            <span class="material-symbols-outlined text-black m-0 p-0">
+                arrow_back
+            </span>
+        </button>
+        <p class="m-0 fs-5 fw-semibold">
+            Voltar
+        </p>
+    </div>
+
     <form method="post">
         {% csrf_token %}
-        {{ formset.management_form }}
-        {% for form in formset %}
-        <div class="row">
-            <div class="col-md-3">
-                {{ form.id }}
-                {{ form.installment_number.label_tag }} {{ form.installment_number }}
+        <div class="table-responsive rounded">
+
+            <table class="table text-center align-middle table-light">
+                <thead>
+                    <tr>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Nº parcela</th>
+                        <th scope="col">Vencimento</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Valor pago</th>
+                        <th scope="col">Data pagamento</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                    <tr>
+                        <td>
+                            {% if form.instance.financial_transaction.type == 0 %}
+                            <p class="m-0 icon-link bg-danger-subtle p-2 rounded-4">
+                                <span class="material-symbols-outlined me-1 text-danger">
+                                    call_received
+                                </span>
+                                A pagar
+                            </p>
+                            {% else %}
+                            A receber
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{form.instance.installment_number}}/{{form.instance.financial_transaction.number_of_installments}}
+                        </td>
+                        <td>
+                            {{form.instance.due_date|date:"d/m/Y"}}
+                        </td>
+                        <td>R$ {{form.instance.amount}}</td>
+                        <td>
+                            {{ form.id }}
+                            {{ form.paid_amount }}
+                        </td>
+                        <td>
+                            {{ form.id }}
+                            {{ form.payment_date }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-md-6">
+                <label for="account_holder">
+                    Titular da conta
+                </label>
+                <select class="form-select" aria-label="" id="account_holder" onchange="accountHolderChange()">
+                    <option selected>-- Selecione --</option>
+                    {% for account_holder in account_holders %}
+                    <option value="{{account_holder.id}}">
+                        {{account_holder.customer_supplier.name}}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
-            <div class="col-md-3">
-                {{ form.id }}
-                {{ form.due_date.label_tag }} {{ form.due_date }}
-            </div>
-            <div class="col-md-3">
-                {{ form.id }}
-                {{ form.amount.label_tag }} {{ form.amount }}
+            <div class="col-md-6">
+                <label for="checking_account">
+                    Conta
+                </label>
+                <select class="form-select" aria-label="" id="checking_account">
+                    <option selected>-- Selecione --</option>
+                    {% for checking_account in checking_accounts %}
+                    <option value="{{checking_account.id}}" aria-details="{{checking_account.account_holder.id}}">
+                        {{checking_account.name}}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
 
-        {% endfor %}
-        <input type="submit" value="Atualizar valor" class="btn-smart my-3">
+        <div class="d-flex justify-content-end">
+            <input type="submit" value="Baixar parcelas" class="w-50 btn-smart my-3">
+
+        </div>
     </form>
 </div>
+
+<script>
+
+    const checkingAccount = document.getElementById("checking_account");
+    const accountHolder = document.getElementById("account_holder");    
+    let checkingAccountAux = Array.from(checkingAccount.options);
+
+    // on load the page empty checkingAccount select
+    window.onload = () => {
+
+        // if accountHolder is not selected
+        if(accountHolder.options.selectedIndex == 0){
+            // empty
+            checkingAccount.options.length = 0;
+
+            // create a default option to checkingAccount
+            let option = document.createElement("option");
+            option.text = '-- Selecione o titular primeiro --';
+            checkingAccount.add(option)
+        } 
+    };
+
+    // On change accountHolder
+    function accountHolderChange() {
+
+        // clean to add
+        checkingAccount.options.length = 0;
+
+        // add options
+        for (let index = 0; index < checkingAccountAux.length; index++) {
+            if(checkingAccountAux[index].getAttribute("aria-details") == accountHolder.options.selectedIndex){
+                let option = document.createElement("option");
+                option.text = checkingAccountAux[index].text;
+                option.value = checkingAccountAux[index].value;
+                checkingAccount.add(option)
+            }   
+        }
+
+
+    }
+
+</script>
+
 {% endblock %}

@@ -71,7 +71,11 @@ class TransactionInstallmentAmountForm(forms.ModelForm):
 class TransactionInstallmentSettlementForm(forms.ModelForm):
     class Meta:
         model = FinancialTransactionInstallment
-        fields = ['due_date','installment_number','amount']
+        fields = ['payment_date','paid_amount']
+        widgets = {
+            'paid_amount': forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'form-control'}),
+            'payment_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+        }
 
 # create ModelFormSet to update in bulk
 TransactionInstallmentSettlementFormSet = forms.modelformset_factory(

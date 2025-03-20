@@ -42,7 +42,7 @@ class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
     def get(self, request):
         ids = request.GET.get("checkboxes")
         if not ids:
-            messages.error(request, 'Erro ao tentar selecionar parcela (s)!')
+            messages.error(request, 'Nenhuma parcela selecionada!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
         form = TransactionInstallmentAmountForm()
@@ -73,14 +73,17 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
     def get(self, request):
         ids = request.GET.get("checkboxes")
         if not ids:
-            messages.error(request, 'Erro ao tentar selecionar parcela (s)!')
+            messages.error(request, 'Nenhuma parcela selecionada!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
         ids = ids.split(",")
         queryset = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
         formset = TransactionInstallmentSettlementFormSet(queryset=queryset)
 
-        return render(request, self.template_name, {"formset": formset})
+        account_holders = models.AccountHolder.objects.all()
+        checking_accounts = models.CheckingAccount.objects.all()
+
+        return render(request, self.template_name, {"formset": formset, "account_holders": account_holders, "checking_accounts": checking_accounts})
 
     def post(self, request):
         formset = TransactionInstallmentSettlementFormSet(request.POST)

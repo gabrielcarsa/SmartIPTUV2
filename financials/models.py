@@ -115,13 +115,13 @@ class FinancialTransactionInstallment(models.Model):
     ]
 
     financial_transaction = models.ForeignKey(FinancialTransaction, on_delete=models.CASCADE, related_name="installments")
-    installment_number = models.IntegerField()
+    installment_number = models.IntegerField('Número parcela')
     amount = models.DecimalField('Valor', max_digits=10, decimal_places=2)
-    due_date = models.DateField()
-    payment_date = models.DateTimeField(null=True, blank=True)
+    due_date = models.DateField('Data de vencimento')
+    payment_date = models.DateTimeField('Data de pagamento', null=True, blank=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=UNPAID)
-    paid_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    settlement_date = models.DateTimeField(null=True, blank=True)
+    paid_amount = models.DecimalField('Valor pago', max_digits=10, decimal_places=2, null=True, blank=True)
+    settlement_date = models.DateTimeField('Data baixa', null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_installment_user_created', verbose_name="Criado por")
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_installment_user_updated', verbose_name="Atualizado por")
