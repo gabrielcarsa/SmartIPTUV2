@@ -2,7 +2,7 @@ from django import forms
 import django_filters
 
 from customer_suppliers.models import CustomerSupplier
-from .models import AccountHolder, FinancialCategory, FinancialTransactionInstallment
+from .models import AccountHolder, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
 
 class FinancialTransactionInstallmentFilter(django_filters.FilterSet):
 
@@ -12,6 +12,15 @@ class FinancialTransactionInstallmentFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={"class": "form-control col"}),
         field_name='financial_transaction__financial_category'
     )
+
+    type = django_filters.ChoiceFilter(
+        field_name='financial_transaction__type',
+        choices=FinancialTransaction.TRANSACTION_TYPE_CHOICES,
+        label="Tipo (Pagar / Receber)",
+        widget=forms.Select(attrs={"class": "form-control"}),
+        required=True
+    )
+
     customer_supplier = django_filters.ModelChoiceFilter(
         queryset=CustomerSupplier.objects.all(),
         label="Cliente/Forncedor",
@@ -47,4 +56,4 @@ class FinancialTransactionInstallmentFilter(django_filters.FilterSet):
 
     class Meta:
         model = FinancialTransactionInstallment
-        fields = ["financial_category", "customer_supplier", "account_holder", "id", "start_date", "end_date"]
+        fields = ["type", "financial_category", "customer_supplier", "account_holder", "id", "start_date", "end_date"]
