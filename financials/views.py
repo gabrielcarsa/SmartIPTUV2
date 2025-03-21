@@ -19,10 +19,11 @@ from dateutil.relativedelta import relativedelta
 class TransactionInstallmentListView(LoginRequiredMixin, ListView):
     model = models.FinancialTransactionInstallment
     template_name = 'financial_transaction/list.html'
+    paginate_by = 10
 
     def get_queryset(self):
-     
-        queryset = models.FinancialTransactionInstallment.objects.all().order_by('due_date')
+        
+        queryset = models.FinancialTransactionInstallment.objects.order_by('due_date')
         
         # create the filter using parameters from GET
         self.filter = FinancialTransactionInstallmentFilter(self.request.GET, queryset=queryset)
@@ -33,6 +34,8 @@ class TransactionInstallmentListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["filter"] = self.filter  # filter for template
+        context["querystring"] = self.request.GET.copy()
+
         return context
 
 # Update installment
