@@ -52,13 +52,13 @@
                         Financeiro
                     </a>
                 </div>
-                <div id="collapse-payments" class="accordion-collapse collapse" data-bs-parent="#accordionSidebar">
+                <div id="collapse-payments" class="accordion-collapse collapse {% if 'financials' in request.path|urlencode %}show{% endif %}" data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-medium border-start border-secondary mx-2 ps-2"
                             style="border-left-width: 4px !important;">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none text-secondary" href="{% url 'financial_transaction_list' %}">
-                                    Contas a pagar e receber
+                                <a class="text-decoration-none {% if 'financial_transactions/list' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'financial_transaction_list' %}">
+                                    Contas a pagar / receber
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
