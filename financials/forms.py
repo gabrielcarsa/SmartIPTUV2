@@ -1,3 +1,4 @@
+from decimal import Decimal
 import re
 from django import forms
 
@@ -11,11 +12,13 @@ def clean_number(value):
 class BaseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(BaseForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-        # Define class bootstrap for all fields 
+        # Define class bootstrap for all fields without overwriting other classes
         for field in self.fields:
-            self.fields[field].widget.attrs.update({'class': 'form-control'})
+            existing_classes = self.fields[field].widget.attrs.get('class', '')
+            self.fields[field].widget.attrs['class'] = f"{existing_classes} form-control".strip()
+
         
     def add_invalid_class(self):
         # If form has errors, add 'is-invalid' class
@@ -37,6 +40,19 @@ class BaseForm(forms.ModelForm):
             raise forms.ValidationError(error_message)
         return value
     
+    # Clean money field replace to save
+    def clean_money_field(self, field_name):
+        value = self.cleaned_data.get(field_name)
+
+        if value:
+            try:            
+                value = value.replace(',', '.')
+                return value
+            except ValueError:
+                raise forms.ValidationError("Valor inválido!")
+
+        return value
+    
     def clean(self):
         # Call the parent's clean() method to validate form data
         cleaned_data = super().clean()
@@ -44,7 +60,9 @@ class BaseForm(forms.ModelForm):
 
         return cleaned_data
     
+    
 
+# Transaction Form 
 class TransactionForm(BaseForm):
 
     class Meta:
@@ -60,6 +78,7 @@ class TransactionForm(BaseForm):
         }
 
 
+# Update amount field
 class TransactionInstallmentAmountForm(forms.ModelForm):
     class Meta:
         model = FinancialTransactionInstallment
@@ -68,16 +87,19 @@ class TransactionInstallmentAmountForm(forms.ModelForm):
             'amount': forms.TextInput(attrs={'placeholder': 'Ex.: 1.500,00', 'autocomplete': 'off'}),
         }
 
-class TransactionInstallmentSettlementForm(forms.ModelForm):
+
+# Settlement installments
+class TransactionInstallmentSettlementForm(BaseForm):
     class Meta:
         model = FinancialTransactionInstallment
         fields = ['payment_date','paid_amount']
         widgets = {
-            'paid_amount': forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'form-control'}),
-            'payment_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
+            'paid_amount': forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'money-mask'}),
+            'payment_date': forms.DateInput(attrs={'type': 'date'})
         }
 
-# create ModelFormSet to update in bulk
+
+# Create ModelFormSet to update in bulk
 TransactionInstallmentSettlementFormSet = forms.modelformset_factory(
     FinancialTransactionInstallment, 
     form=TransactionInstallmentSettlementForm,

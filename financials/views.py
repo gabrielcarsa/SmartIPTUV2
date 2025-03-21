@@ -113,6 +113,7 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
             
             return redirect("financial_transaction_list")
         
+        # invalid form, show errors
         if not formset.is_valid():
             for form in formset:
                 for field, errors in form.errors.items():
@@ -120,7 +121,7 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
                         messages.error(request, f"{field}: {error}")
             for error in formset.non_form_errors():
                 messages.error(request, error)
-                
+
         return render(request, self.template_name, {"formset": formset})
 
 
