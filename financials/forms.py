@@ -92,11 +92,12 @@ class TransactionInstallmentAmountForm(forms.ModelForm):
 class TransactionInstallmentSettlementForm(BaseForm):
     class Meta:
         model = FinancialTransactionInstallment
-        fields = ['payment_date','paid_amount']
-        widgets = {
-            'paid_amount': forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'money-mask'}),
-            'payment_date': forms.DateInput(attrs={'type': 'date'})
-        }
+        fields = ['payment_date', 'paid_amount']
+        
+    # Define the fields 'required'
+    paid_amount = forms.DecimalField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'money-mask'}))
+    payment_date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+
 
 
 # Create ModelFormSet to update in bulk

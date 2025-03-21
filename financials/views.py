@@ -86,6 +86,14 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
         ids = ids.split(",")
 
         queryset = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
+
+        # checking status installment
+        for installment in queryset:
+            if installment.status == 1:
+                messages.error(request, 'Selecione somente parcelas em aberto para baixa!')
+                return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+
+        
         formset = TransactionInstallmentSettlementFormSet(queryset=queryset)
 
         # context to template
