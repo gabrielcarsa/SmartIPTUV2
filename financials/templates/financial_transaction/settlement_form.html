@@ -81,7 +81,7 @@
                 <label for="account_holder">
                     Titular da conta
                 </label>
-                <select class="form-select" aria-label="" id="account_holder" onchange="accountHolderChange()">
+                <select class="form-select" name="account_holder" aria-label="" id="account_holder" onchange="accountHolderChange()">
                     <option selected>-- Selecione --</option>
                     {% for account_holder in account_holders %}
                     <option value="{{account_holder.id}}">
@@ -94,7 +94,7 @@
                 <label for="checking_account">
                     Conta
                 </label>
-                <select class="form-select" aria-label="" id="checking_account">
+                <select class="form-select" name="checking_account" aria-label="" id="checking_account">
                     <option selected>-- Selecione --</option>
                     {% for checking_account in checking_accounts %}
                     <option value="{{checking_account.id}}" aria-details="{{checking_account.account_holder.id}}">
@@ -131,6 +131,7 @@
             // create a default option to checkingAccount
             let option = document.createElement("option");
             option.text = '-- Selecione o titular primeiro --';
+            option.value = '';
             checkingAccount.add(option)
         } 
     };

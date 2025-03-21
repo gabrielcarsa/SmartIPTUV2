@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.list import ListView
@@ -103,12 +103,21 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"formset": formset, "account_holders": account_holders, "checking_accounts": checking_accounts})
 
     def post(self, request):
+
+        checking_account_id = request.POST.get('checking_account');
+        account_holder_id = request.POST.get('account_holder');
+
+        # verify if both are not empty
+        if not checking_account_id or  not checking_account_id:
+            messages.error(request, 'Preenchar o titular e a conta corrente!')
+            return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+        
         # formset
         formset = TransactionInstallmentSettlementFormSet(request.POST)
 
         # valid form
         if formset.is_valid():
-
+            
             # get object without save
             instances = formset.save(commit=False)
 
@@ -118,6 +127,20 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
                 instance.settlement_date = datetime.now()
                 instance.marked_down_by_user = self.request.user
                 instance.save()
+
+                checking_account = get_object_or_404(models.CheckingAccount, id=checking_account_id)
+                
+                # create Financial Movements
+                models.FinancialMovement.objects.create(
+                    checking_account = checking_account,
+                    financial_transaction_installment = instance,
+                    type = instance.financial_transaction.type,
+                    amount = instance.paid_amount,
+                    movement_date = instance.payment_date,
+                    created_by_user = self.request.user,
+                    updated_by_user = self.request.user,
+
+                )
             
             return redirect("financial_transaction_list")
         
