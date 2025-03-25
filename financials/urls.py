@@ -16,6 +16,8 @@ urlpatterns = [
     # MOVEMENTS
     path("financial_movement", views.MovementListView.as_view(), name="financial_movements_list"),
 
-    # CHECKING ACCOUNT BALANCES
-    path("account_holder/list", views.AccountHolderListView.as_view(), name="account_holder_list")
+    # ACCOUNT HOLDERS
+    path("account_holder/list", views.AccountHolderListView.as_view(), name="account_holder_list"),
+    path("account_holder/create", views.AccountHolderCreateView.as_view(), name="account_holder_create"),
+
 ]

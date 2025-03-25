@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from financials.filters import FinancialTransactionInstallmentFilter
-from financials.forms import TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentSettlementFormSet
+from financials.forms import AccountHolderForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
@@ -160,7 +160,6 @@ class TransactionInstallmentBulkSettlementView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"formset": formset})
 
 
-
 # ----------
 # FINANCIAL TRANSACTIONS
 # ----------------------
@@ -232,8 +231,30 @@ class MovementListView(LoginRequiredMixin, ListView):
 # ACCOUNT HOLDERS
 # ----------------
 
+# List
 class AccountHolderListView(LoginRequiredMixin, ListView):
     model = models.AccountHolder
     template_name = 'account_holder/list.html'
 
-        
+# Create
+class AccountHolderCreateView(LoginRequiredMixin, CreateView):
+    model = models.AccountHolder
+    template_name = 'account_holder/form.html'
+    form_class = AccountHolderForm
+    success_url = reverse_lazy('account_holder_list')
+
+    def form_valid(self, form):
+
+        # add atributes to object
+        form.instance.created_by_user_id = self.request.user.id
+        form.instance.updated_by_user_id = self.request.user.id
+
+        messages.success(self.request, "Cadastro realizado com sucesso")
+
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Erro ao preencher o formulário. Verifique os campos.")
+        return super().form_invalid(form)
+
+    

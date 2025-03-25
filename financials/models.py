@@ -4,7 +4,7 @@ from customer_suppliers.models import CustomerSupplier
 
 class AccountHolder(models.Model):
 
-    customer_supplier = models.ForeignKey(CustomerSupplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="account_holders")
+    customer_supplier = models.ForeignKey(CustomerSupplier,verbose_name='Cliente / Fornecedor', on_delete=models.SET_NULL, null=True, blank=True, related_name="account_holders")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='account_holder_user_created', verbose_name="Criado por")

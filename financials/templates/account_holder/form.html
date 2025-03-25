@@ -1,0 +1,24 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<div class="card-smart">
+    <p class="fw-bold fs-5">
+        Selecione na lista quem se tornará um titular.
+    </p>
+    <p class="m-0 fw-semibold">
+        O que isso significa?
+    </p>
+    <p class="fw-light">
+        Essa pessoa ou organização se tornará um titular de conta. Isso serve para controle financeiro, para realizar e
+        registrar lançamento de contas a pagar/receber, movimentações e saldos vinculado a essa pessoa ou organização.
+        Exemplo: Gabriel tem duas contas bancárias e quer separar as suas contas pessoais da sua empresa, então Gabriel
+        deve se tornar um titular para separar suas contas, entradas e saídas de sua empresa.
+    </p>
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Salvar" class="btn-smart">
+    </form>
+</div>
+
+{% endblock %}
