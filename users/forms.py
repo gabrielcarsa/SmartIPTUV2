@@ -5,7 +5,15 @@ from .models import Profile
 from django.contrib.auth.forms import AuthenticationForm
 
 class EmailLoginForm(AuthenticationForm):
-   username = forms.EmailField(
+    password = forms.CharField(
+        label="Senha",
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Digite sua senha',
+            'class': 'form-control',
+            'autocomplete': 'off',
+        })
+    )
+    username = forms.EmailField(
         label="Email",
         widget=forms.EmailInput(attrs={
             'placeholder': 'Digite seu e-mail',
