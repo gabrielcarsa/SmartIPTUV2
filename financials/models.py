@@ -152,6 +152,7 @@ class FinancialMovement(models.Model):
     type = models.BooleanField(choices=MOVEMENT_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     movement_date = models.DateField()
+    order = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_movements_installment_user_created', verbose_name="Criado por")

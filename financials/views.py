@@ -195,6 +195,8 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
             # save installments
             for i in range(1, number_of_installments + 1):
 
+                # TODO down_payment
+                
                 # incrementing month in due date
                 if i > 1:
                     due_date += relativedelta(months=1)
