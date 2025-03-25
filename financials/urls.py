@@ -5,13 +5,17 @@ from . import views
 urlpatterns = [
 
     # TRANSACTIONS  
-    path("financial_transactions/create", views.TransactionCreateView.as_view(), name="financial_transaction_create"),
-    path("financial_transactions/list", views.TransactionInstallmentListView.as_view(), name="financial_transaction_list"),
-    path("financial_transactions/delete", views.MovementListView.as_view(), name="financial_transaction_delete"),
+    path("financial_transaction/create", views.TransactionCreateView.as_view(), name="financial_transaction_create"),
+    path("financial_transaction/list", views.TransactionInstallmentListView.as_view(), name="financial_transaction_list"),
+    path("financial_transaction/delete", views.MovementListView.as_view(), name="financial_transaction_delete"),
 
     # INSTALLMENTS
-    path("transaction_installments/amount", views.TransactionInstallmentsUpdateView.as_view(), name="transaction_installment_amount"),
-    path("transaction_installments/settlement", views.TransactionInstallmentsBulkSettlementView.as_view(), name="transaction_installment_settlement"),
+    path("transaction_installment/amount", views.TransactionInstallmentUpdateView.as_view(), name="transaction_installment_amount"),
+    path("transaction_installment/settlement", views.TransactionInstallmentBulkSettlementView.as_view(), name="transaction_installment_settlement"),
 
-    path("financial_movements", views.MovementListView.as_view(), name="financial_movements_list"),
+    # MOVEMENTS
+    path("financial_movement", views.MovementListView.as_view(), name="financial_movements_list"),
+
+    # CHECKING ACCOUNT BALANCES
+    path("account_holder/list", views.AccountHolderListView.as_view(), name="account_holder_list")
 ]

@@ -10,6 +10,7 @@ from financials.forms import TransactionForm, TransactionInstallmentAmountForm, 
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
+from django.db.models import Sum
 
 # ----------------------
 # FINANCIAL TRANSACTION INSTALLMENTS
@@ -39,7 +40,7 @@ class TransactionInstallmentListView(LoginRequiredMixin, ListView):
         return context
 
 # Update installment
-class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
+class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
     model = models.FinancialTransactionInstallment
     template_name = "financial_transaction/update_form.html"
 
@@ -73,7 +74,7 @@ class TransactionInstallmentsUpdateView(LoginRequiredMixin, View):
 
 
 # Settlement installment
-class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
+class TransactionInstallmentBulkSettlementView(LoginRequiredMixin, View):
     template_name = "financial_transaction/settlement_form.html"
 
     def get(self, request):
@@ -161,7 +162,7 @@ class TransactionInstallmentsBulkSettlementView(LoginRequiredMixin, View):
 
 
 # ----------
-# FINANCIAL TRANSACTION
+# FINANCIAL TRANSACTIONS
 # ----------------------
 
 # Create Transaction
@@ -196,7 +197,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
             for i in range(1, number_of_installments + 1):
 
                 # TODO down_payment
-                
+
                 # incrementing month in due date
                 if i > 1:
                     due_date += relativedelta(months=1)
@@ -218,7 +219,21 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
     
 
+# ----------
+# FINANCIAL MOVEMENTS
+# ----------------------
 
 class MovementListView(LoginRequiredMixin, ListView):
     model = models.FinancialMovement
     template_name = 'financial_movement/list.html'
+
+
+# --------
+# ACCOUNT HOLDERS
+# ----------------
+
+class AccountHolderListView(LoginRequiredMixin, ListView):
+    model = models.AccountHolder
+    template_name = 'account_holder/list.html'
+
+        

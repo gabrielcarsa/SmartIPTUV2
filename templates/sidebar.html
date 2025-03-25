@@ -57,12 +57,12 @@
                         <ul class="fw-medium border-start border-secondary mx-2 ps-2"
                             style="border-left-width: 4px !important;">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'financial_transactions/list' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'financial_transaction_list' %}">
+                                <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'financial_transaction_list' %}">
                                     Contas a pagar / receber
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none text-secondary" href="{% url 'financial_movements_list' %}">
+                                <a class="text-decoration-none {% if 'financial_movement' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'financial_movements_list' %}">
                                     Movimentações
                                 </a>
                             </li>
@@ -77,8 +77,8 @@
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none text-secondary" href="">
-                                    Conta corrente
+                                <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'account_holder_list' %}">
+                                    Titulares
                                 </a>
                             </li>
                         </ul>
