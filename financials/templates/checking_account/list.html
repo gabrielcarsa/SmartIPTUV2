@@ -1,0 +1,105 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="d-lg-flex justify-content-between m-3">
+    <div class="">
+        <h2 class="m-0 fw-bolder fs-3">
+            Contas corrente
+        </h2>
+        <p class="m-0">
+            Visualize e cadastre contas corrente do titular.
+        </p>
+    </div>
+    <div class="d-flex align-items-center">
+        <a href="{% url 'account_holder_create' %}" class="btn-smart mx-3 icon-link d-flex justify-content-center">
+            <span class="material-symbols-outlined fill-icon">
+                add_circle
+            </span>
+            Novo titular
+        </a>
+    </div>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+
+    {% for checking_account in checkingaccount_list %}
+    <div class="card p-3 mb-3">
+        <div class="d-flex justify-content-between">
+            <div>
+                <p class="m-0 text-secondary">
+                    #{{checking_account.id}}
+                </p>
+                <p class="fw-bold m-0 fs-4">
+                    {{checking_account.name}}
+                </p>
+            </div>
+            <div>
+                <p class="m-0 text-secondary">
+                    Saldo atual
+                </p>
+                <p class="m-0 fw-semibold fs-5">
+                    R 0
+                </p>
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col">
+                <p class="text-secondary m-0">
+                    Banco
+                </p>
+                <p class="m-0">
+                    {{checking_account.bank}}
+                </p>
+            </div>
+            <div class="col">
+                <p class="text-secondary m-0">
+                    Agência
+                </p>
+                <p class="m-0">
+                    {{checking_account.agency}}
+                </p>
+            </div>
+            <div class="col">
+                <p class="text-secondary m-0">
+                    Número Conta
+                </p>
+                <p class="m-0">
+                    {{checking_account.account_number}}
+                </p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-sm-4">
+                <a href="" class="btn-smart icon-link">
+                    <span class="material-symbols-outlined me-1">
+                        monitoring
+                    </span>
+                    Acompanhar saldo
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a href="" class="">
+                    <span class="material-symbols-outlined me-1">
+                        edit
+                    </span>
+                    Editar
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a href="">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span>
+                    Excluir
+                </a>
+            </div>
+            
+        </div>
+    </div>
+    {%endfor%}
+</div>
+
+{% endblock %}

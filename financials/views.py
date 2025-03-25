@@ -256,5 +256,17 @@ class AccountHolderCreateView(LoginRequiredMixin, CreateView):
     def form_invalid(self, form):
         messages.error(self.request, "Erro ao preencher o formulário. Verifique os campos.")
         return super().form_invalid(form)
+    
+# ---------
+# CHECKING ACCOUNT
+# -----------------
+
+class CheckingAccountListView(LoginRequiredMixin, ListView):
+    model = models.CheckingAccount
+    template_name = 'checking_account/list.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(account_holder_id = self.kwargs.get("account_holder_id"))
+
 
     

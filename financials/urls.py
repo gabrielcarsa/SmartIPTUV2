@@ -20,4 +20,6 @@ urlpatterns = [
     path("account_holder/list", views.AccountHolderListView.as_view(), name="account_holder_list"),
     path("account_holder/create", views.AccountHolderCreateView.as_view(), name="account_holder_create"),
 
+    # CHECKING ACCOUNTS
+    path("checking_account/list/<int:account_holder_id>", views.CheckingAccountListView.as_view(), name="checking_account_list")
 ]
