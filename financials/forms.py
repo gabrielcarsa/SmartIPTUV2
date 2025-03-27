@@ -2,7 +2,7 @@ from decimal import Decimal
 import re
 from django import forms
 
-from financials.models import AccountHolder, FinancialTransaction, FinancialTransactionInstallment
+from financials.models import AccountHolder, CheckingAccount, FinancialTransaction, FinancialTransactionInstallment
 
 # Helper function to clean numbers (remove non-digit characters)
 def clean_number(value):
@@ -117,3 +117,12 @@ class AccountHolderForm(BaseForm):
     class Meta:
         model = AccountHolder
         fields = ['customer_supplier']
+
+# ---------
+# CHECKING ACCOUNT
+# -----------------
+
+class CheckingAccountForm(BaseForm):
+    class Meta: 
+        model = CheckingAccount
+        fields = ['name', 'bank', 'account_number', 'agency', 'initial_balance']

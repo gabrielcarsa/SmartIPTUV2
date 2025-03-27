@@ -1,0 +1,39 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Contas corrente
+    </h2>
+    <p class="m-0">
+        Criar nova.
+    </p>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+    <div class="card p-2 mb-3">
+        <div class="icon-link text-secondary m-0">
+            <span class="material-symbols-outlined me-1">
+                info
+            </span>
+            <p class="m-0">
+                O campo <span class="fw-bold">'Saldo inicial'</span> refere-se ao saldo atual da sua conta, ele serve
+                para que os valores do saldo aqui controlado e do banco esteja em conformidade.
+            </p>
+            
+        </div>
+
+
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Salvar" class="btn-smart">
+    </form>
+
+</div>
+
+{% endblock %}

@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from financials.filters import FinancialTransactionInstallmentFilter
-from financials.forms import AccountHolderForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentSettlementFormSet
+from financials.forms import AccountHolderForm, CheckingAccountForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
@@ -261,12 +261,41 @@ class AccountHolderCreateView(LoginRequiredMixin, CreateView):
 # CHECKING ACCOUNT
 # -----------------
 
+# List
 class CheckingAccountListView(LoginRequiredMixin, ListView):
     model = models.CheckingAccount
     template_name = 'checking_account/list.html'
 
     def get_queryset(self):
         return super().get_queryset().filter(account_holder_id = self.kwargs.get("account_holder_id"))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['account_holder_id'] = self.kwargs.get("account_holder_id")
+        return context
+
+# Create
+class CheckingAccountCreateView(LoginRequiredMixin, CreateView):
+    model = models.CheckingAccount
+    template_name = 'checking_account/form.html'
+    form_class = CheckingAccountForm
+
+    def form_valid(self, form):
+
+        # Account Holder
+        account_holder_id = self.kwargs.get('account_holder_id')
+        account_holder = get_object_or_404(models.AccountHolder, id=account_holder_id)
+
+        form.instance.account_holder = account_holder
+        form.instance.created_by_user = self.request.user
+        form.instance.updated_by_user = self.request.user
+
+        messages.success(self.request, "Cadastrado com sucesso")
+
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('checking_account_list', kwargs={'account_holder_id': self.kwargs.get('account_holder_id')})
 
 
     

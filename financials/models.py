@@ -19,12 +19,12 @@ class AccountHolder(models.Model):
     
 
 class CheckingAccount(models.Model):
-    name = models.CharField(max_length=100)
-    bank = models.CharField(max_length=50)
+    name = models.CharField("Nome", max_length=100)
+    bank = models.CharField("Banco", max_length=50)
     account_holder = models.ForeignKey(AccountHolder, on_delete=models.CASCADE, related_name="checking_accounts")
-    initial_balance = models.DecimalField(max_digits=10, decimal_places=2)
-    agency = models.CharField(max_length=50)
-    account_number = models.CharField(max_length=50)
+    initial_balance = models.DecimalField("Saldo inicial", max_digits=10, decimal_places=2)
+    agency = models.CharField("Agência", max_length=50)
+    account_number = models.CharField("Número da conta", max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='checking_account_user_created', verbose_name="Criado por")
