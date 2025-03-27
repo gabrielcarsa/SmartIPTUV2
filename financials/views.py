@@ -271,7 +271,10 @@ class CheckingAccountListView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['account_holder_id'] = self.kwargs.get("account_holder_id")
+
+        # Account Holder
+        account_holder = get_object_or_404(models.AccountHolder, id=self.kwargs.get("account_holder_id"))
+        context['account_holder'] = account_holder
         return context
 
 # Create
