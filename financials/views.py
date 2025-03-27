@@ -10,7 +10,51 @@ from financials.forms import AccountHolderForm, CheckingAccountForm, Transaction
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
-from django.db.models import Sum
+from django.db.models import Subquery, OuterRef
+
+# ----------------
+# CHECKING ACCOUNT BALANCES
+# --------------------------
+
+class CheckingAccountBalanceView(View):
+
+    # update or create balance
+    def update_or_create(self, date, amount, checking_account_id, type):
+        
+        # get Checking Account
+        checking_account = get_object_or_404(models.CheckingAccount, id=checking_account_id)
+
+        # get previous balance
+        previous_balance = models.CheckingAccountBalance.objects.filter(
+            balance_date__lt=date,
+            checking_account=checking_account,
+        ).first()
+
+        # value previous balance
+        value_previous_balance = 0
+
+        # verify Previous Balance exists, and define value
+        if previous_balance:
+            value_previous_balance = previous_balance.balance
+        else:
+            value_previous_balance = checking_account.initial_balance
+
+        # create or update Balance
+        obj, created = models.CheckingAccountBalance.objects.update_or_create(
+            balance_date=date,
+            checking_account=checking_account,
+            defaults={
+                "checking_account": checking_account,
+                "balance": value_previous_balance - amount if type == 0 else value_previous_balance + amount,
+            },
+            create_defaults={
+                "balance_date": date,
+                "checking_account": checking_account,
+                "balance": value_previous_balance - amount if type == 0 else value_previous_balance + self.amount,
+            },
+        )
+
+        return obj
 
 # ----------------------
 # FINANCIAL TRANSACTION INSTALLMENTS
@@ -145,6 +189,17 @@ class TransactionInstallmentBulkSettlementView(LoginRequiredMixin, View):
                     updated_by_user = self.request.user,
 
                 )
+
+                # CheckingAccountBalanceView instance for balance management
+                checking_account_balance_class = CheckingAccountBalanceView()
+
+                # call function to create or update balance
+                checking_account_balance_class.update_or_create(
+                    date = instance.payment_date,
+                    amount = instance.paid_amount,
+                    checking_account_id = checking_account.id,
+                    type = instance.financial_transaction.type,
+                )
             
             return redirect("financial_transaction_list")
         
@@ -267,7 +322,22 @@ class CheckingAccountListView(LoginRequiredMixin, ListView):
     template_name = 'checking_account/list.html'
 
     def get_queryset(self):
-        return super().get_queryset().filter(account_holder_id = self.kwargs.get("account_holder_id"))
+
+        # queryset
+        queryset = super().get_queryset().filter(account_holder_id = self.kwargs.get("account_holder_id"))
+        
+        # current date
+        current_date = datetime.now()
+ 
+        # subquery to get current balance
+        return queryset.annotate(
+            balance=Subquery(
+                models.CheckingAccountBalance.objects.filter(
+                    checking_account=OuterRef('pk'),
+                    balance_date=current_date
+                ).values('balance')[:1]
+            )
+        )
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
