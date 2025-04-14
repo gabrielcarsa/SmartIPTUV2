@@ -376,7 +376,7 @@ class CheckingAccountListView(LoginRequiredMixin, ListView):
             balance=Subquery(
                 models.CheckingAccountBalance.objects.filter(
                     checking_account=OuterRef('pk'),
-                    balance_date=current_date
+                    balance_date__lte=current_date
                 ).values('balance')[:1]
             )
         )
