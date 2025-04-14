@@ -242,31 +242,36 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
         number_of_installments = int(self.request.POST.get('number_of_installments'))
         due_date = self.request.POST.get('due_date')
         installment_value = self.request.POST.get('installment_value')
+        down_payment = str(self.request.POST.get('down_payment')).replace('.', '').replace(',', '.')
 
         # converting to datetime object
         due_date = datetime.strptime(due_date, "%Y-%m-%d").date() 
 
-        # checking if the number of installments is bigger than 1
-        if number_of_installments > 1:
+        # save installments
+        for i in range(1, number_of_installments + 1):
 
-            # save installments
-            for i in range(1, number_of_installments + 1):
+            # auxiliary variable to store the amount
+            installment_value_aux = 0
 
-                # TODO down_payment
+            # define installment amount
+            if down_payment and i == 1:
+                installment_value_aux = down_payment
+            else:
+                installment_value_aux = str(installment_value).replace('.', '').replace(',', '.')
 
-                # incrementing month in due date
-                if i > 1:
-                    due_date += relativedelta(months=1)
+            # incrementing month in due date
+            if i > 1:
+                due_date += relativedelta(months=1)
 
-                models.FinancialTransactionInstallment.objects.create(
-                    financial_transaction = transaction,
-                    installment_number = i,
-                    amount = str(installment_value).replace('.', '').replace(',', '.'),
-                    due_date = due_date,
-                    status = 0,
-                    created_by_user_id = self.request.user.id,
-                    updated_by_user_id = self.request.user.id,
-                )
+            models.FinancialTransactionInstallment.objects.create(
+                financial_transaction = transaction,
+                installment_number = i,
+                amount = installment_value_aux,
+                due_date = due_date,
+                status = 0,
+                created_by_user_id = self.request.user.id,
+                updated_by_user_id = self.request.user.id,
+            )
 
         return response 
 
