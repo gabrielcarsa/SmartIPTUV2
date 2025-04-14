@@ -105,7 +105,14 @@ class TransactionInstallmentSettlementForm(BaseForm):
         fields = ['payment_date', 'paid_amount']
         
     # Define the fields 'required'
-    paid_amount = forms.DecimalField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'money-mask'}))
+    paid_amount = forms.DecimalField(
+        required=True, 
+        localize=True,  
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))],
+        widget=forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00', 'autocomplete': 'off', 'class': 'money-mask'})
+    )
     payment_date = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
 
 
