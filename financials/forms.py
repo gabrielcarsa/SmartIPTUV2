@@ -88,10 +88,15 @@ class TransactionInstallmentAmountForm(forms.ModelForm):
     class Meta:
         model = FinancialTransactionInstallment
         fields = ['amount']
-        widgets = {
-            'amount': forms.TextInput(attrs={'placeholder': 'Ex.: 1.500,00', 'autocomplete': 'off'}),
-        }
 
+    amount = forms.DecimalField(
+        label='Valor atualizado',
+        localize=True,  
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))],
+        widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'Digite o novo valor'})
+    )
 
 # Settlement installments
 class TransactionInstallmentSettlementForm(BaseForm):
