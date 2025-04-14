@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -240,6 +241,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
         
         number_of_installments = int(self.request.POST.get('number_of_installments'))
         due_date = self.request.POST.get('due_date')
+        installment_value = self.request.POST.get('installment_value')
 
         # converting to datetime object
         due_date = datetime.strptime(due_date, "%Y-%m-%d").date() 
@@ -259,7 +261,7 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
                 models.FinancialTransactionInstallment.objects.create(
                     financial_transaction = transaction,
                     installment_number = i,
-                    amount = self.request.POST.get('installment_value'),
+                    amount = str(installment_value).replace('.', '').replace(',', '.'),
                     due_date = due_date,
                     status = 0,
                     created_by_user_id = self.request.user.id,

@@ -87,7 +87,7 @@ class FinancialTransaction(models.Model):
     type = models.BooleanField('Tipo', choices=TRANSACTION_TYPE_CHOICES)
     description = models.CharField('Descrição', max_length=255, null=True, blank=True)
     installment_value = models.DecimalField('Valor da parcela', max_digits=10, decimal_places=2)
-    down_payment = models.DecimalField('Valor entrada (se houver)', max_digits=10, decimal_places=2, default=0)
+    down_payment = models.DecimalField('Valor entrada (se houver)', max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     due_date = models.DateField('Data de vencimento')
     number_of_installments = models.IntegerField('número de parcela')
     account_holder = models.ForeignKey(AccountHolder, on_delete=models.CASCADE, related_name="financial_transactions", verbose_name="Titular da conta")

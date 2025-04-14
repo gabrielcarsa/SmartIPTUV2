@@ -1,8 +1,8 @@
 from decimal import Decimal
 import re
 from django import forms
-
 from financials.models import AccountHolder, CheckingAccount, FinancialTransaction, FinancialTransactionInstallment
+from django.core.validators import MinValueValidator
 
 # Helper function to clean numbers (remove non-digit characters)
 def clean_number(value):
@@ -40,19 +40,6 @@ class BaseForm(forms.ModelForm):
             raise forms.ValidationError(error_message)
         return value
     
-    # Clean money field replace to save
-    def clean_money_field(self, field_name):
-        value = self.cleaned_data.get(field_name)
-
-        if value:
-            try:            
-                value = value.replace(',', '.')
-                return value
-            except ValueError:
-                raise forms.ValidationError("Valor inválido!")
-
-        return value
-    
     def clean(self):
         # Call the parent's clean() method to validate form data
         cleaned_data = super().clean()
@@ -72,13 +59,29 @@ class TransactionForm(BaseForm):
         fields = ['type', 'description', 'installment_value', 'down_payment', 'due_date', 'number_of_installments', 'account_holder', 'financial_category', 'customer_supplier']
         widgets = {
             'description': forms.TextInput(attrs={'placeholder': 'Ex.: salário mensal...', 'autocomplete': 'off'}),
-            'installment_value': forms.TextInput(attrs={'placeholder': 'Ex.: 2.500,00', 'autocomplete': 'off'}),
-            'down_payment': forms.TextInput(attrs={'placeholder': 'Ex.: 5.000,00 (se houver)', 'autocomplete': 'off'}),
             'number_of_installments': forms.TextInput(attrs={'placeholder': 'Ex.: 12', 'autocomplete': 'off'}),
-            'installment_value': forms.TextInput(attrs={'placeholder': 'Ex.: 2.500,00', 'autocomplete': 'off'}),
             'due_date': forms.DateInput(attrs={'type': 'date'})
         }
 
+    # define amount fields
+
+    installment_value = forms.DecimalField(
+        label='Valor da parcela',
+        localize=True,  
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))],
+        widget=forms.TextInput(attrs={'class': 'money-mask'})
+    )
+    down_payment = forms.DecimalField(
+        required=False,
+        label='Valor da entrada (se houver)',
+        localize=True,  
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))],
+        widget=forms.TextInput(attrs={'class': 'money-mask'})
+    )
 
 # Update amount field
 class TransactionInstallmentAmountForm(forms.ModelForm):

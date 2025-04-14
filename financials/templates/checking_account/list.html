@@ -41,7 +41,7 @@
                     Saldo atual 
                 </p>
                 <p class="m-0 fw-semibold fs-5">
-                    R$ {{checking_account.balance|default:0}}
+                    {{checking_account.balance|default:checking_account.initial_balance}}
                 </p>
             </div>
         </div>

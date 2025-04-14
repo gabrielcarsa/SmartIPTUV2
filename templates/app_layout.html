@@ -137,6 +137,12 @@
         {% include "sidebar.html" %}
         <!-- END SIDEBAR -->
 
+        <!-- JQUERY -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- JQUERY MASK PLUGIN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
         <!-- CONTENT -->
         <div class="container-fluid bg-body-tertiary min-vh-100">
             {% block content %}{% endblock %}
@@ -149,7 +155,12 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <!-- END BOOTSTRAP -->
-
+     
+    <script>
+        $(document).ready(function () {
+            $('.money-mask').mask('000.000.000.000.000,00', { reverse: true });
+        });
+    </script>
 </body>
 
 </html>

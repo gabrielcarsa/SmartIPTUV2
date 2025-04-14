@@ -112,7 +112,6 @@
     </form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
 
@@ -151,45 +150,7 @@
                 checkingAccount.add(option)
             }   
         }
-
-
     }
-
-    // mask amout input
-    $(document).ready(function() {
-        $(document).on('input', 'input.money-mask', function() {
-            // remove characters non numerics
-            var unmaskedValue = $(this).val().replace(/\D/g, '');
-
-            // Add mask on input
-            $(this).val(mask(unmaskedValue));
-        });
-
-        function mask(value) {
-            // Converte o valor para número
-            var numberValue = parseFloat(value) / 100;
-
-            // Formata o número com vírgula como separador decimal e duas casas decimais
-            return numberValue.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2
-            });
-        }
-    });
-
-    // When the form is about to be submitted, remove commas and format as decimals
-    $('form').on('submit', function(e) {
-        // Loop through all inputs with the money-mask class
-        $('input.money-mask').each(function() {
-            // Get the current value (formatted with commas)
-            var formattedValue = $(this).val();
-
-            // Remove commas and replace with periods for submission
-            var unmaskedValue = formattedValue.replace(/\./g, '').replace(',', '.');
-
-            // Set the unmasked value back to the input field
-            $(this).val(unmaskedValue);
-        });
-    });
 
 </script>
 
