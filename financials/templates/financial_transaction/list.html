@@ -244,7 +244,7 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" + checkboxesSelecionados
+            var url = "{% url 'transaction_installment_amount' %}?operation=amount&checkboxes=" + checkboxesSelecionados
                 .join(',');
 
             // Redirecione para a URL com os parâmetros
@@ -263,7 +263,7 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" + checkboxesSelecionados
+            var url = "{% url 'transaction_installment_amount' %}?operation=due_date&checkboxes=" + checkboxesSelecionados
                 .join(',');
 
             // Redirecione para a URL com os parâmetros

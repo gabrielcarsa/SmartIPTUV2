@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from financials.filters import FinancialTransactionInstallmentFilter
-from financials.forms import AccountHolderForm, CheckingAccountForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentSettlementFormSet
+from financials.forms import AccountHolderForm, CheckingAccountForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
@@ -90,12 +90,19 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
     template_name = "financial_transaction/update_form.html"
 
     def get(self, request):
+
         ids = request.GET.get("checkboxes")
+
         if not ids:
             messages.error(request, 'Nenhuma parcela selecionada!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
-        form = TransactionInstallmentAmountForm()
+        # define update operation
+        if request.GET.get("operation") == 'amount':
+            form = TransactionInstallmentAmountForm()
+        elif request.GET.get("operation") == 'due_date':
+            form = TransactionInstallmentDueDateForm()
+        
         format_ids = ids.split(",")
 
         installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids)
@@ -103,14 +110,33 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         return render(request, self.template_name, {"form": form, "ids": ids, "installments": installments})
 
     def post(self, request):
-        form = TransactionInstallmentAmountForm(request.POST)
+
+        # Installments IDs
         ids = request.POST.get("ids", "").split(",")
 
-        if form.is_valid():
-            amount = form.cleaned_data["amount"]
+        # type of update
+        operation = request.POST.get("operation")
 
-            # update all selected registers
-            models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(amount=amount)
+        # assign the correct form to the operation
+        if operation == 'amount':
+            form = TransactionInstallmentAmountForm(request.POST)       
+        elif operation == 'due_date':
+            form = TransactionInstallmentDueDateForm(request.POST)       
+
+        if form.is_valid():
+
+            if operation == 'amount':
+                amount = form.cleaned_data["amount"]
+
+                # update all selected registers
+                models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(amount=amount)
+
+            elif operation == 'due_date':
+                due_date = form.cleaned_data["due_date"]
+
+                # update all selected registers
+                models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(due_date=due_date)
+            
 
             messages.success(request, "Parcelas atualizadas com sucesso!")
             return redirect("financial_transaction_list")

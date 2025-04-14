@@ -98,6 +98,15 @@ class TransactionInstallmentAmountForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'money-mask', 'placeholder': 'Digite o novo valor'})
     )
 
+# Update amount field
+class TransactionInstallmentDueDateForm(forms.ModelForm):
+    class Meta:
+        model = FinancialTransactionInstallment
+        fields = ['due_date']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'})
+        }
+
 # Settlement installments
 class TransactionInstallmentSettlementForm(BaseForm):
     class Meta:

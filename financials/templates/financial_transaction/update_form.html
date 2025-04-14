@@ -6,7 +6,11 @@
         Parcelas
     </h2>
     <p class="m-0 text-secondary">
+        {% if request.GET.operation == 'amount' %}
         Alterar valor
+        {% elif request.GET.operation == 'due_date' %}
+        Alterar vencimento
+        {%endif%}
     </p>
 </div>
 
@@ -26,8 +30,16 @@
     <form method="post" class="w-75 mx-auto my-3">
         {% csrf_token %}
         <input type="hidden" name="ids" value="{{ ids }}">
+        <input type="hidden" name="operation" value="{{ request.GET.operation }}">
+
         {{ form.as_p }}
-        <input type="submit" value="Atualizar valor" class="btn-smart">
+        <button type="submit" class="btn-smart">
+            {% if request.GET.operation == 'amount' %}
+            Alterar valor
+            {% elif request.GET.operation == 'due_date' %}
+            Alterar vencimento
+            {%endif%}
+        </button>
     </form>
 
     <p class="m-0 fs-5 fw-semibold">
