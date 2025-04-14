@@ -91,6 +91,7 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
 
     def get(self, request):
 
+        # Installments IDs
         ids = request.GET.get("checkboxes")
 
         if not ids:
@@ -103,8 +104,10 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         elif request.GET.get("operation") == 'due_date':
             form = TransactionInstallmentDueDateForm()
         
+        # split ','
         format_ids = ids.split(",")
 
+        # get installments
         installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids)
 
         return render(request, self.template_name, {"form": form, "ids": ids, "installments": installments})
@@ -126,17 +129,23 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         if form.is_valid():
 
             if operation == 'amount':
+
                 amount = form.cleaned_data["amount"]
 
                 # update all selected registers
                 models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(amount=amount)
 
             elif operation == 'due_date':
+
                 due_date = form.cleaned_data["due_date"]
 
-                # update all selected registers
-                models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(due_date=due_date)
+                # get all selected registers
+                installments = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
             
+                # update all selected
+                for i, installment in enumerate(installments):
+                    installment.due_date = due_date + relativedelta(months=i)
+                    installment.save()
 
             messages.success(request, "Parcelas atualizadas com sucesso!")
             return redirect("financial_transaction_list")
