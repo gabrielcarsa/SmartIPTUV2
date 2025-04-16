@@ -29,7 +29,7 @@ class CheckingAccountBalanceView(View):
         previous_balance = models.CheckingAccountBalance.objects.filter(
             balance_date__lt=date,
             checking_account=checking_account,
-        ).first()
+        ).order_by('-balance_date').first()
 
         # value previous balance
         value_previous_balance = 0
@@ -39,7 +39,7 @@ class CheckingAccountBalanceView(View):
             value_previous_balance = previous_balance.balance
         else:
             value_previous_balance = checking_account.initial_balance
-
+        print(value_previous_balance)
         # create or update Balance
         obj, created = models.CheckingAccountBalance.objects.update_or_create(
             balance_date=date,
@@ -94,6 +94,7 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         # Installments IDs
         ids = request.GET.get("checkboxes")
 
+        # check that there are no selected installments
         if not ids:
             messages.error(request, 'Nenhuma parcela selecionada!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
@@ -103,6 +104,8 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
             form = TransactionInstallmentAmountForm()
         elif request.GET.get("operation") == 'due_date':
             form = TransactionInstallmentDueDateForm()
+        elif request.GET.get("operation") == 'reverse_payment':
+            form = None
         
         # split ','
         format_ids = ids.split(",")
@@ -110,7 +113,15 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         # get installments
         installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids)
 
-        return render(request, self.template_name, {"form": form, "ids": ids, "installments": installments})
+        return render(
+            request, 
+            self.template_name, 
+            {
+                "form": form, 
+                "ids": ids, 
+                "installments": installments
+            }
+        )
 
     def post(self, request):
 
@@ -122,12 +133,51 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
 
         # assign the correct form to the operation
         if operation == 'amount':
-            form = TransactionInstallmentAmountForm(request.POST)       
+            form = TransactionInstallmentAmountForm(request.POST)     
+
         elif operation == 'due_date':
-            form = TransactionInstallmentDueDateForm(request.POST)       
+            form = TransactionInstallmentDueDateForm(request.POST)  
+
+        elif request.GET.get("operation") == 'reverse_payment':
+
+            installments = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
+            movements = models.FinancialMovement.objects.filter(financial_transaction_installment__in=ids)
+            
+            # for in movements to balances update 
+            for movement in movements:
+
+                balances = models.CheckingAccountBalance.objects.filter(
+                    balance_date__gte=movement.movement_date
+                )
+
+                for balance in balances:
+
+                    if movement.type == 0:
+                        balance.balance += movement.amount
+                        balance.save()
+                    else: 
+                        balance.balance -= movement.amount
+                        balance.save()
+                        
+            
+            # delete movements
+            movements.delete()
+                
+            # reverse payments data
+            installments.update(
+                payment_date=None, 
+                status=0, 
+                paid_amount=None, 
+                settlement_date= None, 
+                marked_down_by_user=None
+            )
+
+            messages.success(request, "operação realizada com sucesso!")
+            return redirect("financial_transaction_list")     
 
         if form.is_valid():
 
+            # update amount
             if operation == 'amount':
 
                 amount = form.cleaned_data["amount"]
@@ -135,6 +185,7 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
                 # update all selected registers
                 models.FinancialTransactionInstallment.objects.filter(id__in=ids).update(amount=amount)
 
+            # update due_date
             elif operation == 'due_date':
 
                 due_date = form.cleaned_data["due_date"]
@@ -147,6 +198,7 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
                     installment.due_date = due_date + relativedelta(months=i)
                     installment.save()
 
+                
             messages.success(request, "Parcelas atualizadas com sucesso!")
             return redirect("financial_transaction_list")
 
@@ -377,7 +429,7 @@ class CheckingAccountListView(LoginRequiredMixin, ListView):
                 models.CheckingAccountBalance.objects.filter(
                     checking_account=OuterRef('pk'),
                     balance_date__lte=current_date
-                ).values('balance')[:1]
+                ).values('balance').order_by('-balance_date')[:1]
             )
         )
     

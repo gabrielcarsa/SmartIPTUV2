@@ -10,7 +10,7 @@ urlpatterns = [
     path("financial_transaction/delete", views.MovementListView.as_view(), name="financial_transaction_delete"),
 
     # INSTALLMENTS
-    path("transaction_installment/amount", views.TransactionInstallmentUpdateView.as_view(), name="transaction_installment_amount"),
+    path("transaction_installment/amount", views.TransactionInstallmentUpdateView.as_view(), name="transaction_installment_update"),
     path("transaction_installment/settlement", views.TransactionInstallmentBulkSettlementView.as_view(), name="transaction_installment_settlement"),
 
     # MOVEMENTS

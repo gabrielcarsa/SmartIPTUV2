@@ -244,14 +244,14 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_amount' %}?operation=amount&checkboxes=" + checkboxesSelecionados
+            var url = "{% url 'transaction_installment_update' %}?operation=amount&checkboxes=" + checkboxesSelecionados
                 .join(',');
 
             // Redirecione para a URL com os parâmetros
             window.location.href = url;
         });
 
-        // Captura o clique no Alterar Data Vencimento
+        // capture the click on the 'Alterar Data Vencimento'
         $("#alterar-vencimento").click(function (event) {
             event.preventDefault();
 
@@ -263,7 +263,7 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_amount' %}?operation=due_date&checkboxes=" + checkboxesSelecionados
+            var url = "{% url 'transaction_installment_update' %}?operation=due_date&checkboxes=" + checkboxesSelecionados
                 .join(',');
 
             // Redirecione para a URL com os parâmetros
@@ -299,7 +299,7 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" +
+            var url = "{% url 'transaction_installment_update' %}?operation=reverse_payment&checkboxes=" +
                 checkboxesSelecionados.join(',');
 
             // Redirecione para a URL com os parâmetros
@@ -317,7 +317,7 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_amount' %}?checkboxes=" + checkboxesSelecionados
+            var url = "{% url 'transaction_installment_update' %}?checkboxes=" + checkboxesSelecionados
                 .join(',');
 
             // Redirecione para a URL com os parâmetros

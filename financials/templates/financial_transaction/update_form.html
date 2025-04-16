@@ -10,6 +10,8 @@
         Alterar valor
         {% elif request.GET.operation == 'due_date' %}
         Alterar vencimento
+        {% elif request.GET.operation == 'reverse_payment' %}
+        Estornar pagamento / recebimento
         {%endif%}
     </p>
 </div>
@@ -33,11 +35,19 @@
         <input type="hidden" name="operation" value="{{ request.GET.operation }}">
 
         {{ form.as_p }}
+
+        {% if request.GET.operation == 'reverse_payment' %}
+        <p class="fs-5 m-0">
+            Deseja mesmo estornar as parcelas abaixo?
+        </p>
+        {%endif%}
         <button type="submit" class="btn-smart">
             {% if request.GET.operation == 'amount' %}
             Alterar valor
             {% elif request.GET.operation == 'due_date' %}
             Alterar vencimento
+            {% elif request.GET.operation == 'reverse_payment' %}
+            Estornar pagamento / recebimento
             {%endif%}
         </button>
     </form>
