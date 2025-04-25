@@ -27,19 +27,22 @@
 
     {% for account_holder in accountholder_list %}
     <div class="card mb-3">
-        <div class="border-bottom p-3 d-flex align-items-center justify-content-between">
-            <p class="m-0 fs-7 text-secondary me-3">
-                #{{account_holder.id}}
-            </p>
-            <div>
-                <p class="m-0 fs-5 fw-bold text-black">
-                    {{account_holder.customer_supplier.name}}
+        <div class="border-bottom p-3 d-lg-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <p class="m-0 fs-7 text-secondary me-3">
+                    #{{account_holder.id}}
                 </p>
-                <p class="m-0 text-secondary">
-                    {{account_holder.customer_supplier.cpf}}{{account_holder.customer_supplier.cnpj}}
-                </p>
+                <div>
+                    <p class="m-0 fs-5 fw-bold text-black">
+                        {{account_holder.customer_supplier.name}}
+                    </p>
+                    <p class="m-0 text-secondary">
+                        {{account_holder.customer_supplier.cpf}}{{account_holder.customer_supplier.cnpj}}
+                    </p>
+                </div>
             </div>
-            <a href="{% url 'checking_account_create' account_holder.id %}" class="btn btn-light icon-link d-flex justify-content-center">
+            <a href="{% url 'checking_account_create' account_holder.id %}"
+                class="btn btn-light icon-link d-flex justify-content-center">
                 <span class="material-symbols-outlined fill-icon">
                     add_circle
                 </span>
@@ -66,7 +69,7 @@
                             Saldo
                         </p>
                         <p class="m-0 fw-semibold fs-5">
-                            {{checking_account.balance|default:checking_account.initial_balance}}
+                            {{checking_account.balances.last.balance|default:checking_account.initial_balance}}
                         </p>
                     </div>
                 </div>
@@ -98,7 +101,7 @@
                 </div>
                 <div class="d-lg-flex">
                     <div class="m-2">
-                        <a href="" class="btn border icon-link justify-content-center w-100">
+                        <a href="{% url 'checking_account_balance_list' checking_account.id %}" class="btn border icon-link justify-content-center w-100">
                             <span class="material-symbols-outlined me-1">
                                 monitoring
                             </span>

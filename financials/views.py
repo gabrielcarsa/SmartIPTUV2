@@ -56,6 +56,38 @@ class CheckingAccountBalanceView(View):
         )
 
         return obj
+    
+class CheckingAccountBalanceListView(ListView):
+    model = models.CheckingAccountBalance
+    template_name = 'checking_account_balance/list.html'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(checking_account=self.kwargs.get('account_holder_id'))
+    
+    def get_context_data(self, **kwargs):
+        
+        context = super().get_context_data(**kwargs)
+
+        # retrieve account balances
+        balances = models.CheckingAccountBalance.objects.filter(checking_account=self.kwargs.get('account_holder_id'))
+
+        if balances: 
+
+            array_dates = []
+            array_balances = []
+
+            for balance in balances:
+                array_dates.append(balance.balance_date.strftime('%d/%m/%Y')) 
+                array_balances.append(float(balance.balance)) 
+
+            context['array_dates'] = array_dates
+            context['array_balances'] = array_balances
+
+        # checking account
+        context['checking_account'] = get_object_or_404(models.CheckingAccount, id=self.kwargs.get('account_holder_id'))
+
+        return context
+
 
 # ----------------------
 # FINANCIAL TRANSACTION INSTALLMENTS
@@ -430,37 +462,6 @@ class AccountHolderCreateView(LoginRequiredMixin, CreateView):
 # ---------
 # CHECKING ACCOUNT
 # -----------------
-
-# List
-class CheckingAccountListView(LoginRequiredMixin, ListView):
-    model = models.CheckingAccount
-    template_name = 'checking_account/list.html'
-
-    def get_queryset(self):
-
-        # queryset
-        queryset = super().get_queryset().filter(account_holder_id = self.kwargs.get("account_holder_id"))
-        
-        # current date
-        current_date = datetime.now()
- 
-        # subquery to get current balance
-        return queryset.annotate(
-            balance=Subquery(
-                models.CheckingAccountBalance.objects.filter(
-                    checking_account=OuterRef('pk'),
-                    balance_date__lte=current_date
-                ).values('balance').order_by('-balance_date')[:1]
-            )
-        )
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Account Holder
-        account_holder = get_object_or_404(models.AccountHolder, id=self.kwargs.get("account_holder_id"))
-        context['account_holder'] = account_holder
-        return context
 
 # Create
 class CheckingAccountCreateView(LoginRequiredMixin, CreateView):
