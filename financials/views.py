@@ -150,6 +150,7 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
                     balance_date__gte=movement.movement_date
                 )
 
+                # update balances
                 for balance in balances:
 
                     if movement.type == 0:
@@ -374,6 +375,26 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 class MovementListView(LoginRequiredMixin, ListView):
     model = models.FinancialMovement
     template_name = 'financial_movement/list.html'
+
+    def get_context_data(self, **kwargs):
+
+        current_date = datetime.now()
+
+        context = super().get_context_data(**kwargs)
+
+        # retrieve previous balance
+        context['previous_balance'] = models.CheckingAccountBalance.objects.filter(
+            balance_date__lt=current_date,
+            checking_account=2,
+        ).order_by('balance_date').first()
+
+        # retrieve current balance
+        context['balance'] = models.CheckingAccountBalance.objects.filter(
+            balance_date__lte=current_date,
+            checking_account=2,
+        ).order_by('balance_date').last()
+
+        return context
 
 
 # --------

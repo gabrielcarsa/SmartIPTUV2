@@ -11,8 +11,110 @@
     </p>
 </div>
 
-<div class="card-smart">
 
+<div class="card-smart">
+    <div class="card p-3">
+        <form method="GET" class="row g-3">
+            {% for field in filter.form %}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn-smart w-50">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card-smart mx-0">
+            <div class="icon-link">
+                <span class="material-symbols-outlined bg-light p-2 rounded fs-3 text-smart">
+                    date_range
+                </span>
+                <div class="ml-3">
+                    <p class="m-0 fw-semibold">
+                        Saldo anterior 
+                        <span class="fs-7 fw-light">
+                            {% if previous_balance == balance %}
+                            (Saldo inicial da conta)
+                            {% else %}
+                            ({{previous_balance.balance_date|date:"d/m/Y"}})
+                            {% endif %}
+                        </span>
+                    </p>
+                    <p class="m-0">
+                        {% if previous_balance == balance %}
+                        R$ {{balance.checking_account.initial_balance}}
+                        {% else %}
+                        R$ {{previous_balance.balance}}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-smart mx-0">
+            <div class="icon-link">
+                <span class="material-symbols-outlined bg-light p-2 rounded fs-3 text-smart">
+                    attach_money
+                </span>
+                <div class="ml-3">
+                    <p class="m-0 fw-semibold">
+                        Saldo atual <span class="fs-7 fw-light">({{balance.balance_date|date:"d/m/Y"}})</span>
+                    </p>
+                    <p class="m-0">
+                        R$ {{balance.balance}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-smart mx-0">
+            <div class="icon-link">
+                <span class="material-symbols-outlined bg-light p-2 rounded fs-3 text-smart">
+                    date_range
+                </span>
+                <div class="ml-3">
+                    <p class="m-0 fw-semibold">
+                        Titular
+                    </p>
+                    <p class="m-0 text-truncate" style="width: 150px;">
+                        {{balance.checking_account.account_holder.customer_supplier.name}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-smart mx-0">
+            <div class="icon-link">
+                <span class="material-symbols-outlined bg-light p-2 rounded fs-3 text-smart">
+                    date_range
+                </span>
+                <div class="ml-3">
+                    <p class="m-0 fw-semibold">
+                        Conta corrente
+                    </p>
+                    <p class="m-0">
+                        {{balance.checking_account.name}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+<div class="card-smart">
     <!-- TABLE -->
     <div class="table-responsive">
         <table class="table table-hover table-bordered text-center align-middle">
