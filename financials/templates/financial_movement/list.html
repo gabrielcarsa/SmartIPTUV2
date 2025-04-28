@@ -1,5 +1,7 @@
 {% extends 'app_layout.html' %}
 
+{% load math_tags %}
+
 {% block content %}
 
 <div class="m-3">
@@ -49,11 +51,7 @@
                         </span>
                     </p>
                     <p class="m-0">
-                        {% if previous_balance == balance %}
-                        R$ {{balance.checking_account.initial_balance}}
-                        {% else %}
-                        R$ {{previous_balance.balance}}
-                        {% endif %}
+                        R$ {{previous_balance.balance|default:balance.checking_account.initial_balance}}
                     </p>
                 </div>
             </div>
@@ -124,6 +122,7 @@
                     <th scope="col">Cliente / Fornecedor</th>
                     <th scope="col">Categoria</th>
                     <th scope="col">Valor</th>
+                    <th scope="col">Data</th>
                     <th scope="col">Saldo</th>
                     <th scope="col">Ordem</th>
                     <th scope="col"></th>
@@ -146,8 +145,9 @@
                         R$ {{movement.amount}}
                     </td>
                     <td>
-                        R$ {{movement.amount}}
+                        {{movement.movement_date|date:'d/m/Y'}}
                     </td>
+                    <td id="balance-{{forloop.counter}}" class="text-secondary"></td>
                     <td>
                         0
                     </td>
@@ -166,4 +166,39 @@
 
     <!-- END TABLE -->
 </div>
+
+<script>
+
+    // Amount initial balance
+    const initialBalance = '{{balance.checking_account.initial_balance}}';
+    let initialBalanceAux = parseFloat(initialBalance.replace('.','').replace(',','.'));
+
+    // Movements
+    let movements = [
+        {% for movement in financialmovement_list %}
+            {% if movement.type == 0 %}"-"+{% endif %}
+            "{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    ];
+
+    // Sum
+    let sum = 0;
+
+    // For Each in Movements
+    movements.forEach((element, index) => {
+
+        // Initialize
+        let balanceAux = parseFloat(element.replace('.','').replace(',','.'));
+        
+        if(index == 0){
+            sum = initialBalanceAux + balanceAux;
+        }else{
+            sum += balanceAux
+        }
+
+        // Display on HTML
+        document.getElementById('balance-' + (index+1)).innerHTML = sum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    });
+
+</script>
 {% endblock %}
