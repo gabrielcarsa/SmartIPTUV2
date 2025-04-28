@@ -21,11 +21,11 @@
         <p class="m-0 text-secondary">
             Saldo atual
             <span class="fs-7">
-                ({{array_dates|last}})
+                ({{array_dates|last|default:checking_account.created_at}})
             </span>
         </p>
         <p class="text-black fs-3 fw-bold">
-            {{array_balances|last}}
+            {{array_balances|last|default:checking_account.initial_balance}}
         </p>
     </div>
 
@@ -68,7 +68,9 @@
         </div>
     </div>
 
+    {% if array_balances %}
     <canvas class="m-3 w-100" id="myChart"></canvas>
+    {% endif %}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -81,21 +83,19 @@
         {% endfor %}
     ];
 
-    const balances = [
-        {% for balance in array_balances %}
-            {{ balance }} {% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    ];
-
+    const balances = JSON.parse('{{ array_balances | safe | escapejs }}');
+   
 
     new Chart(ctx, {
         type: 'line',
         data: {
             labels: dates,
             datasets: [{
-                label: 'Saldos',
+                label: 'Saldo',
                 data: balances,
-                borderWidth: 3
+                borderWidth: 3,
+                tension: 0.1,
+                fill: false,
             }]
         },
         options: {

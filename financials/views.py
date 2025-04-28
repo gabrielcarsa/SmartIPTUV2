@@ -11,7 +11,8 @@ from financials.forms import AccountHolderForm, CheckingAccountForm, Transaction
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
-from django.db.models import Subquery, OuterRef
+from django.utils import timezone
+from django.db.models import F
 
 # ----------------
 # CHECKING ACCOUNT BALANCES
@@ -27,7 +28,7 @@ class CheckingAccountBalanceView(View):
 
         # get previous balance
         previous_balance = models.CheckingAccountBalance.objects.filter(
-            balance_date__lt=date,
+            balance_date__lte=date,
             checking_account=checking_account,
         ).order_by('-balance_date').first()
 
@@ -39,7 +40,7 @@ class CheckingAccountBalanceView(View):
             value_previous_balance = previous_balance.balance
         else:
             value_previous_balance = checking_account.initial_balance
-        print(value_previous_balance)
+
         # create or update Balance
         obj, created = models.CheckingAccountBalance.objects.update_or_create(
             balance_date=date,
@@ -51,8 +52,19 @@ class CheckingAccountBalanceView(View):
             create_defaults={
                 "balance_date": date,
                 "checking_account": checking_account,
-                "balance": value_previous_balance - amount if type == 0 else value_previous_balance + self.amount,
+                "balance": value_previous_balance - amount if type == 0 else value_previous_balance + amount,
             },
+        )
+
+
+        # updates all future balances
+        adjustment = -amount if type == 0 else amount
+
+        models.CheckingAccountBalance.objects.filter(
+            checking_account=checking_account,
+            balance_date__gt=date,  # later dates only
+        ).update(
+            balance=F('balance') + adjustment
         )
 
         return obj
@@ -292,6 +304,13 @@ class TransactionInstallmentBulkSettlementView(LoginRequiredMixin, View):
 
             # update fields
             for instance in instances:
+
+                # not allowed settlement in previous date
+                if instance.payment_date > timezone.now():
+                    messages.error(request, 'Não é possível dar baixar em datas futuras!')
+                    return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+                
+
                 instance.status = 1
                 instance.settlement_date = datetime.now()
                 instance.marked_down_by_user = self.request.user
