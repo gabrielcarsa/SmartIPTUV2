@@ -120,7 +120,6 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Cliente / Fornecedor</th>
-                    <th scope="col">Categoria</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Data</th>
                     <th scope="col">Saldo</th>
@@ -133,9 +132,15 @@
 
                 {% for movement in financialmovement_list %}
                 <tr>
-                    <td>{{movement.id}}</td>
-                    <td>{{movement.financial_transaction_installment.financial_transaction.customer_supplier.name}}</td>
-                    <td>{{movement.financial_transaction_installment.financial_transaction.financial_category.name}}</td>
+                    <td class="text-secondary fs-7">#{{movement.id}}</td>
+                    <td>
+                        <p class="m-0 fw-semibold text-black">
+                            {{movement.financial_transaction_installment.financial_transaction.customer_supplier.name}}
+                        </p>
+                        <p class="text-secondary m-0">
+                            {{movement.financial_transaction_installment.financial_transaction.financial_category.name}}
+                        </p>
+                    </td>
                     <td class="{%if movement.financial_transaction_installment.financial_transaction.type == 0%}text-danger{%else%}text-success{%endif%} fw-bold">
                         {%if movement.financial_transaction_installment.financial_transaction.type == 0%}
                         -
