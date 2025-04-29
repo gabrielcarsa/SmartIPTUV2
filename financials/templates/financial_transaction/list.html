@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li class="border-bottom py-2">
-                    <a class="dropdown-item icon-link" href="#" id="estornar-pagamento-recebimento">
+                    <a class="dropdown-item icon-link" href="#" id="reverse_payment">
                         <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             undo
                         </span>
@@ -51,7 +51,7 @@
                     </a>
                 </li>
                 <li class="py-2">
-                    <a class="dropdown-item icon-link" href="#" id="estornar-installment">
+                    <a class="dropdown-item icon-link" href="#" id="delete_installment">
                         <span class="material-symbols-outlined me-2 fw-light text-smart fill-icon">
                             delete
                         </span>
@@ -294,7 +294,7 @@
             window.location.href = url;
         });
 
-        $("#estornar-pagamento-recebimento").click(function (event) {
+        $("#reverse_payment").click(function (event) {
             event.preventDefault();
 
             // Obtenha os valores dos checkboxes selecionados
@@ -312,7 +312,7 @@
             window.location.href = url;
         });
 
-        $("#estornar-parcela").click(function (event) {
+        $("#delete_installment").click(function (event) {
             event.preventDefault();
 
             // Obtenha os valores dos checkboxes selecionados
@@ -323,8 +323,8 @@
             });
 
             // Crie a URL com os valores dos checkboxes como parâmetros de consulta
-            var url = "{% url 'transaction_installment_update' %}?checkboxes=" + checkboxesSelecionados
-                .join(',');
+            var url = "{% url 'transaction_installment_update' %}?operation=delete&checkboxes=" +
+                checkboxesSelecionados.join(',');
 
             // Redirecione para a URL com os parâmetros
             window.location.href = url;

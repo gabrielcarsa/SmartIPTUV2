@@ -12,6 +12,8 @@
         Alterar vencimento
         {% elif request.GET.operation == 'reverse_payment' %}
         Estornar pagamento / recebimento
+        {% elif request.GET.operation == 'delete' %}
+        Excluir parcela(s)
         {%endif%}
     </p>
 </div>
@@ -48,6 +50,8 @@
             Alterar vencimento
             {% elif request.GET.operation == 'reverse_payment' %}
             Estornar pagamento / recebimento
+            {% elif request.GET.operation == 'delete' %}
+            Excluir parcela(s)
             {%endif%}
         </button>
     </form>

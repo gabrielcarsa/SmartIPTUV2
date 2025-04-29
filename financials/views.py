@@ -142,6 +142,12 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         if not ids:
             messages.error(request, 'Nenhuma parcela selecionada!')
             return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+        
+        # split ','
+        format_ids = ids.split(",")
+
+        # get installments
+        installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids)
 
         # define update operation
         if request.GET.get("operation") == 'amount':
@@ -150,13 +156,17 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
             form = TransactionInstallmentDueDateForm()
         elif request.GET.get("operation") == 'reverse_payment':
             form = None
+        elif request.GET.get("operation") == 'delete':
+            form = None
+
+            # search paid installments
+            paid_installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids,status=1)
+
+            # redirect back if has paid installments
+            if paid_installments:
+                messages.error(request, 'Selecione apenas parcelas em aberto ou estorne o pagamento/recebimento das parcelas pagas para continuar!')
+                return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
         
-        # split ','
-        format_ids = ids.split(",")
-
-        # get installments
-        installments = models.FinancialTransactionInstallment.objects.filter(id__in=format_ids)
-
         return render(
             request, 
             self.template_name, 
@@ -182,7 +192,7 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
         elif operation == 'due_date':
             form = TransactionInstallmentDueDateForm(request.POST)  
 
-        elif request.GET.get("operation") == 'reverse_payment':
+        elif operation == 'reverse_payment':
 
             installments = models.FinancialTransactionInstallment.objects.filter(id__in=ids)
             movements = models.FinancialMovement.objects.filter(financial_transaction_installment__in=ids)
@@ -217,9 +227,16 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
                 marked_down_by_user=None
             )
 
-            messages.success(request, "operação realizada com sucesso!")
+            messages.success(request, "Operação realizada com sucesso!")
             return redirect("financial_transaction_list")     
 
+        elif operation == 'delete':
+
+            installments = models.FinancialTransactionInstallment.objects.filter(id__in=ids).delete()
+
+            messages.success(request, "Operação realizada com sucesso!")
+            return redirect("financial_transaction_list")  
+            
         if form.is_valid():
 
             # update amount
