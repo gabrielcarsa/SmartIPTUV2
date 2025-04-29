@@ -15,22 +15,22 @@
 
 
 <div class="card-smart">
-    <div class="card p-3">
-        <form method="GET" class="row g-3">
-            {% for field in filter.form %}
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                </div>
+    <form method="GET" class="row g-3">
+        {% for field in filter.form %}
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
             </div>
-            {% endfor %}
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn-smart w-50">Filtrar</button>
-            </div>
-        </form>
-    </div>
+        </div>
+        {% endfor %}
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn-smart w-50">Filtrar</button>
+        </div>
+    </form>
 </div>
+
+{% if balance %}
 
 <div class="row">
     <div class="col-md-3">
@@ -41,13 +41,9 @@
                 </span>
                 <div class="ml-3">
                     <p class="m-0 fw-semibold">
-                        Saldo anterior 
+                        Saldo anterior
                         <span class="fs-7 fw-light">
-                            {% if previous_balance == balance %}
-                            (Saldo inicial da conta)
-                            {% else %}
-                            ({{previous_balance.balance_date|date:"d/m/Y"}})
-                            {% endif %}
+                            ({{previous_balance.balance_date|date:"d/m/Y"|default:"Saldo inicial"}})
                         </span>
                     </p>
                     <p class="m-0">
@@ -108,11 +104,43 @@
             </div>
         </div>
     </div>
-    
+
 </div>
 
 
 <div class="card-smart">
+    <p class="m-0 fw-bold">
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+    </p>
+
+    <nav aria-label="" class="m-0 p-0">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="{% querystring page=1 %}">&laquo; Início</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{% querystring page=page_obj.previous_page_number %}">
+                    Anterior
+                </a>
+            </li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{% querystring page=page_obj.next_page_number %}">
+                    Próxima
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{% querystring page=page_obj.paginator.num_pages %}">
+                    Fim &raquo;
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
     <!-- TABLE -->
     <div class="table-responsive">
         <table class="table table-hover table-bordered text-center align-middle">
@@ -141,7 +169,8 @@
                             {{movement.financial_transaction_installment.financial_transaction.financial_category.name}}
                         </p>
                     </td>
-                    <td class="{%if movement.financial_transaction_installment.financial_transaction.type == 0%}text-danger{%else%}text-success{%endif%} fw-bold">
+                    <td
+                        class="{%if movement.financial_transaction_installment.financial_transaction.type == 0%}text-danger{%else%}text-success{%endif%} fw-bold">
                         {%if movement.financial_transaction_installment.financial_transaction.type == 0%}
                         -
                         {%else%}
@@ -172,18 +201,19 @@
     <!-- END TABLE -->
 </div>
 
+
 <script>
 
     // Amount initial balance
-    const initialBalance = '{{balance.checking_account.initial_balance}}';
-    let initialBalanceAux = parseFloat(initialBalance.replace('.','').replace(',','.'));
+    const initialBalance = '{{previous_balance.balance|default:balance.checking_account.initial_balance}}';
+    let initialBalanceAux = parseFloat(initialBalance.replace('.', '').replace(',', '.'));
 
     // Movements
     let movements = [
         {% for movement in financialmovement_list %}
-            {% if movement.type == 0 %}"-"+{% endif %}
-            "{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
-        {% endfor %}
+    {% if movement.type == 0 %} "-" + {% endif %}
+    "{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
+    {% endfor %}
     ];
 
     // Sum
@@ -193,17 +223,20 @@
     movements.forEach((element, index) => {
 
         // Initialize
-        let balanceAux = parseFloat(element.replace('.','').replace(',','.'));
-        
-        if(index == 0){
+        let balanceAux = parseFloat(element.replace('.', '').replace(',', '.'));
+
+        if (index == 0) {
             sum = initialBalanceAux + balanceAux;
-        }else{
+        } else {
             sum += balanceAux
         }
 
         // Display on HTML
-        document.getElementById('balance-' + (index+1)).innerHTML = sum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+        document.getElementById('balance-' + (index + 1)).innerHTML = sum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
     });
 
 </script>
+
+{% endif %}
+
 {% endblock %}

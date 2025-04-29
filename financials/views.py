@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from financials.filters import FinancialTransactionInstallmentFilter
+from financials.filters import FinancialMovementFilter, FinancialTransactionInstallmentFilter
 from financials.forms import AccountHolderForm, CheckingAccountForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -443,24 +443,46 @@ class TransactionCreateView(LoginRequiredMixin, CreateView):
 class MovementListView(LoginRequiredMixin, ListView):
     model = models.FinancialMovement
     template_name = 'financial_movement/list.html'
+    paginate_by = 30
+
+    def get_queryset(self):
+
+        queryset = models.FinancialMovement.objects.order_by('movement_date')
+                
+        # create the filter using parameters from GET
+        self.filter = FinancialMovementFilter(self.request.GET, queryset=queryset)
+
+        # check if any filters have been applied
+        if not any(self.request.GET.values()):
+            queryset.none()
+        
+        # return queryset filter
+        return self.filter.qs
 
     def get_context_data(self, **kwargs):
 
-        current_date = datetime.now()
-
         context = super().get_context_data(**kwargs)
 
-        # retrieve previous balance
-        context['previous_balance'] = models.CheckingAccountBalance.objects.filter(
-            balance_date__lt=current_date,
-            checking_account=2,
-        ).order_by('balance_date').first()
+        if any(self.request.GET.values()):
 
-        # retrieve current balance
-        context['balance'] = models.CheckingAccountBalance.objects.filter(
-            balance_date__lte=current_date,
-            checking_account=2,
-        ).order_by('balance_date').last()
+            account_id = self.request.GET.get('checking_account')
+            start_date = self.request.GET.get('movement_date__gte')
+            end_date = self.request.GET.get('movement_date__lte')
+
+            # retrieve previous balance
+            context['previous_balance'] = models.CheckingAccountBalance.objects.filter(
+                balance_date__lt = start_date,
+                checking_account = account_id,
+            ).order_by('balance_date').last()
+
+            # retrieve current balance
+            context['balance'] = models.CheckingAccountBalance.objects.filter(
+                balance_date__lte = end_date,
+                checking_account = account_id,
+            ).order_by('balance_date').last()
+
+        context["filter"] = self.filter  # filter for template
+        context["querystring"] = self.request.GET.copy()
 
         return context
 

@@ -35,7 +35,7 @@ class CheckingAccount(models.Model):
         db_table = 'checking_accounts'
     
     def __str__(self):
-        return f"{self.name} - {self.bank}"
+        return f"{self.account_holder.customer_supplier.name}: {self.name}"
 
 
 class CheckingAccountBalance(models.Model):
