@@ -72,22 +72,19 @@
 <!-- FIM HEADER -->
 
 <div class="card-smart">
-
-    <div class="card p-3">
-        <form method="GET" class="row g-3">
-            {% for field in filter.form %}
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                </div>
+    <form method="GET" class="row g-3">
+        {% for field in filter.form %}
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
             </div>
-            {% endfor %}
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn-smart w-50">Filtrar</button>
-            </div>
-        </form>
-    </div>
+        </div>
+        {% endfor %}
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn-smart w-50">Filtrar</button>
+        </div>
+    </form>
 </div>
 
 <div class="card-smart">
