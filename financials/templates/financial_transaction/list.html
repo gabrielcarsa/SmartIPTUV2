@@ -136,10 +136,8 @@
                         <input type="checkbox" id="select_all" name="select_all" />
                     </th>
                     <th scope="col">Tipo</th>
-                    <th scope="col">ID</th>
                     <th scope="col">Cliente/Fornecedor</th>
                     <th scope="col">Nº parcela</th>
-                    <th scope="col">Categoria</th>
                     <th scope="col">Vencimento</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Situação</th>
@@ -150,6 +148,9 @@
                 {% for installment in financialtransactioninstallment_list %}
                 <tr>
                     <td>
+                        <p class="fs-7 text-secondary m-0">
+                            #{{installment.id}}
+                        </p>
                         <input data-bs-toggle="collapse" href="#collapseinstallment{{installment.id}}" role="button"
                             aria-expanded="false" aria-controls="collapseinstallment{{installment.id}}" type="checkbox"
                             id="" name="checkboxes[]" value="{{ installment.id }}" />
@@ -171,12 +172,17 @@
                         </p>
                         {% endif %}
                     </td>
-                    <td>{{installment.id}}</td>
-                    <td>{{installment.financial_transaction.customer_supplier.name}}</td>
+                    <td>
+                        <p class="text-black fw-semibold m-0">
+                            {{installment.financial_transaction.customer_supplier.name}}
+                        </p>
+                        <p class="text-secondary m-0">
+                            {{installment.financial_transaction.financial_category.name}}
+                        </p>
+                    </td>
                     <td>{{installment.installment_number}} /
                         {{installment.financial_transaction.number_of_installments}}
                     </td>
-                    <td>{{installment.financial_transaction.financial_category.name}}</td>
                     <td>{{ installment.due_date|date:"d/m/Y" }}</td>
                     <td>R$ {{installment.amount}}</td>
                     <td>{% if installment.status == 0 %}Em aberto{%else%}Pago{%endif%}</td>
