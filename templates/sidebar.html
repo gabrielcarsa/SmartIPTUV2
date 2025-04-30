@@ -52,22 +52,27 @@
                         Financeiro
                     </a>
                 </div>
-                <div id="collapse-payments" class="accordion-collapse collapse {% if 'financials' in request.path|urlencode %}show{% endif %}" data-bs-parent="#accordionSidebar">
+                <div id="collapse-payments"
+                    class="accordion-collapse collapse {% if 'financials' in request.path|urlencode %}show{% endif %}"
+                    data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-medium border-start border-secondary mx-2 ps-2"
                             style="border-left-width: 4px !important;">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'financial_transaction_list' %}">
+                                <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'financial_transaction_list' %}">
                                     Contas a pagar / receber
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'financial_movement' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'financial_movements_list' %}">
+                                <a class="text-decoration-none {% if 'financial_movement' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'financial_movements_list' %}">
                                     Movimentações
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none text-secondary" href="">
+                                <a class="text-decoration-none {% if 'financial_category' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'financial_category_list' %}">
                                     Categorias
                                 </a>
                             </li>
@@ -77,7 +82,8 @@
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'account_holder_list' %}">
+                                <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'account_holder_list' %}">
                                     Titulares
                                 </a>
                             </li>

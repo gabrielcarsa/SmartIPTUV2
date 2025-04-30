@@ -569,5 +569,10 @@ class CheckingAccountUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('checking_account_list', kwargs={'account_holder_id': self.kwargs.get('account_holder_id')})
 
+# ----------
+# FINANCIAL CATEGORY
+# ------------------
 
-    
+class FinancialCategoryListView(LoginRequiredMixin, ListView):
+    model = models.FinancialCategory
+    template_name = 'financial_category/list.html'

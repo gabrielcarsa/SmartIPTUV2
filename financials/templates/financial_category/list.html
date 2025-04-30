@@ -1,0 +1,64 @@
+{% extends 'app_layout.html' %}
+
+{% load math_tags %}
+
+{% block content %}
+
+<div class="m-3 d-flex justify-content-between">
+    <div>
+        <h2 class="m-0 fw-bolder fs-3">
+            Categorias
+        </h2>
+        <p class="m-0">
+            Listagem
+        </p>
+    </div>
+    <div>
+        <a href="{% url 'financial_transaction_create' %}" class="btn-smart mx-3 icon-link justify-content-center">
+            <span class="material-symbols-outlined fill-icon">
+                add_circle
+            </span>
+            Nova categoria
+        </a>
+    </div>
+
+</div>
+
+
+<div class="card-smart">
+
+    <table class="table align-middle text-center">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Categoria</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in financialcategory_list %}
+            <tr>
+                <td class="fs-7 text-secondary">
+                    #{{category.id}}
+                </td>
+                <td>
+                    <div
+                        class="icon-link rounded-4 p-2 {%if category.type == 0%}bg-danger-subtle{%else%}bg-success-subtle{%endif%}">
+                        <span class="material-symbols-outlined me-1 text-danger">
+                            {%if category.type == 0%}call_received{%else%}call_made{%endif%}
+                        </span>
+                        {%if category.type == 0%}pagar{%else%}receber{%endif%}
+                    </div>
+                </td>
+                <td>
+                    {{category.name}}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
