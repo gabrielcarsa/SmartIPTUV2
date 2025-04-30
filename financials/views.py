@@ -69,6 +69,7 @@ class CheckingAccountBalanceView(View):
 
         return obj
     
+# List
 class CheckingAccountBalanceListView(ListView):
     model = models.CheckingAccountBalance
     template_name = 'checking_account_balance/list.html'
@@ -523,6 +524,30 @@ class AccountHolderCreateView(LoginRequiredMixin, CreateView):
 
 # Create
 class CheckingAccountCreateView(LoginRequiredMixin, CreateView):
+    model = models.CheckingAccount
+    template_name = 'checking_account/form.html'
+    form_class = CheckingAccountForm
+
+    def form_valid(self, form):
+
+        # Account Holder
+        account_holder_id = self.kwargs.get('account_holder_id')
+        account_holder = get_object_or_404(models.AccountHolder, id=account_holder_id)
+
+        form.instance.account_holder = account_holder
+        form.instance.created_by_user = self.request.user
+        form.instance.updated_by_user = self.request.user
+
+        messages.success(self.request, "Cadastrado com sucesso")
+
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('checking_account_list', kwargs={'account_holder_id': self.kwargs.get('account_holder_id')})
+
+
+# Update
+class CheckingAccountUpdateView(LoginRequiredMixin, UpdateView):
     model = models.CheckingAccount
     template_name = 'checking_account/form.html'
     form_class = CheckingAccountForm
