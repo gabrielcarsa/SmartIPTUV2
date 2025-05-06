@@ -30,5 +30,6 @@ urlpatterns = [
     # FINANCIAL CATEGORY
     path("financial_category/list", views.FinancialCategoryListView.as_view(), name="financial_category_list"),
     path("financial_category/create", views.FinancialCategoryCreateView.as_view(), name="financial_category_create"),
+    path("financial_category/update/<int:pk>", views.FinancialCategoryUpdateView.as_view(), name="financial_category_update"),
 
 ]

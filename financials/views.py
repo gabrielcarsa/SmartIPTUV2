@@ -596,3 +596,20 @@ class FinancialCategoryCreateView(LoginRequiredMixin, CreateView):
     
     def get_success_url(self):
         return reverse_lazy('financial_category_list')
+    
+# Update
+class FinancialCategoryUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.FinancialCategory
+    template_name = 'financial_category/form.html'
+    form_class = FinancialCategoryForm
+
+    def form_valid(self, form):
+
+        form.instance.updated_by_user = self.request.user
+        messages.success(self.request, "Atualizado com sucesso")
+
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('financial_category_list')
+
