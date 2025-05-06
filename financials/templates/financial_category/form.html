@@ -1,0 +1,29 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Cadastro de categoria financeira
+    </h2>
+    <p class="m-0 text-secondary">
+        Preencha os campos abaixo
+    </p>
+</div>
+
+<div class="card-smart">
+
+    <div class="px-3">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <div class="d-flex justify-content-end">
+                <input type="submit" value="Salvar" class="btn-smart my-3 w-50">
+            </div>
+        </form>
+    </div>
+    
+
+</div>
+
+{% endblock %}

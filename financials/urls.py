@@ -27,5 +27,8 @@ urlpatterns = [
     # CHECKING ACCOUNTS BALANCE
     path("account_holder/checking_account_balance/list/<int:account_holder_id>", views.CheckingAccountBalanceListView.as_view(), name="checking_account_balance_list"),
 
+    # FINANCIAL CATEGORY
     path("financial_category/list", views.FinancialCategoryListView.as_view(), name="financial_category_list"),
+    path("financial_category/create", views.FinancialCategoryCreateView.as_view(), name="financial_category_create"),
+
 ]

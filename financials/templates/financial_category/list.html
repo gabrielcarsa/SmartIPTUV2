@@ -14,7 +14,7 @@
         </p>
     </div>
     <div>
-        <a href="{% url 'financial_transaction_create' %}" class="btn-smart mx-3 icon-link justify-content-center">
+        <a href="{% url 'financial_category_create' %}" class="btn-smart mx-3 icon-link justify-content-center">
             <span class="material-symbols-outlined fill-icon">
                 add_circle
             </span>
@@ -53,6 +53,23 @@
                 </td>
                 <td>
                     {{category.name}}
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn d-flex align-items-center border" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <span class="material-symbols-outlined">
+                                more_vert
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    Editar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

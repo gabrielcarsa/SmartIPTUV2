@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from financials.filters import FinancialMovementFilter, FinancialTransactionInstallmentFilter
-from financials.forms import AccountHolderForm, CheckingAccountForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
+from financials.forms import AccountHolderForm, CheckingAccountForm, FinancialCategoryForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
@@ -573,6 +573,26 @@ class CheckingAccountUpdateView(LoginRequiredMixin, UpdateView):
 # FINANCIAL CATEGORY
 # ------------------
 
+# List
 class FinancialCategoryListView(LoginRequiredMixin, ListView):
     model = models.FinancialCategory
     template_name = 'financial_category/list.html'
+
+
+# Create
+class FinancialCategoryCreateView(LoginRequiredMixin, CreateView):
+    model = models.FinancialCategory
+    template_name = 'financial_category/form.html'
+    form_class = FinancialCategoryForm
+
+    def form_valid(self, form):
+
+        form.instance.created_by_user = self.request.user
+        form.instance.updated_by_user = self.request.user
+
+        messages.success(self.request, "Cadastrado com sucesso")
+
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('financial_category_list')

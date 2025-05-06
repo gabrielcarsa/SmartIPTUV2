@@ -61,9 +61,9 @@ class FinancialCategory(models.Model):
         (INCOME, "Receita"),
     ]
 
-    type = models.BooleanField(choices=CATEGORY_TYPE_CHOICES)
+    type = models.BooleanField('Tipo', choices=CATEGORY_TYPE_CHOICES)
     is_default = models.BooleanField(default=False)
-    name = models.CharField(max_length=50)
+    name = models.CharField('Nome da categoria', max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_category_user_created', verbose_name="Criado por")
