@@ -77,11 +77,6 @@
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none text-secondary" href="">
-                                    Formas de pagamento
-                                </a>
-                            </li>
-                            <li class="my-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
                                     href="{% url 'account_holder_list' %}">
                                     Titulares
