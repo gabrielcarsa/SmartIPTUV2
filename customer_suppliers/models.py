@@ -2,22 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class CustomerSupplier(models.Model):
-    CUSTOMER = 0
-    SUPPLIER = 1
-    BOTH = 2
-    PARTNER_TYPE_CHOICES = [
-        (CUSTOMER, "Cliente"),
-        (SUPPLIER, "Fornecedor"),
-        (BOTH, "Ambos"),
-    ]
+    class Type(models.TextChoices):
+        CUSTOMER = "CUSTOMER", "Cliente"
+        SUPPLIER = "SUPPLIER", "Fornecedor"
+        BOTH = "BOTH", "Ambos"
 
-    type = models.IntegerField(choices=PARTNER_TYPE_CHOICES)
+    type = models.IntegerField(choices=Type.choices)
     name = models.CharField(max_length=100)
     cnpj = models.CharField(max_length=20, null=True, blank=True)
     cpf = models.CharField(max_length=20, null=True, blank=True)
     rg = models.CharField(max_length=20, null=True, blank=True)
-    phone1 = models.CharField(max_length=50, null=True, blank=True)
-    phone2 = models.CharField(max_length=50, null=True, blank=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
     marital_status = models.CharField(max_length=30, null=True, blank=True)
     profession = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=100, null=True, blank=True)

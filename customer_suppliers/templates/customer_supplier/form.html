@@ -1,0 +1,175 @@
+{% extends 'app_layout.html' %}
+
+
+{% block content %}
+
+<div class="card-smart">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+
+            <div class="col-md-12">
+                {{form.type.label}}
+                {{form.type}}
+            </div>
+
+            <div class="col-md-4">
+                {{form.name.label}}
+                {{form.name}}
+            </div>
+            <div class="col-md-4">
+                {{form.email.label}}
+                {{form.email}}
+            </div>
+            <div class="col-md-4">
+                {{form.phone.label}}
+                {{form.phone}}
+            </div>
+
+            <div class="col-md-6">
+                {{form.cpf.label}}
+                {{form.cpf}}
+            </div>
+            <div class="col-md-6">
+                {{form.cnpj.label}}
+                {{form.cnpj}}
+            </div>
+
+            <div class="col-md-6">
+                {{form.zip_code.label}}
+                {{form.zip_code}}
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-dark my-1" onclick="searchCEP()">
+                    Buscar CEP
+                </button>
+                <p class="text-secondary my-2 fs-7">
+                    Após digitar CEP, clique no botão.
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                {{form.street.label}}
+                {{form.street}}
+            </div>
+            <div class="col-md-6">
+                {{form.neighborhood.label}}
+                {{form.neighborhood}}
+            </div>
+
+            <div class="col-md-4">
+                {{form.city.label}}
+                {{form.city}}
+            </div>
+            <div class="col-md-2">
+                {{form.state.label}}
+                {{form.state}}
+            </div>
+            <div class="col-md-3">
+                {{form.number.label}}
+                {{form.number}}
+            </div>
+            <div class="col-md-3">
+                {{form.complement.label}}
+                {{form.complement}}
+            </div>
+
+        </div>
+        <input type="submit" value="Salvar" class="btn-smart my-3">
+    </form>
+</div>
+
+<script>
+    // Mask phones
+    $(document).ready(function () {
+        $('#id_phone').mask('(00) 00000-0000');
+    });
+
+    //Mask CPF
+    const cpfInput = document.getElementById('id_cpf');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function (e) {
+            let input = e.target;
+            let value = input.value.replace(/\D/g, '');
+            let formattedValue = '';
+
+            if (value.length > 0) {
+                formattedValue = value.slice(0, 3);
+
+                if (value.length > 3) {
+                    formattedValue += '.' + value.slice(3, 6);
+                }
+
+                if (value.length > 6) {
+                    formattedValue += '.' + value.slice(6, 9);
+                }
+
+                if (value.length > 9) {
+                    formattedValue += '-' + value.slice(9, 11);
+                }
+            }
+
+            input.value = formattedValue;
+        });
+    }
+
+    // Mask CNPJ
+    const cnpjInput = document.getElementById('id_cnpj');
+    if (cnpjInput) {
+        cnpjInput.addEventListener('input', function (e) {
+            let input = e.target;
+            let value = input.value.replace(/\D/g, '');
+            let formattedValue = '';
+
+            if (value.length > 0) {
+                formattedValue = value.slice(0, 2);
+
+                if (value.length > 2) {
+                    formattedValue += '.' + value.slice(2, 5);
+                }
+
+                if (value.length > 5) {
+                    formattedValue += '.' + value.slice(5, 8);
+                }
+
+                if (value.length > 8) {
+                    formattedValue += '/' + value.slice(8, 12);
+                }
+
+                if (value.length > 12) {
+                    formattedValue += '-' + value.slice(12, 14);
+                }
+            }
+
+            input.value = formattedValue;
+        });
+    }
+
+    // SEARCH CEP
+    async function searchCEP() {
+        const cep = document.getElementById('id_zip_code').value.replace(/\D/g, '');
+
+        if (cep) {
+            if (cep.length !== 8) {
+                alert('CEP inválido!');
+                return;
+            }
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+                if (!data.erro) {
+                    document.getElementById('id_street').value = data.logradouro;
+                    document.getElementById('id_neighborhood').value = data.bairro;
+                    document.getElementById('id_city').value = data.localidade;
+                    document.getElementById('id_state').value = data.uf;
+                    document.getElementById('id_complement').value = data.complemento;
+                } else {
+                    alert('CEP não encontrado!');
+                }
+            } catch (error) {
+                alert('Erro ao buscar o CEP!');
+            }
+        }
+    }
+</script>
+{% endblock %}

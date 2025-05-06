@@ -1,0 +1,25 @@
+{% extends 'app_layout.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="card-smart">
+    <form method="post">{% csrf_token %}
+        <p class="fs-5 fw-semibold m-0">
+            Tem certeza que deseja excluir?
+        </p>
+        <div class="bg-light p-3 my-3">
+            <p class="m-0">
+                {{ object.name }}  
+            </p>
+            <p class="m-0">
+                {{ object.cpf|format_cpf }}
+            </p>
+        </div>
+        {{ form }}
+        <input type="submit" value="Sim, excluir" class="btn-smart">
+    </form>
+</div>
+
+{% endblock %}

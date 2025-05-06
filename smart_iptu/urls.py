@@ -25,6 +25,7 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('users/', include("users.urls")),
     path('financials/', include("financials.urls")),
+    path('customer-supplier/', include("customer_suppliers.urls")),
 
     
 ]
