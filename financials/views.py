@@ -448,8 +448,8 @@ class MovementListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
 
-        queryset = models.FinancialMovement.objects.order_by('movement_date')
-                
+        queryset = models.FinancialMovement.objects.order_by('movement_date', 'order')     
+
         # create the filter using parameters from GET
         self.filter = FinancialMovementFilter(self.request.GET, queryset=queryset)
 
