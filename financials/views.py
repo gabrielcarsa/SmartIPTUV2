@@ -486,6 +486,20 @@ class MovementListView(LoginRequiredMixin, ListView):
         context["querystring"] = self.request.GET.copy()
 
         return context
+    
+# Change order
+class MovementUpdateOrderView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+
+        id = self.request.GET.get('id')
+        order = self.request.GET.get('order')
+
+        movement = models.FinancialMovement.objects.get(id=id)
+        movement.order = order
+        movement.save()
+
+        return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
 
 
 # --------

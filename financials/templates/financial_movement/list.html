@@ -151,8 +151,7 @@
                     <th scope="col">Valor</th>
                     <th scope="col">Data</th>
                     <th scope="col">Saldo</th>
-                    <th scope="col">Ordem</th>
-                    <th scope="col"></th>
+                    <th scope="col" class="col-md-1">Ordem</th>
                 </tr>
             </thead>
             <tbody>
@@ -160,7 +159,12 @@
 
                 {% for movement in financialmovement_list %}
                 <tr>
-                    <td class="text-secondary fs-7">#{{movement.id}}</td>
+                    <td class="text-secondary fs-7">
+                        <a
+                            href="{% url 'financial_transaction_list' %}?id={{movement.financial_transaction_installment.id}}">
+                            #{{movement.id}}
+                        </a>
+                    </td>
                     <td>
                         <p class="m-0 fw-semibold text-black">
                             {{movement.financial_transaction_installment.financial_transaction.customer_supplier.name}}
@@ -183,10 +187,8 @@
                     </td>
                     <td id="balance-{{forloop.counter}}" class="text-secondary"></td>
                     <td>
-                        0
-                    </td>
-                    <td>
-                        0
+                        <input id="order-{{movement.id}}" class="form-control" onchange="orderUpdate('{{movement.id}}')"
+                            type="text" value="{{movement.order|default:''}}">
                     </td>
                 </tr>
 
@@ -204,6 +206,24 @@
 
 <script>
 
+    // Function to update the order value of movement
+    async function orderUpdate(id) {
+
+        var order = document.getElementById(`order-${id}`);
+        var url = `{% url 'financial_movements_order' %}?id=${id}&order=${order.value}`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            console.log("Ordem atualizado com sucesso!");
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     // Amount initial balance
     const initialBalance = '{{previous_balance.balance|default:balance.checking_account.initial_balance}}';
     let initialBalanceAux = parseFloat(initialBalance.replace('.', '').replace(',', '.'));
@@ -211,9 +231,8 @@
     // Movements
     let movements = [
         {% for movement in financialmovement_list %}
-    {% if movement.type == 0 %} "-" + {% endif %}
-    "{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
-    {% endfor %}
+        {% if movement.type == 0 %} "-" + {% endif %}"{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
+        {% endfor %}
     ];
 
     // Sum
