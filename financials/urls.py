@@ -22,7 +22,7 @@ urlpatterns = [
 
     # CHECKING ACCOUNTS
     path("account_holder/checking_account/create/<int:account_holder_id>", views.CheckingAccountCreateView.as_view(), name="checking_account_create"),
-    path("account_holder/checking_account/update/<int:pk>", views.CheckingAccountUpdateView.as_view(), name="checking_account_update"),
+    path("account_holder/checking_account/update/<int:account_holder_id>/<int:pk>", views.CheckingAccountUpdateView.as_view(), name="checking_account_update"),
 
     # CHECKING ACCOUNTS BALANCE
     path("account_holder/checking_account_balance/list/<int:account_holder_id>", views.CheckingAccountBalanceListView.as_view(), name="checking_account_balance_list"),

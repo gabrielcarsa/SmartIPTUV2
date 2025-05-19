@@ -543,7 +543,7 @@ class CheckingAccountCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse_lazy('checking_account_list', kwargs={'account_holder_id': self.kwargs.get('account_holder_id')})
+        return reverse_lazy('account_holder_list')
 
 
 # Update
@@ -567,7 +567,7 @@ class CheckingAccountUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse_lazy('checking_account_list', kwargs={'account_holder_id': self.kwargs.get('account_holder_id')})
+        return reverse_lazy('account_holder_list')
 
 # ----------
 # FINANCIAL CATEGORY
