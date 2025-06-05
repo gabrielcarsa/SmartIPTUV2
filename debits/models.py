@@ -5,7 +5,7 @@ from customer_suppliers.models import CustomerSupplier
 
 class Enterprise(models.Model):
     name = models.CharField("Nome", max_length=100)
-    city = models.CharField("Estado", max_length=100)
+    city = models.CharField("Cidade", max_length=100)
     state = models.CharField("Estado", max_length=100)
     property_registration = models.CharField("Matrícula", max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)

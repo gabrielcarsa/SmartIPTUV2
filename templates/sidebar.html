@@ -13,30 +13,34 @@
             <div class="accordion-item">
                 <div class="accordion-header">
                     <a class="accordion-button fw-light collapsed text-decoration-none" href=""
-                        data-bs-toggle="collapse" data-bs-target="#collapse-debits"
-                        aria-controls="collapse-debits">
+                        data-bs-toggle="collapse" data-bs-target="#collapse-debits" aria-controls="collapse-debits">
                         <span class="material-symbols-outlined me-2 fw-light">
                             location_city
                         </span>
                         Controle de débitos
                     </a>
                 </div>
-                <div id="collapse-debits" class="accordion-collapse collapse {% if 'customer-supplier' in request.path|urlencode %}show{% endif %}" data-bs-parent="#accordionSidebar">
+                <div id="collapse-debits"
+                    class="accordion-collapse collapse {% if 'debits' in request.path|urlencode %}show{% endif %}"
+                    data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-medium border-start border-secondary mx-2 ps-2"
                             style="border-left-width: 4px !important;">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'customer_supplier_list' %}">
+                                <a class="text-decoration-none {% if 'debits/enterprise' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'enterprise_list' %}">
                                     Empreendimentos
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'customer_supplier_list' %}">
+                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'customer_supplier_list' %}">
                                     Atualização de dados
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'customer_supplier_list' %}">
+                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'customer_supplier_list' %}">
                                     Cobrança
                                 </a>
                             </li>
@@ -58,12 +62,15 @@
                         Clientes e Fornecedores
                     </a>
                 </div>
-                <div id="collapse-customers" class="accordion-collapse collapse {% if 'customer-supplier' in request.path|urlencode %}show{% endif %}" data-bs-parent="#accordionSidebar">
+                <div id="collapse-customers"
+                    class="accordion-collapse collapse {% if 'customer-supplier' in request.path|urlencode %}show{% endif %}"
+                    data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-medium border-start border-secondary mx-2 ps-2"
                             style="border-left-width: 4px !important;">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}" href="{% url 'customer_supplier_list' %}">
+                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                    href="{% url 'customer_supplier_list' %}">
                                     Clientes e Fornecedores
                                 </a>
                             </li>
