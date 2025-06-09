@@ -7,10 +7,10 @@
 <!-- HEADER -->
 <div class="m-3">
     <h2 class="m-0 fw-bolder fs-3">
-        Empreendimentos
+        {{enterprise}}
     </h2>
     <p class="m-0">
-        Listagem
+        Lotes listagem
     </p>
 </div>
 <!-- FIM HEADER -->
@@ -18,7 +18,7 @@
 <div class="card-smart">
 
     <div class="d-flex justify-content-end">
-        <a href="{% url 'enterprise_create' %}" class="btn btn-smart w-50">
+        <a href="{% url 'lot_create' enterprise.id %}" class="btn btn-smart w-50">
             Novo
         </a>
     </div>
@@ -29,31 +29,39 @@
         <table class="table align-middle mb-3 text-center">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Localização</th>
-                    <th scope="col">Matrícula</th>
+                    <th scope="col">Quadra</th>
+                    <th scope="col">Lote</th>
+                    <th scope="col">Responsabilidade</th>
+                    <th scope="col">Inscrição Municipal</th>
+                    <th scope="col">Valores</th>
+                    <th scope="col">Telefones</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
-                {% for object in enterprise_list %}
+                {% for object in lot_list %}
                 <tr>
-                    <td class="text-secondary fs-7">
-                        #{{object.id}}
+                    <td>
+                        {{object.block.name}}
                     </td>
                     <td>
-                        {{object.name}}
+                        {{object.lot}}
                     </td>
                     <td>
-                        {{object.city}}, {{object.state}}
+                        Teste
                     </td>
                     <td>
-                        {{object.property_registration}}
+                        {{object.municipal_registration}}
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        67 99999
                     </td>
                     <td class="d-flex">
-                        <a href="{% url 'lot_list' object.id %}" class="btn-smart mx-1">
-                            Quadras e lotes
+                        <a href="" class="btn-smart mx-1">
+                            Parcelas
                         </a>
                         <div class="dropstart mx-1">
                             <button class="bg-white border rounded p-2 d-flex aling-items-center" type="button"
@@ -67,12 +75,12 @@
                                     Ações
                                 </p>
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'enterprise_update' object.id %}">
+                                    <a class="dropdown-item" href="">
                                         Editar
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-danger" href="{% url 'enterprise_delete' object.id %}">
+                                    <a class="dropdown-item text-danger" href="">
                                         Excluir
                                     </a>
                                 </li>

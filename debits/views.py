@@ -1,10 +1,16 @@
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from debits.models import Enterprise
+from debits.forms import LotForm
+from debits.models import Enterprise, Lot
 
+
+# ----------------------
+# ENTERPRISE
+# -----------------------------------
 
 class EnterpriseListView(LoginRequiredMixin, ListView):
     model = Enterprise
@@ -45,3 +51,40 @@ class EnterpriseDeleteView(LoginRequiredMixin, DeleteView):
 
         messages.success(self.request, 'Operação realizada com sucesso')
         return super().form_valid(form)
+    
+
+
+# ----------------------
+# BLOCK
+# -----------------------------------
+
+# ----------------------
+# LOT
+# -----------------------------------
+
+class LotListView(LoginRequiredMixin, ListView):
+    model = Lot
+    template_name = 'lot/list.html'
+    paginate_by = 100
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['enterprise'] = get_object_or_404(Enterprise, id=self.kwargs['enterprise_pk'])
+        return context
+
+class LotCreateView(LoginRequiredMixin, CreateView):
+    model = Lot
+    template_name = 'lot/form.html'
+    form_class = LotForm
+
+    def form_valid(self, form):
+
+        # user to save
+        form.instance.created_by_user = self.request.user
+        form.instance.updated_by_user = self.request.user
+        
+        messages.success(self.request, 'Operação realizada com sucesso')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})

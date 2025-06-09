@@ -1,5 +1,5 @@
 from django.urls import path
-from debits.views import EnterpriseCreateView, EnterpriseDeleteView, EnterpriseListView, EnterpriseUpdateView
+from debits.views import EnterpriseCreateView, EnterpriseDeleteView, EnterpriseListView, EnterpriseUpdateView, LotCreateView, LotListView
 
 
 urlpatterns = [
@@ -7,6 +7,9 @@ urlpatterns = [
     path('enterprise/create', EnterpriseCreateView.as_view(), name='enterprise_create'),
     path('enterprise/update/<int:pk>', EnterpriseUpdateView.as_view(), name='enterprise_update'),
     path('enterprise/delete/<int:pk>', EnterpriseDeleteView.as_view(), name='enterprise_delete'),
+
+    path('lot/list/<int:enterprise_pk>', LotListView.as_view(), name='lot_list'),
+    path('lot/create/<int:enterprise_pk>', LotCreateView.as_view(), name='lot_create'),
 
 
 ]
