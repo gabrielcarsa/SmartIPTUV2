@@ -104,3 +104,15 @@ class LotUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
+    
+class LotDeleteView(LoginRequiredMixin, DeleteView):
+    model = Lot
+    template_name = 'lot/delete.html'
+
+    def form_valid(self, form):
+
+        messages.success(self.request, 'Operação realizada com sucesso')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
