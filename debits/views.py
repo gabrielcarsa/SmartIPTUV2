@@ -82,6 +82,22 @@ class LotCreateView(LoginRequiredMixin, CreateView):
         # user to save
         form.instance.created_by_user = self.request.user
         form.instance.updated_by_user = self.request.user
+
+        messages.success(self.request, 'Operação realizada com sucesso')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
+    
+class LotUpdateView(LoginRequiredMixin, UpdateView):
+    model = Lot
+    template_name = 'lot/form.html'
+    form_class = LotForm
+
+    def form_valid(self, form):
+
+        # user to save
+        form.instance.updated_by_user = self.request.user
         
         messages.success(self.request, 'Operação realizada com sucesso')
         return super().form_valid(form)
