@@ -27,7 +27,7 @@
                         <ul class="fw-medium border-start border-secondary mx-2 ps-2"
                             style="border-left-width: 4px !important;">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'debits/enterprise' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'debits' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
                                     href="{% url 'enterprise_list' %}">
                                     Empreendimentos
                                 </a>

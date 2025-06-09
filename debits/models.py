@@ -66,11 +66,12 @@ class Lot(models.Model):
         return self.lot
     
 class SalesContract(models.Model):
-    contract_date = models.DateField("Data do contrato")
+    contract_date = models.DateField("Data do contrato", null=True, blank=True)
+    lot = models.OneToOneField(Lot, on_delete=models.CASCADE, verbose_name="Lote", related_name="sales_contracts")
     customer_supplier = models.ForeignKey(CustomerSupplier, verbose_name="Cliente", on_delete=models.CASCADE, related_name="contracts")
     start_date = models.DateField("Data inicial das parcelas", null=True, blank=True)
     number_of_installment = models.IntegerField("Número de parcelas", null=True, blank=True)
-    installment_value = models.DecimalField("Valor das parcelas", max_digits=10, decimal_places=2)
+    installment_value = models.DecimalField("Valor das parcelas", max_digits=10, decimal_places=2,  blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales_contract_user_created', verbose_name="Criado por")

@@ -12,7 +12,8 @@ class CustomerSupplier(models.Model):
     cnpj = models.CharField(max_length=20, null=True, blank=True)
     cpf = models.CharField(max_length=20, null=True, blank=True)
     rg = models.CharField(max_length=20, null=True, blank=True)
-    phone = models.CharField(max_length=50, null=True, blank=True)
+    phone = models.CharField('Telefone 1', max_length=50, null=True, blank=True) #TODO: mudar para phone1
+    phone2 = models.CharField(max_length=50, null=True, blank=True)
     marital_status = models.CharField(max_length=30, null=True, blank=True)
     profession = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=100, null=True, blank=True)

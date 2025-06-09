@@ -4,8 +4,8 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from debits.forms import LotForm
-from debits.models import Enterprise, Lot
+from debits.forms import LotForm, SalesContractForm
+from debits.models import Enterprise, Lot, SalesContract
 
 
 # ----------------------
@@ -110,6 +110,28 @@ class LotDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'lot/delete.html'
 
     def form_valid(self, form):
+
+        messages.success(self.request, 'Operação realizada com sucesso')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
+    
+
+# ----------------------
+# SALES CONTRACT
+# -----------------------------------
+
+class SalesContractCreateView(LoginRequiredMixin, CreateView):
+    model = SalesContract
+    template_name = 'sales_contract/form.html'
+    form_class = SalesContractForm
+
+    def form_valid(self, form):
+
+        # user to save
+        form.instance.created_by_user = self.request.user
+        form.instance.updated_by_user = self.request.user
 
         messages.success(self.request, 'Operação realizada com sucesso')
         return super().form_valid(form)

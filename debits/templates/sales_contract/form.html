@@ -1,0 +1,24 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Contrato
+    </h2>
+    <p class="m-0">
+        Formulário
+    </p>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Salvar" class="btn btn-smart">
+    </form>
+
+</div>
+
+{% endblock %}
