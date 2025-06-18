@@ -31,7 +31,6 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Tipo</th>
                 <th scope="col">Categoria</th>
                 <th scope="col"></th>
             </tr>
@@ -41,15 +40,6 @@
             <tr>
                 <td class="fs-7 text-secondary">
                     #{{category.id}}
-                </td>
-                <td>
-                    <div
-                        class="icon-link rounded-4 p-2 {%if category.type == 0%}bg-danger-subtle{%else%}bg-success-subtle{%endif%}">
-                        <span class="material-symbols-outlined me-1 text-danger">
-                            {%if category.type == 0%}call_received{%else%}call_made{%endif%}
-                        </span>
-                        {%if category.type == 0%}pagar{%else%}receber{%endif%}
-                    </div>
                 </td>
                 <td>
                     {{category.name}}

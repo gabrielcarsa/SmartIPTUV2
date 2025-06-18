@@ -158,5 +158,5 @@ class CheckingAccountForm(BaseForm):
 class FinancialCategoryForm(BaseForm):
     class Meta:
         model = FinancialCategory
-        fields = ['type', 'name']
+        fields = ['name']
         

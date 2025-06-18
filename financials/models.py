@@ -54,14 +54,6 @@ class CheckingAccountBalance(models.Model):
 
 
 class FinancialCategory(models.Model):
-    EXPENSE = 0
-    INCOME = 1
-    CATEGORY_TYPE_CHOICES = [
-        (EXPENSE, "Despesa"),
-        (INCOME, "Receita"),
-    ]
-
-    type = models.IntegerField('Tipo', choices=CATEGORY_TYPE_CHOICES, default=0)
     is_default = models.BooleanField(default=False, blank=False, null=False)
     name = models.CharField('Nome da categoria', max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
