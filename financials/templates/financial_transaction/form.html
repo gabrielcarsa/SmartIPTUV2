@@ -16,13 +16,55 @@
     <div class="px-3">
         <form action="" method="post">
             {% csrf_token %}
-            {{ form }}
+
+            <div class="row my-2">
+                <div class="col-md-1">
+                    {{form.type.label}}
+                    {{form.type}}
+                </div>
+                <div class="col-md-4">
+                    {{form.account_holder.label}}
+                    {{form.account_holder}}
+                </div>
+                <div class="col-md-4">
+                    {{form.customer_supplier.label}}
+                    {{form.customer_supplier}}
+                </div>
+                <div class="col-md-3">
+                    {{form.financial_category.label}}
+                    {{form.financial_category}}
+                </div>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-md-4">
+                    {{form.description.label}}
+                    {{form.description}}
+                </div>
+                <div class="col-md-2">
+                    {{form.down_payment.label}}
+                    {{form.down_payment}}
+                </div>
+                <div class="col-md-2">
+                    {{form.installment_value.label}}
+                    {{form.installment_value}}
+                </div>
+                <div class="col-md-2">
+                    {{form.due_date.label}}
+                    {{form.due_date}}
+                </div>
+                <div class="col-md-2">
+                    {{form.number_of_installments.label}}
+                    {{form.number_of_installments}}
+                </div>
+            </div>
+
             <div class="d-flex justify-content-end">
                 <input type="submit" value="Salvar" class="btn-smart my-3 w-50">
             </div>
         </form>
     </div>
-    
+
 
 </div>
 
