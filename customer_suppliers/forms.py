@@ -8,7 +8,7 @@ class CustomRadioSelect(forms.RadioSelect):
 class CustomerSupplierForm(BaseForm):
     class Meta:
         model = CustomerSupplier
-        fields = ['type', 'name', 'email', 'phone1', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
+        fields = ['type', 'name', 'email', 'phone1', 'phone2', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Ex.: Gabriel Henrique', 'autocomplete': 'off'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'Digite CPF, caso loja for pessoa física', 'autocomplete': 'off'}),

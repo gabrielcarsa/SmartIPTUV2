@@ -22,8 +22,8 @@ class CustomerSupplierCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
 
-        form.instance.created_by_user = self.user
-        form.instance.updated_by_user = self.user
+        form.instance.created_by_user = self.request.user
+        form.instance.updated_by_user = self.request.user
 
         messages.success(self.request, "Cadastrado com sucesso!")
         return super().form_valid(form)
@@ -42,7 +42,7 @@ class CustomerSupplierUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'customer_supplier/form.html'
 
     def form_valid(self, form):
-        form.instance.updated_by_user = self.user
+        form.instance.updated_by_user = self.request.user
 
         messages.success(self.request, "Atualizado com sucesso!")
         return super().form_valid(form)
