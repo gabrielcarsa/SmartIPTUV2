@@ -8,7 +8,7 @@ class CustomRadioSelect(forms.RadioSelect):
 class CustomerSupplierForm(BaseForm):
     class Meta:
         model = CustomerSupplier
-        fields = ['type', 'name', 'email', 'phone', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
+        fields = ['type', 'name', 'email', 'phone1', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Ex.: Gabriel Henrique', 'autocomplete': 'off'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'Digite CPF, caso loja for pessoa física', 'autocomplete': 'off'}),
@@ -27,7 +27,7 @@ class CustomerSupplierForm(BaseForm):
     )
     
     def clean_phone(self):
-        return BaseForm.clean_phone(self, 'phone')
+        return BaseForm.clean_phone(self, 'phone1')
     
     def clean_cpf(self):
         return self.clean_cpf_cnpj('cpf', 11, "CPF deve ter 11 dígitos.")
@@ -41,7 +41,7 @@ class CustomerSupplierForm(BaseForm):
         cnpj = cleaned_data.get('cnpj')
         cpf = cleaned_data.get('cpf')
         email = cleaned_data.get('email')
-        phone = cleaned_data.get('phone')
+        phone1 = cleaned_data.get('phone1')
 
         # If both fields are empty or both are filled, raise validation error
         if not cnpj and not cpf:
