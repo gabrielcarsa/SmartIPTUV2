@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
@@ -13,6 +14,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from django.db.models import F
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 # ----------------
 # CHECKING ACCOUNT BALANCES
@@ -470,6 +473,10 @@ class MovementListView(LoginRequiredMixin, ListView):
             start_date = self.request.GET.get('movement_date__gte')
             end_date = self.request.GET.get('movement_date__lte')
 
+            context['start_date'] = start_date
+            context['end_date'] = end_date
+            context['account_id'] = account_id
+
             # retrieve previous balance
             context['previous_balance'] = models.CheckingAccountBalance.objects.filter(
                 balance_date__lt = start_date,
@@ -482,10 +489,56 @@ class MovementListView(LoginRequiredMixin, ListView):
                 checking_account = account_id,
             ).order_by('balance_date').last()
 
+       
         context["filter"] = self.filter  # filter for template
         context["querystring"] = self.request.GET.copy()
+    
 
         return context
+    
+class MovementListPDF(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+
+        account_id = request.GET.get('checking_account')
+        start_date = request.GET.get('movement_date__gte')
+        end_date = request.GET.get('movement_date__lte')
+
+        # retrieve previous balance
+        previous_balance = models.CheckingAccountBalance.objects.filter(
+            balance_date__lt = start_date,
+            checking_account = account_id,
+        ).order_by('balance_date').last()
+
+        # retrieve current balance
+        balance = models.CheckingAccountBalance.objects.filter(
+            balance_date__lte = end_date,
+            checking_account = account_id,
+        ).order_by('balance_date').last()
+
+        financialmovement_list = models.FinancialMovement.objects.filter(
+            movement_date__gte = start_date,
+            movement_date__lte = end_date,
+            checking_account = account_id,
+        ).order_by('movement_date', 'order')     
+
+        html_string = render_to_string("financial_movement/report.html", 
+            {
+                "previous_balance": previous_balance, 
+                "balance": balance,
+                "account_id": account_id,
+                "start_date": start_date,
+                "end_date": end_date,
+                "financialmovement_list": financialmovement_list,
+            }
+        )
+
+        pdf_file = HTML(string=html_string).write_pdf()
+
+        response = HttpResponse(pdf_file, content_type="application/pdf")
+        response['Content-Disposition'] = 'filename="relatorio.pdf"'
+
+        return response
     
 # Change order
 class MovementUpdateOrderView(LoginRequiredMixin, View):

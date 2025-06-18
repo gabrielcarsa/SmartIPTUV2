@@ -138,8 +138,12 @@
                 </a>
             </li>
             {% endif %}
-
         </ul>
+
+        <a href="{% url 'financial_movements_list_pdf' %}?checking_account={{account_id}}&movement_date__gte={{start_date}}&movement_date__lte={{end_date}}"
+            class="btn btn-light m-0">
+            PDF
+        </a>
     </nav>
     <!-- TABLE -->
     <div class="table-responsive">
@@ -232,8 +236,8 @@
     // Movements
     let movements = [
         {% for movement in financialmovement_list %}
-        {% if movement.type == 0 %} "-" + {% endif %}"{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
-        {% endfor %}
+    {% if movement.type == 0 %} "-" + {% endif %}"{{ movement.amount }}" {% if not forloop.last %}, {% endif %}
+    {% endfor %}
     ];
 
     // Sum

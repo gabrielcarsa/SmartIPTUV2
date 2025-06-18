@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimentação Relatório</title>
+</head>
+
+<body>
+
+    <div style="display: flex;">
+        <div class="ml-3">
+            <p class="m-0 fw-semibold">
+                Saldo anterior
+                <span class="fs-7 fw-light">
+                    ({{previous_balance.balance_date|date:"d/m/Y"|default:"Saldo inicial"}})
+                </span>
+            </p>
+            <p class="m-0">
+                R$ {{previous_balance.balance|default:balance.checking_account.initial_balance}}
+            </p>
+        </div>
+        <div class="ml-3">
+            <p class="m-0 fw-semibold">
+                Saldo atual <span class="fs-7 fw-light">({{balance.balance_date|date:"d/m/Y"}})</span>
+            </p>
+            <p class="m-0">
+                R$ {{balance.balance}}
+            </p>
+        </div>
+        <div class="ml-3">
+            <p class="m-0 fw-semibold">
+                Titular
+            </p>
+            <p class="m-0 text-truncate" style="width: 150px;">
+                {{balance.checking_account.account_holder.customer_supplier.name}}
+            </p>
+        </div>
+        <div class="ml-3">
+            <p class="m-0 fw-semibold">
+                Conta corrente
+            </p>
+            <p class="m-0">
+                {{balance.checking_account.name}}
+            </p>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered text-center align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Cliente / Fornecedor</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Saldo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- installment -->
+
+                {% for movement in financialmovement_list %}
+                <tr>
+                    <td class="text-secondary fs-7">
+                        <a
+                            href="{% url 'financial_transaction_list' %}?id={{movement.financial_transaction_installment.id}}">
+                            #{{movement.id}}
+                        </a>
+                    </td>
+                    <td>
+                        <p class="m-0 fw-semibold text-black">
+                            {{movement.financial_transaction_installment.financial_transaction.customer_supplier.name}}
+                        </p>
+                        <p class="text-secondary m-0">
+                            {{movement.financial_transaction_installment.financial_transaction.financial_category.name}}
+                        </p>
+                    </td>
+                    <td
+                        class="{%if movement.financial_transaction_installment.financial_transaction.type == 0%}text-danger{%else%}text-success{%endif%} fw-bold">
+                        {%if movement.financial_transaction_installment.financial_transaction.type == 0%}
+                        -
+                        {%else%}
+                        +
+                        {%endif%}
+                        R$ {{movement.amount}}
+                    </td>
+                    <td>
+                        {{movement.movement_date|date:'d/m/Y'}}
+                    </td>
+                    <td id="balance-{{forloop.counter}}" class="text-secondary"></td>
+                </tr>
+
+                {%endfor%}
+                <!-- END installment -->
+
+            </tbody>
+        </table>
+
+    </div>
+    <!-- END TABLE -->
+
+</body>
+
+</html>
