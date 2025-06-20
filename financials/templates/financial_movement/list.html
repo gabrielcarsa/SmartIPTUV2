@@ -25,7 +25,14 @@
         </div>
         {% endfor %}
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn-smart w-50">Filtrar</button>
+            <a href="{% url 'financial_movements_import' %}" class="icon-link btn btn-outline-dark justify-content-center" style="width: 250px;">
+                <span class="material-symbols-outlined">
+                    export_notes
+                </span>
+                Importar
+            </a>
+            <button type="submit" class="btn-smart mx-2" style="width: 250px;">Filtrar</button>
+
         </div>
     </form>
 </div>

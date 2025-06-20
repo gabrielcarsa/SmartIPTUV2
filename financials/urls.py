@@ -17,6 +17,8 @@ urlpatterns = [
     path("financial_movement", views.MovementListView.as_view(), name="financial_movements_list"),
     path("financial_movement/order", views.MovementUpdateOrderView.as_view(), name="financial_movements_order"),
     path("financial_movement/report", views.MovementListPDF.as_view(), name="financial_movements_list_pdf"),
+    path("financial_movement/import-ofx", views.MovementImportOFXView.as_view(), name="financial_movements_import"),
+    path("financial_movement/import-save", views.MovementImportSaveView.as_view(), name="financial_movements_save"),
 
     # ACCOUNT HOLDERS
     path("account_holder/list", views.AccountHolderListView.as_view(), name="account_holder_list"),

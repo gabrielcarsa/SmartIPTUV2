@@ -1,0 +1,32 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Importação Extrato
+    </h2>
+    <p class="m-0 text-secondary">
+        Faça upload do arquivo
+    </p>
+</div>
+
+<div class="card-smart">
+
+    <div class="px-3">
+        <p>
+            Exporte no seu banco o Extrato no formato OFX (Money 2000 em diante).
+        </p>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <div class="d-flex justify-content-end">
+                <input type="submit" value="Salvar" class="btn-smart my-3 w-50">
+            </div>
+        </form>
+    </div>
+    
+
+</div>
+
+{% endblock %}

@@ -1,7 +1,8 @@
 from decimal import Decimal
+import json
 import re
 from django import forms
-from financials.models import AccountHolder, CheckingAccount, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
+from financials.models import AccountHolder, CheckingAccount, FinancialCategory, FinancialMovement, FinancialTransaction, FinancialTransactionInstallment
 from django.core.validators import MinValueValidator
 
 # Helper function to clean numbers (remove non-digit characters)
@@ -159,4 +160,29 @@ class FinancialCategoryForm(BaseForm):
     class Meta:
         model = FinancialCategory
         fields = ['name']
+
+
+# -----------
+# FINANCIAL MOVEMENTS
+# ---------------------
+
+class OFXUploadForm(forms.Form):
+    file = forms.FileField(label='Selecione o arquivo OFX')
+
+
+class OFXMovementForm(BaseForm):
+
+    class Meta:
+        model = FinancialMovement
+        fields = ['type', 'category', 'description', 'amount', 'movement_date', 'order']
+
+    category = forms.ModelChoiceField(
+        queryset=FinancialCategory.objects.all(),
+        required=True,
+        widget=forms.Select()
+    )
+
+
+MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=0)
+
         

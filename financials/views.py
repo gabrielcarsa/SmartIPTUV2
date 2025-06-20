@@ -1,14 +1,16 @@
 from datetime import datetime
 from decimal import Decimal
+import json
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
+from ofxparse import OfxParser
 from financials.filters import FinancialMovementFilter, FinancialTransactionInstallmentFilter
-from financials.forms import AccountHolderForm, CheckingAccountForm, FinancialCategoryForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
+from financials.forms import AccountHolderForm, CheckingAccountForm, FinancialCategoryForm, MovimentsFormSet, OFXUploadForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
@@ -554,7 +556,58 @@ class MovementUpdateOrderView(LoginRequiredMixin, View):
         movement.save()
 
         return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
+    
+class MovementImportOFXView(LoginRequiredMixin, FormView):
+    template_name = 'financial_movement/ofx_upload.html'
+    form_class = OFXUploadForm
 
+    def form_valid(self, form):
+        ofx_file = form.cleaned_data['file']
+        ofx = OfxParser.parse(ofx_file)
+
+        initial_data = []
+        for transaction in ofx.account.statement.transactions:
+            initial_data.append({
+                'movement_date': transaction.date,
+                'amount': float(transaction.amount),
+                'description': transaction.memo,
+                'type': 1 if transaction.amount > 0 else 0,
+            })
+
+        formset = MovimentsFormSet(initial=initial_data)
+
+        return render(self.request, 'financial_movement/ofx_review.html', {
+            'formset': formset,
+        })
+
+class MovementImportSaveView(LoginRequiredMixin, View):
+
+    def post(self, request):
+
+        formset = MovimentsFormSet(request.POST)
+        if formset.is_valid():
+            count = 0
+            for form in formset:
+                data = form.cleaned_data
+                if not models.FinancialMovement.objects.filter(
+                    movement_date=data['movement_date'],
+                    amount=data['amount'],
+                    description=data['description']
+                ).exists():
+                    models.FinancialMovement.objects.create(
+                        movement_date=data['movement_date'],
+                        amount=data['amount'],
+                        description=data['description'],
+                        type=data['type']
+                    )
+                    count += 1
+
+            messages.success(request, f"{count} movimentações salvas com sucesso.")
+            return redirect('financial_movements_list')
+        else:
+            return render(request, 'financial_movement/ofx_review.html', {
+                'formset': formset
+            })
 
 # --------
 # ACCOUNT HOLDERS

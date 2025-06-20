@@ -1,0 +1,116 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Importação Extrato
+    </h2>
+    <p class="m-0 text-secondary">
+        Faça upload do arquivo
+    </p>
+</div>
+
+<div class="card-smart">
+
+    <div class="px-3">
+        <form method="post" action="{% url 'financial_movements_save' %}">
+            {% csrf_token %}
+            <table class="table ">
+                {{ formset.management_form }}
+                <tr>
+                    <th>Tipo</th>
+                    <th>Data</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                    <th>Descrição</th>
+                </tr>
+                {% for form in formset %}
+                <tr>
+                    <td>{{ form.type }}</td>
+                    <td>{{ form.movement_date }}</td>
+                    <td>{{ form.category }}</td>
+                    <td>{{ form.description }}</td>
+                    <td>{{ form.amount }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div class="row my-3">
+                <div class="col-md-6">
+                    <label for="account_holder">
+                        Titular da conta
+                    </label>
+                    <select class="form-select" name="account_holder" aria-label="" id="account_holder"
+                        onchange="accountHolderChange()">
+                        <option selected>-- Selecione --</option>
+                        {% for account_holder in account_holders %}
+                        <option value="{{account_holder.id}}">
+                            {{account_holder.customer_supplier.name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="checking_account">
+                        Conta
+                    </label>
+                    <select class="form-select" name="checking_account" aria-label="" id="checking_account">
+                        <option selected>-- Selecione --</option>
+                        {% for checking_account in checking_accounts %}
+                        <option value="{{checking_account.id}}" aria-details="{{checking_account.account_holder.id}}">
+                            {{checking_account.name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-smart">Confirmar e Salvar</button>
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const checkingAccount = document.getElementById("checking_account");
+    const accountHolder = document.getElementById("account_holder");
+    let checkingAccountAux = Array.from(checkingAccount.options);
+
+    // on load the page empty checkingAccount select
+    window.onload = () => {
+
+        // if accountHolder is not selected
+        if (accountHolder.options.selectedIndex == 0) {
+            // empty
+            checkingAccount.options.length = 0;
+
+            // create a default option to checkingAccount
+            let option = document.createElement("option");
+            option.text = '-- Selecione o titular primeiro --';
+            option.value = '';
+            checkingAccount.add(option)
+        }
+    };
+
+    // On change accountHolder
+    function accountHolderChange() {
+
+        // clean to add
+        checkingAccount.options.length = 0;
+
+        // add options
+        for (let index = 0; index < checkingAccountAux.length; index++) {
+            if (checkingAccountAux[index].getAttribute("aria-details") == accountHolder.options.selectedIndex) {
+                let option = document.createElement("option");
+                option.text = checkingAccountAux[index].text;
+                option.value = checkingAccountAux[index].value;
+                checkingAccount.add(option)
+            }
+        }
+    }
+
+</script>
+
+{% endblock %}
