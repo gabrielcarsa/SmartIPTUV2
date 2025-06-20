@@ -142,6 +142,7 @@ class FinancialMovement(models.Model):
     checking_account = models.ForeignKey(CheckingAccount, on_delete=models.CASCADE, related_name="movements")
     financial_transaction_installment = models.ForeignKey(FinancialTransactionInstallment, on_delete=models.CASCADE, related_name="movements")
     type = models.BooleanField(choices=MOVEMENT_TYPE_CHOICES)
+    description = models.CharField('Descrição', max_length=255, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     movement_date = models.DateField()
     order = models.IntegerField(blank=True, null=True)

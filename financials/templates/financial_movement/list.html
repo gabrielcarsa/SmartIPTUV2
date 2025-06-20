@@ -183,7 +183,7 @@
                         </p>
                     </td>
                     <td>
-                        {{movement.financial_transaction_installment.financial_transaction.description}}
+                        {{movement.description|default:''}}
                     </td>
                     <td
                         class="{%if movement.financial_transaction_installment.financial_transaction.type == 0%}text-danger{%else%}text-success{%endif%} fw-bold">

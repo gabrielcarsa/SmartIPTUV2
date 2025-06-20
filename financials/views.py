@@ -338,13 +338,14 @@ class TransactionInstallmentBulkSettlementView(LoginRequiredMixin, View):
                 instance.save()
 
                 checking_account = get_object_or_404(models.CheckingAccount, id=checking_account_id)
-                
+
                 # create Financial Movements
                 models.FinancialMovement.objects.create(
                     checking_account = checking_account,
                     financial_transaction_installment = instance,
                     type = instance.financial_transaction.type,
                     amount = instance.paid_amount,
+                    description = instance.financial_transaction.description,
                     movement_date = instance.payment_date,
                     created_by_user = self.request.user,
                     updated_by_user = self.request.user,
