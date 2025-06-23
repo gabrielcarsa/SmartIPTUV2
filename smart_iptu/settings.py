@@ -148,6 +148,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/users/dashboard'
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 
 # EMAIL CONFIG
 

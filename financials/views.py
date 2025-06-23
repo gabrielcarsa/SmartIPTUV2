@@ -557,48 +557,123 @@ class MovementUpdateOrderView(LoginRequiredMixin, View):
 
         return redirect(request.META.get('HTTP_REFERER', 'dashboard'))
     
+# Upload OFX file 
 class MovementImportOFXView(LoginRequiredMixin, FormView):
     template_name = 'financial_movement/ofx_upload.html'
     form_class = OFXUploadForm
 
     def form_valid(self, form):
+
+        # catch file
         ofx_file = form.cleaned_data['file']
         ofx = OfxParser.parse(ofx_file)
 
+        # array initial data
         initial_data = []
+
+        # for in transactions
         for transaction in ofx.account.statement.transactions:
+
+            # add on array transactions data
             initial_data.append({
                 'movement_date': transaction.date,
-                'amount': float(transaction.amount),
+                'amount': Decimal(abs(transaction.amount)),
                 'description': transaction.memo,
                 'type': 1 if transaction.amount > 0 else 0,
             })
 
+        # define formset
         formset = MovimentsFormSet(initial=initial_data)
 
+        # render html to review before save
         return render(self.request, 'financial_movement/ofx_review.html', {
             'formset': formset,
+            'account_holders': models.AccountHolder.objects.all(),
+            'checking_accounts': models.CheckingAccount.objects.all(),
         })
-
+    
+# Save Movements of OFX file
 class MovementImportSaveView(LoginRequiredMixin, View):
 
     def post(self, request):
-
+        
+        # formset
         formset = MovimentsFormSet(request.POST)
+
         if formset.is_valid():
+            
+            # count of Movemets saves
             count = 0
+
+            checking_account = get_object_or_404(models.CheckingAccount, id=request.POST.get('checking_account'))
+            account_holder = get_object_or_404(models.AccountHolder, id=request.POST.get('account_holder'))
+
             for form in formset:
+
+                # ignore forms marked by Delete
+                if form.cleaned_data.get('DELETE'):
+                    continue
+
+                # clean data of form
                 data = form.cleaned_data
+
+                # verify if Movement alredy exists
                 if not models.FinancialMovement.objects.filter(
                     movement_date=data['movement_date'],
                     amount=data['amount'],
                     description=data['description']
                 ).exists():
+                
+                    # create Transaction
+                    transaction = models.FinancialTransaction.objects.create(
+                        type=data['type'],
+                        description=data['description'],
+                        installment_value=data['amount'],
+                        due_date=data['movement_date'],
+                        number_of_installments=1,
+                        account_holder=account_holder,
+                        financial_category=data['category'],
+                        customer_supplier=data['customer_supplier'],
+                        created_by_user=request.user,
+                        updated_by_user=request.user,
+                    )
+
+                    # create Installment
+                    installment = models.FinancialTransactionInstallment.objects.create(
+                        financial_transaction=transaction,
+                        installment_number=1,
+                        amount=data['amount'],
+                        due_date=data['movement_date'],
+                        payment_date=data['movement_date'],
+                        status=1,
+                        paid_amount=data['amount'],
+                        settlement_date=datetime.now(),
+                        created_by_user=request.user,
+                        updated_by_user=request.user,
+                        marked_down_by_user=request.user,
+                    )
+
+                    # create Movement
                     models.FinancialMovement.objects.create(
+                        financial_transaction_installment=installment,
                         movement_date=data['movement_date'],
                         amount=data['amount'],
                         description=data['description'],
-                        type=data['type']
+                        type=data['type'],
+                        checking_account=checking_account,
+                        created_by_user=request.user,
+                        updated_by_user=request.user,
+                    )
+
+                    # CheckingAccountBalanceView instance for balance management
+                    checking_account_balance_class = CheckingAccountBalanceView()
+
+                    # call function to create or update balance
+                    checking_account_balance_class.update_or_create(
+                        date = data['movement_date'],
+                        amount = data['amount'],
+                        checking_account_id = checking_account.id,
+                        type = data['type'],
                     )
                     count += 1
 
@@ -606,7 +681,9 @@ class MovementImportSaveView(LoginRequiredMixin, View):
             return redirect('financial_movements_list')
         else:
             return render(request, 'financial_movement/ofx_review.html', {
-                'formset': formset
+                'formset': formset,
+                'account_holders': models.AccountHolder.objects.all(),
+                'checking_accounts': models.CheckingAccount.objects.all(),
             })
 
 # --------

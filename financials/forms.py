@@ -2,6 +2,7 @@ from decimal import Decimal
 import json
 import re
 from django import forms
+from customer_suppliers.models import CustomerSupplier
 from financials.models import AccountHolder, CheckingAccount, FinancialCategory, FinancialMovement, FinancialTransaction, FinancialTransactionInstallment
 from django.core.validators import MinValueValidator
 
@@ -174,7 +175,7 @@ class OFXMovementForm(BaseForm):
 
     class Meta:
         model = FinancialMovement
-        fields = ['type', 'category', 'description', 'amount', 'movement_date', 'order']
+        fields = ['type', 'customer_supplier', 'category', 'description', 'amount', 'movement_date']
 
     category = forms.ModelChoiceField(
         queryset=FinancialCategory.objects.all(),
@@ -182,7 +183,13 @@ class OFXMovementForm(BaseForm):
         widget=forms.Select()
     )
 
+    customer_supplier = forms.ModelChoiceField(
+        queryset=CustomerSupplier.objects.all(),
+        required=True,
+        widget=forms.Select()
+    )
 
-MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=0)
+
+MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=0, can_delete=True)
 
         

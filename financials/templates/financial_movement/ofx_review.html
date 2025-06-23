@@ -21,17 +21,21 @@
                 <tr>
                     <th>Tipo</th>
                     <th>Data</th>
+                    <th>Cliente/Fornecedor</th>
                     <th>Categoria</th>
-                    <th>Valor</th>
                     <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Excluir linha</th>
                 </tr>
                 {% for form in formset %}
                 <tr>
-                    <td>{{ form.type }}</td>
-                    <td>{{ form.movement_date }}</td>
-                    <td>{{ form.category }}</td>
-                    <td>{{ form.description }}</td>
-                    <td>{{ form.amount }}</td>
+                    <td class="col-1">{{ form.type }}</td>
+                    <td class="col-2">{{ form.movement_date }}</td>
+                    <td class="col-2">{{ form.customer_supplier }}</td>
+                    <td class="col-2">{{ form.category }}</td>
+                    <td class="col-2">{{ form.description }}</td>
+                    <td class="col-1">{{ form.amount }}</td>
+                    <td class="col-1">{{ form.DELETE }}</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -41,7 +45,7 @@
                         Titular da conta
                     </label>
                     <select class="form-select" name="account_holder" aria-label="" id="account_holder"
-                        onchange="accountHolderChange()">
+                        onchange="accountHolderChange()" required>
                         <option selected>-- Selecione --</option>
                         {% for account_holder in account_holders %}
                         <option value="{{account_holder.id}}">
@@ -54,7 +58,7 @@
                     <label for="checking_account">
                         Conta
                     </label>
-                    <select class="form-select" name="checking_account" aria-label="" id="checking_account">
+                    <select class="form-select" name="checking_account" required aria-label="" id="checking_account">
                         <option selected>-- Selecione --</option>
                         {% for checking_account in checking_accounts %}
                         <option value="{{checking_account.id}}" aria-details="{{checking_account.account_holder.id}}">
