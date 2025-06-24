@@ -190,7 +190,7 @@ class OFXMovementForm(BaseForm):
     )
 
     transaction_installment = forms.ModelChoiceField(
-        queryset=FinancialTransactionInstallment.objects.filter(status=0).order_by('due_date'),
+        queryset=FinancialTransactionInstallment.objects.filter(status=0,financial_transaction__type=0).order_by('due_date'),
         required=False,
         widget=forms.Select()
     )
