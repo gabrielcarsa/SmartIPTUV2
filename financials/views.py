@@ -623,39 +623,55 @@ class MovementImportSaveView(LoginRequiredMixin, View):
                     amount=data['amount'],
                     description=data['description']
                 ).exists():
-                
-                    # create Transaction
-                    transaction = models.FinancialTransaction.objects.create(
-                        type=data['type'],
-                        description=data['description'],
-                        installment_value=data['amount'],
-                        due_date=data['movement_date'],
-                        number_of_installments=1,
-                        account_holder=account_holder,
-                        financial_category=data['category'],
-                        customer_supplier=data['customer_supplier'],
-                        created_by_user=request.user,
-                        updated_by_user=request.user,
-                    )
 
-                    # create Installment
-                    installment = models.FinancialTransactionInstallment.objects.create(
-                        financial_transaction=transaction,
-                        installment_number=1,
-                        amount=data['amount'],
-                        due_date=data['movement_date'],
-                        payment_date=data['movement_date'],
-                        status=1,
-                        paid_amount=data['amount'],
-                        settlement_date=datetime.now(),
-                        created_by_user=request.user,
-                        updated_by_user=request.user,
-                        marked_down_by_user=request.user,
+                
+                    if not data['transaction_installment']:
+
+                        # create Transaction
+                        transaction = models.FinancialTransaction.objects.create(
+                            type=data['type'],
+                            description=data['description'],
+                            installment_value=data['amount'],
+                            due_date=data['movement_date'],
+                            number_of_installments=1,
+                            account_holder=account_holder,
+                            financial_category=data['category'],
+                            customer_supplier=data['customer_supplier'],
+                            created_by_user=request.user,
+                            updated_by_user=request.user,
+                        )
+                    else:
+                        transaction = data['transaction_installment'].financial_transaction 
+
+                    # update or create Installment
+                    obj, created = models.FinancialTransactionInstallment.objects.update_or_create(
+                        id=data['transaction_installment'].id if data['transaction_installment'] else None,
+                        defaults={
+                            "payment_date":data['movement_date'],
+                            "status":1,
+                            "paid_amount":data['amount'],
+                            "settlement_date":datetime.now(),
+                            "updated_by_user":request.user,
+                            "marked_down_by_user":request.user,
+                        },
+                        create_defaults = {
+                            "financial_transaction": transaction,
+                            "installment_number": 1,
+                            "amount": data['amount'],
+                            "due_date": data['movement_date'],
+                            "created_by_user": request.user,
+                            "payment_date":data['movement_date'],
+                            "status":1,
+                            "paid_amount":data['amount'],
+                            "settlement_date":datetime.now(),
+                            "updated_by_user":request.user,
+                            "marked_down_by_user":request.user,
+                        },
                     )
 
                     # create Movement
                     models.FinancialMovement.objects.create(
-                        financial_transaction_installment=installment,
+                        financial_transaction_installment=obj,
                         movement_date=data['movement_date'],
                         amount=data['amount'],
                         description=data['description'],

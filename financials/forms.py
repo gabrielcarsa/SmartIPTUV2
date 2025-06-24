@@ -175,7 +175,7 @@ class OFXMovementForm(BaseForm):
 
     class Meta:
         model = FinancialMovement
-        fields = ['type', 'customer_supplier', 'category', 'description', 'amount', 'movement_date']
+        fields = ['type', 'customer_supplier', 'category', 'description', 'amount', 'movement_date', 'transaction_installment']
 
     category = forms.ModelChoiceField(
         queryset=FinancialCategory.objects.all(),
@@ -189,6 +189,11 @@ class OFXMovementForm(BaseForm):
         widget=forms.Select()
     )
 
+    transaction_installment = forms.ModelChoiceField(
+        queryset=FinancialTransactionInstallment.objects.filter(status=0).order_by('due_date'),
+        required=False,
+        widget=forms.Select()
+    )
 
 MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=0, can_delete=True)
 

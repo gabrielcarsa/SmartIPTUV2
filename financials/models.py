@@ -124,7 +124,7 @@ class FinancialTransactionInstallment(models.Model):
         db_table = 'financial_transaction_installments'
     
     def __str__(self):
-        return f"Parcela {self.installment_number} - {self.amount}"
+        return f"{self.installment_number}/{self.financial_transaction.number_of_installments} - {self.due_date.strftime('%d/%m/%Y')} - {self.financial_transaction.financial_category.name} - {self.amount}"
 
 
 class FinancialMovement(models.Model):
