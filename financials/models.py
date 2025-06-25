@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from customer_suppliers.models import CustomerSupplier
+from debits.models import Lot
 
 class AccountHolder(models.Model):
 
@@ -77,6 +78,7 @@ class FinancialTransaction(models.Model):
     ]
 
     type = models.BooleanField('Tipo', choices=TRANSACTION_TYPE_CHOICES)
+    lot = models.ForeignKey(Lot,on_delete=models.CASCADE, related_name="financial_transaction_lot", verbose_name="Lote", null=True, blank=True)
     description = models.CharField('Descrição', max_length=255, null=True, blank=True)
     installment_value = models.DecimalField('Valor da parcela', max_digits=10, decimal_places=2)
     down_payment = models.DecimalField('Valor entrada (se houver)', max_digits=10, decimal_places=2, blank=True, null=True, default=0)

@@ -1,0 +1,29 @@
+{% extends 'app_layout.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Atualização de Débitos IPTU
+    </h2>
+    <p class="m-0">
+        Upload Extrato da Inscrição Municipal
+    </p>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <div class="d-flex justify-content-end">
+            <input type="submit" value="Revisar" class="btn-smart my-3 w-50">
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

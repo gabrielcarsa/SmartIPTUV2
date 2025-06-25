@@ -67,6 +67,7 @@ class Lot(models.Model):
         return self.lot
     
 class SalesContract(models.Model):
+    is_active = models.BooleanField(null=True, blank=True)
     contract_date = models.DateField("Data do contrato", null=True, blank=True)
     lot = models.OneToOneField(Lot, on_delete=models.CASCADE, verbose_name="Lote", related_name="sales_contracts")
     customer_supplier = models.ForeignKey(CustomerSupplier, verbose_name="Cliente", on_delete=models.CASCADE, related_name="contracts")
