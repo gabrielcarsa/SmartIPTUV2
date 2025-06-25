@@ -132,6 +132,7 @@ class SalesContractCreateView(LoginRequiredMixin, CreateView):
         # user to save
         form.instance.created_by_user = self.request.user
         form.instance.updated_by_user = self.request.user
+        form.instance.lot = get_object_or_404(Lot, id=self.kwargs.get('lot_pk')) 
 
         messages.success(self.request, 'Operação realizada com sucesso')
         return super().form_valid(form)
