@@ -1,0 +1,67 @@
+{% extends 'app_layout.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="m-3">
+    <h2 class="m-0 fw-bolder fs-3">
+        Atualização de Débitos IPTU
+    </h2>
+    <p class="m-0">
+        Listagem de atualizações via Extrato da Inscrição Municipal
+    </p>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+
+    <div class="mb-3">
+        <a href="" class="btn-smart">
+            Upload
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle mb-3 text-center">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Rancho</th>
+                    <th scope="col">Quadra</th>
+                    <th scope="col">Lote</th>
+                    <th scope="col">Inscrição</th>
+                    <th scope="col">Última atualização</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in lot_list %}
+                <tr>
+                    <td class="text-secondary fs-7">
+                        #{{object.id}}
+                    </td>
+                    <td>
+                        {{object.block.enterprise.name}}
+                    </td>
+                    <td>
+                        {{object.block.name}}
+                    </td>
+                    <td>
+                        {{object.lot}}
+                    </td>
+                    <td>
+                        {{object.municipal_registration}}
+                    </td>
+                    <td>
+                        {{object.latest_update|default:'Nunca'}}
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

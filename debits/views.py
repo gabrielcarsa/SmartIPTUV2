@@ -117,6 +117,10 @@ class LotDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
     
+class LotDebitsListView(LoginRequiredMixin, ListView):
+    model = Lot
+    template_name = 'lot/debits.html'
+    
 
 # ----------------------
 # SALES CONTRACT

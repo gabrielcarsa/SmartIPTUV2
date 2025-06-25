@@ -53,6 +53,7 @@ class Lot(models.Model):
     right_confrontation = models.CharField("Confrontação direita", max_length=100, blank=True, null=True)
     left_confrontation = models.CharField("Confrontação esquerda", max_length=100, blank=True, null=True)
     is_property_deed = models.BooleanField(default=0)
+    latest_update = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lot_user_created', verbose_name="Criado por")
