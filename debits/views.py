@@ -10,6 +10,7 @@ import pdfplumber
 from debits.forms import LotDebitsForm, LotForm, SalesContractForm
 from debits.models import Enterprise, Lot, SalesContract
 from financials.models import AccountHolder, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
+from django.db.models import Sum
 
 # Function do help extract data of debit statement
 def extract_debits(pdf_path):
@@ -127,7 +128,9 @@ class LotListView(LoginRequiredMixin, ListView):
     template_name = 'lot/list.html'
 
     def get_queryset(self):
-        return Lot.objects.filter(block__enterprise=self.kwargs['enterprise_pk']).order_by('block__name', 'lot')
+        return Lot.objects.filter(
+            block__enterprise=self.kwargs['enterprise_pk']
+        ).order_by('block__name', 'lot')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -190,6 +193,19 @@ class LotInstallmentsListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return FinancialTransactionInstallment.objects.filter(financial_transaction__lot = self.kwargs['pk'])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['lot'] = get_object_or_404(Lot, id=self.kwargs['pk'])
+        context['amount_company'] = FinancialTransactionInstallment.objects.filter(
+            financial_transaction__lot = self.kwargs['pk'], 
+            financial_transaction__type = 0
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        context['amount_costumer'] = FinancialTransactionInstallment.objects.filter(
+            financial_transaction__lot = self.kwargs['pk'], 
+            financial_transaction__type = 1
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        return context
     
 # List of updated Municipal Registration statements
 class LotUpdateStatementListView(LoginRequiredMixin, ListView):
@@ -302,6 +318,7 @@ class SalesContractCreateView(LoginRequiredMixin, CreateView):
         # user to save
         form.instance.created_by_user = self.request.user
         form.instance.updated_by_user = self.request.user
+        form.instance.is_active = 1
         form.instance.lot = get_object_or_404(Lot, id=self.kwargs.get('lot_pk')) 
 
         messages.success(self.request, 'Operação realizada com sucesso')

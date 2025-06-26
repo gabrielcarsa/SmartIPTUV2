@@ -8,24 +8,48 @@
 <div class="m-3 d-flex justify-content-between">
     <div>
         <h2 class="m-0 fw-bolder fs-3">
-            Parcelas
+            {{lot.block.enterprise.name}} -
+            <span class="fw-semibold">
+                Qd. {{lot.block.name}} / Lt. {{lot.lot}}
+            </span>
         </h2>
         <p class="m-0">
-            Lotes listagem
+            {{lot.municipal_registration}}
         </p>
     </div>
-    <div>
-        <a href="" class="btn btn-smart" style="width: 150px;">
-            Novo
-        </a>
-    </div>
-
 </div>
 <!-- FIM HEADER -->
 
 <div class="card-smart">
 
-    <div class="table-responsive">
+    <p>
+        Última atualização: {{lot.latest_update}}
+    </p>
+    <div class="row g-3">
+        <div class="col-sm-4">
+            <div class="border p-3 rounded">
+                <p class="m-0">
+                    IPTU EMPRESA
+                </p>
+                <p class="m-0 fs-4 text-black">
+                    R$ {{amount_company}}
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="bg-danger-subtle p-3 rounded">
+                <p class="m-0">
+                    IPTU CLIENTE
+                </p>
+                <p class="m-0 fs-4 text-black">
+                    R$ {{amount_costumer}}
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="table-responsive mt-3">
         <table class="table align-middle mb-3 text-center">
             <thead>
                 <tr>
@@ -39,18 +63,23 @@
             <tbody>
                 {% for object in financialtransactioninstallment_list %}
                 <tr>
-                    <td>
+                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
+                        {% if object.financial_transaction.type == 0 %}
+                        EMPRESA
+                        {% else %}
+                        CLIENTE
+                        {% endif %}
                     </td>
-                    <td>
+                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
                         {{object.due_date|date:'d/m/Y'}}
                     </td>
-                    <td>
+                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
                         {{object.financial_transaction.financial_category.name}}
                     </td>
-                    <td>
+                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
                         {{object.financial_transaction.description}}
                     </td>
-                    <td>
+                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
                         {{object.amount}}
                     </td>
                 </tr>

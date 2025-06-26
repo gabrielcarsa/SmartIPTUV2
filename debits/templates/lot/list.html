@@ -33,14 +33,14 @@
                     <th scope="col">Lote</th>
                     <th scope="col">Responsabilidade</th>
                     <th scope="col">Inscrição Municipal</th>
-                    <th scope="col">Valores</th>
                     <th scope="col">Telefones</th>
+                    <th scope="col">Situação</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for object in lot_list %}
-                <tr>
+                <tr class="my-5">
                     <td>
                         {{object.block.name}}
                     </td>
@@ -56,18 +56,33 @@
                     <td>
                         {{object.municipal_registration}}
                     </td>
-                    <td>
-                        <p>
-                            R$ 5.000,00
-                        </p>
-                    </td>
                     <td class="fs-7">
-                        {{object.sales_contracts.customer_supplier.phone1}}, {{object.sales_contracts.customer_supplier.phone2}}
+                        {{object.sales_contracts.customer_supplier.phone1}},
+                        {{object.sales_contracts.customer_supplier.phone2}}
                     </td>
-                    <td class="d-flex">
-                        <a href="{% url 'lot_installment_list' object.id %}" class="btn-smart mx-1">
-                            Parcelas
-                        </a>
+                    <td>
+                        {% if object.is_property_deed %}
+                        <p class="icon-link rounded-4 p-2 bg-primary-subtle text-dark fs-7 fw-bold">
+                            <span class="material-symbols-outlined fill-icon">
+                                license
+                            </span>
+                            ESCRITURADO
+                        </p>
+                        {% else %}
+
+                        {% if object.financial_transaction_lot.all %}
+                        <p class="icon-link rounded-4 p-2 bg-danger-subtle text-dark fs-7 fw-bold">
+                            <span class="material-symbols-outlined fill-icon">
+                                error
+                            </span>
+                            DÉBITOS
+                        </p>
+                        {% endif %}
+
+                        {% endif %}
+
+                    </td>
+                    <td>
                         <div class="dropstart mx-1">
                             <button class="bg-white border rounded p-2 d-flex aling-items-center" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="False">
@@ -76,6 +91,12 @@
                                 </span>
                             </button>
                             <ul class="dropdown-menu">
+                                <li class="text-center">
+                                    <a class="btn btn-primary" href="{% url 'lot_installment_list' object.id %}">
+                                        Parcelas
+                                    </a>
+                                </li>
+                                <hr>
                                 <p class="fs-7 text-secondary mx-3 my-0">
                                     Ações
                                 </p>
@@ -104,7 +125,7 @@
             </tbody>
         </table>
 
-    
+
     </div>
 
 </div>
