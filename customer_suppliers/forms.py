@@ -1,15 +1,19 @@
 from django import forms
-from customer_suppliers.models import CustomerSupplier
+from customer_suppliers.models import CustomerSupplier, TypeCustomerSupplier
 from financials.forms import BaseForm
 
 class CustomRadioSelect(forms.RadioSelect):
     option_template_name = 'widgets/custom_radio_option.html'
 
+class CustomCheckboxSelectMultiple(forms.RadioSelect):
+    option_template_name = 'widgets/custom_check_option.html'
+
 class CustomerSupplierForm(BaseForm):
     class Meta:
         model = CustomerSupplier
-        fields = ['type', 'name', 'email', 'phone1', 'phone2', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
+        fields = ['type_customer_supplier', 'name', 'email', 'phone1', 'phone2', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
         widgets = {
+            'type_customer_supplier': forms.CheckboxSelectMultiple,  # opcional, mais amigável
             'name': forms.TextInput(attrs={'placeholder': 'Ex.: Gabriel Henrique', 'autocomplete': 'off'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'Digite CPF, caso loja for pessoa física', 'autocomplete': 'off'}),
             'cnpj': forms.TextInput(attrs={'placeholder': 'Digite CNPJ, caso loja for pessoa jurídica', 'autocomplete': 'off'}),
@@ -19,12 +23,13 @@ class CustomerSupplierForm(BaseForm):
             'state': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'bg-body-foomy', 'placeholder': 'Preencha o CEP'}),
         }
 
-    type = forms.ChoiceField(
-        label="Tipo de cadastro",
-        choices=CustomerSupplier.Type.choices,
-        widget=CustomRadioSelect(attrs={'required': 'required'}),
-        initial="BOTH"
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Remove CSS class of "type_customer_supplier"
+        widget = self.fields['type_customer_supplier'].widget
+        widget.attrs.pop('class', None)
+
     
     def clean_phone(self):
         return BaseForm.clean_phone(self, 'phone1')

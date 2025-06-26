@@ -1,13 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class CustomerSupplier(models.Model):
-    class Type(models.TextChoices):
-        CUSTOMER = "CUSTOMER", "Cliente"
-        SUPPLIER = "SUPPLIER", "Fornecedor"
-        BOTH = "BOTH", "Ambos"
+class TypeCustomerSupplier(models.Model):
+    name = models.CharField('Nome', max_length=100)
 
-    type = models.CharField(choices=Type.choices, max_length=20)
+    class Meta:
+        verbose_name = 'Tipo de Fornecedores e Cliente'
+        db_table = 'type_customer_suppliers'
+
+    def __str__(self):
+        return self.name
+    
+
+class CustomerSupplier(models.Model):
+    type_customer_supplier = models.ManyToManyField(TypeCustomerSupplier, verbose_name='Tipo de cadastro')
     name = models.CharField('Nome ou Razão Social', max_length=100)
     cnpj = models.CharField('CNPJ', max_length=20, null=True, blank=True)
     cpf = models.CharField('CPF', max_length=20, null=True, blank=True)

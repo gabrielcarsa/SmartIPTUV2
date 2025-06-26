@@ -268,8 +268,6 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                         updated_by_user=self.request.user,
                     )
 
-                else:
-                    print('não')
 
                 
 

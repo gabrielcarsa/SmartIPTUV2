@@ -48,11 +48,6 @@
                         <p class="m-0 text-secondary">
                             {{object.cpf|format_cpf}}{{object.cnpj|format_cnpj}}
                         </p>
-                        {% if object.type == 'CUSTOMER' or object.type == 'BOTH' %}
-                        <p class="m-0 text-secondary">
-                            0 pedidos
-                        </p>
-                        {% endif %}
                     </td>
                     <td>
                         {{object.phone|format_phone}}
@@ -67,34 +62,34 @@
                     </td>
                     <td>
                         <div class="d-block">
-                            {% if object.type == 'CUSTOMER' %}
+                            {% for type in object.type_customer_supplier.all %}
+                            {% if type.name == 'Cliente' %}
                             <p class="icon-link rounded-4 bg-primary-subtle p-1 text-center m-0 fs-7">
                                 <span class="material-symbols-outlined fill-icon">
                                     person
                                 </span>
                                 Cliente
                             </p>
-                            {% elif object.type == 'SUPPLIER' %}
+                            {% elif type.name == 'Fornecedor' %}
                             <p class="icon-link rounded-4 bg-warning-subtle p-1 text-center m-0 fs-7">
                                 <span class="material-symbols-outlined fill-icon">
                                     deployed_code_account
                                 </span>
                                 Fornecedor
                             </p>
-                            {% else %}
-                            <p class="icon-link rounded-4 bg-primary-subtle p-1 text-center m-0 fs-7">
+                            {% elif type.name == 'Empresa' %}
+                            <p class="icon-link rounded-4 bg-success-subtle p-1 text-center m-0 fs-7">
                                 <span class="material-symbols-outlined fill-icon">
-                                    person
+                                    check
                                 </span>
-                                Cliente
-                            </p>
-                            <p class="icon-link rounded-4 bg-warning-subtle p-1 text-center m-0 fs-7">
-                                <span class="material-symbols-outlined fill-icon">
-                                    deployed_code_account
-                                </span>
-                                Fornecedor
+                                Empresa
                             </p>
                             {% endif %}
+
+                            {% empty %}
+                            Sem tipos cadastrados
+                            {% endfor %}
+    
                         </div>
 
                     </td>
@@ -119,7 +114,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-danger" href="{% url 'customer_supplier_delete' object.id %}">
+                                    <a class="dropdown-item text-danger"
+                                        href="{% url 'customer_supplier_delete' object.id %}">
                                         Excluir
                                     </a>
                                 </li>

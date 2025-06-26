@@ -22,6 +22,21 @@ class CustomerSupplierCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
 
+        # selected types
+        types = form.cleaned_data['type_customer_supplier']
+
+        # for in types
+        for t in types:
+
+            if t.name.lower() == 'empresa':
+
+                # get the Company register
+                customer_supplier_company = CustomerSupplier.objects.filter(type_customer_supplier__name__iexact='Empresa').first()
+               
+                if customer_supplier_company:
+                    messages.error(self.request, "Só pode ter um cadastro de Empresa no sistema!")
+                    return super().form_invalid(form)
+                
         form.instance.created_by_user = self.request.user
         form.instance.updated_by_user = self.request.user
 
@@ -42,6 +57,25 @@ class CustomerSupplierUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'customer_supplier/form.html'
 
     def form_valid(self, form):
+
+        # selected types
+        types = form.cleaned_data['type_customer_supplier']
+
+        # update object
+        obj = self.get_object()
+
+        # for in types
+        for t in types:
+
+            if t.name.lower() == 'empresa':
+
+                # get the Company register
+                customer_supplier_company = CustomerSupplier.objects.filter(type_customer_supplier__name__iexact='Empresa').first()
+               
+                if customer_supplier_company and obj != customer_supplier_company:
+                    messages.error(self.request, "Só pode ter um cadastro de Empresa no sistema!")
+                    return super().form_invalid(form)
+                
         form.instance.updated_by_user = self.request.user
 
         messages.success(self.request, "Atualizado com sucesso!")
