@@ -121,6 +121,7 @@ class EnterpriseDeleteView(LoginRequiredMixin, DeleteView):
 # LOT
 # -----------------------------------
 
+# List Lots
 class LotListView(LoginRequiredMixin, ListView):
     model = Lot
     template_name = 'lot/list.html'
@@ -131,6 +132,7 @@ class LotListView(LoginRequiredMixin, ListView):
         context['enterprise'] = get_object_or_404(Enterprise, id=self.kwargs['enterprise_pk'])
         return context
 
+# Create
 class LotCreateView(LoginRequiredMixin, CreateView):
     model = Lot
     template_name = 'lot/form.html'
@@ -148,6 +150,7 @@ class LotCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
     
+# Update
 class LotUpdateView(LoginRequiredMixin, UpdateView):
     model = Lot
     template_name = 'lot/form.html'
@@ -164,6 +167,7 @@ class LotUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
     
+# Delete
 class LotDeleteView(LoginRequiredMixin, DeleteView):
     model = Lot
     template_name = 'lot/delete.html'
@@ -176,11 +180,22 @@ class LotDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
     
-class LotDebitsListView(LoginRequiredMixin, ListView):
+# List installments debits of IPTU
+class LotInstallmentsListView(LoginRequiredMixin, ListView):
+    model = FinancialTransactionInstallment
+    template_name = 'lot/list_installments.html'
+    
+    def get_queryset(self):
+        return FinancialTransactionInstallment.objects.filter(financial_transaction__lot = self.kwargs['pk'])
+
+    
+# List of updated Municipal Registration statements
+class LotUpdateStatementListView(LoginRequiredMixin, ListView):
     model = Lot
     template_name = 'lot/debits.html'
 
-class LotDebitsCreateView(LoginRequiredMixin, FormView):
+# Update Municipal Registration statements
+class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
     template_name = 'lot/debits_form.html'
     form_class = LotDebitsForm
     success_url = reverse_lazy('lot_debits_list')
@@ -262,7 +277,6 @@ class LotDebitsCreateView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-    
 
 # ----------------------
 # SALES CONTRACT

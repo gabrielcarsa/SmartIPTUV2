@@ -1,0 +1,65 @@
+{% extends 'app_layout.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="m-3 d-flex justify-content-between">
+    <div>
+        <h2 class="m-0 fw-bolder fs-3">
+            Parcelas
+        </h2>
+        <p class="m-0">
+            Lotes listagem
+        </p>
+    </div>
+    <div>
+        <a href="" class="btn btn-smart" style="width: 150px;">
+            Novo
+        </a>
+    </div>
+
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+
+    <div class="table-responsive">
+        <table class="table align-middle mb-3 text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in financialtransactioninstallment_list %}
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        {{object.due_date|date:'d/m/Y'}}
+                    </td>
+                    <td>
+                        {{object.financial_transaction.financial_category.name}}
+                    </td>
+                    <td>
+                        {{object.financial_transaction.description}}
+                    </td>
+                    <td>
+                        {{object.amount}}
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
