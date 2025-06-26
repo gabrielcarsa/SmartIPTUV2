@@ -21,7 +21,7 @@ class CustomerSupplier(models.Model):
     phone1 = models.CharField('Telefone 1', max_length=50, null=True, blank=True) 
     phone2 = models.CharField('Telefone 2', max_length=50, null=True, blank=True)
     marital_status = models.CharField('Estado Civil', max_length=30, null=True, blank=True)
-    profession = models.CharField('Profissão', max_length=30, null=True, blank=True)
+    profession = models.CharField('Profissão', max_length=100, null=True, blank=True)
     email = models.EmailField(max_length=100, null=True, blank=True)
     
     # Endereço

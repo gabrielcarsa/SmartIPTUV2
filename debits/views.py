@@ -125,7 +125,9 @@ class EnterpriseDeleteView(LoginRequiredMixin, DeleteView):
 class LotListView(LoginRequiredMixin, ListView):
     model = Lot
     template_name = 'lot/list.html'
-    paginate_by = 100
+
+    def get_queryset(self):
+        return Lot.objects.filter(block__enterprise=self.kwargs['enterprise_pk']).order_by('block__name', 'lot')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -194,6 +196,9 @@ class LotUpdateStatementListView(LoginRequiredMixin, ListView):
     model = Lot
     template_name = 'lot/debits.html'
 
+    def get_queryset(self):
+        return Lot.objects.all().order_by('latest_update')
+
 # Update Municipal Registration statements
 class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
     template_name = 'lot/debits_form.html'
@@ -221,8 +226,14 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                     
                     transaction_type = None
                     sales_contract = SalesContract.objects.filter(lot=lot, is_active=1).first()
-                    account_holder = get_object_or_404(AccountHolder, id=1) # TODO: company
 
+                    # get the Company register
+                    account_holder = AccountHolder.objects.filter(customer_supplier__type_customer_supplier__name__iexact='Empresa').first()
+
+                    if not account_holder:
+                        messages.error(self.request, 'Não encontrado Titular de Conta com cadastro de Empresa.')
+                        return super().form_invalid(form)
+                    
                     # verify sales contract and date to define transaction type
                     if sales_contract:
                         if sales_contract.contract_date > d['due_date']:
@@ -268,8 +279,9 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                         updated_by_user=self.request.user,
                     )
 
-
-                
+                    # update Lot
+                    lot.latest_update = d['statement_date']
+                    lot.save()
 
         messages.success(self.request, 'Operação realizada com sucesso')
         return super().form_valid(form)
