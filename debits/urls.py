@@ -1,5 +1,5 @@
 from django.urls import path
-from debits.views import EnterpriseCreateView, EnterpriseDeleteView, EnterpriseListView, EnterpriseUpdateView, LotCreateView, LotDeleteView, LotInstallmentsListView, LotListView, LotUpdateStatementCreateView, LotUpdateStatementListView, LotUpdateView, SalesContractCreateView
+from debits.views import EnterpriseCreateView, EnterpriseDeleteView, EnterpriseListView, EnterpriseUpdateView, LotCreateView, LotDeleteView, LotInstallmentsListView, LotListView, LotUpdateStatementCreateView, LotUpdateStatementListView, LotUpdateView, SalesContractCreateView, SalesContractUpdateView
 
 
 urlpatterns = [
@@ -18,6 +18,7 @@ urlpatterns = [
 
 
     path('sales_contract/create/<int:enterprise_pk>/<int:lot_pk>', SalesContractCreateView.as_view(), name='sales_contract_create'),
+    path('sales_contract/update/<int:enterprise_pk>/<int:pk>', SalesContractUpdateView.as_view(), name='sales_contract_update'),
 
 
 ]

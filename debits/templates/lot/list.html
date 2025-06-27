@@ -114,14 +114,42 @@
                                 </li>
                                 <hr>
                                 <p class="fs-7 text-secondary mx-3 my-0">
-                                    Ações
+                                    Contrato
                                 </p>
+                                {% if object.sales_contracts.all %}
+
+                                {% for sales_contract in object.sales_contracts.all %}
+
+                                {% if sales_contract.is_active == 1 %}
+                                <li>
+                                    <a class="dropdown-item text-danger" href="">
+                                        Cancelar contrato
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="{% url 'sales_contract_update' enterprise.id sales_contract.id %}">
+                                        Cessão
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                {% endfor %}
+
+                                {% else %}
                                 <li>
                                     <a class="dropdown-item"
                                         href="{% url 'sales_contract_create' enterprise.id object.id %}">
                                         Novo contrato
                                     </a>
                                 </li>
+
+                                {% endif %}
+
+                                <hr>
+                                <p class="fs-7 text-secondary mx-3 my-0">
+                                    Ações
+                                </p>
                                 <li>
                                     <a class="dropdown-item" href="{% url 'lot_update' enterprise.id object.id %}">
                                         Editar

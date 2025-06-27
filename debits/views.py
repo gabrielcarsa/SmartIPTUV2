@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 import pdfplumber
-from debits.forms import LotDebitsForm, LotForm, SalesContractForm
+from debits.forms import LotDebitsForm, LotForm, SalesContractForm, SalesContractUpdateForm
 from debits.models import Enterprise, Lot, SalesContract
 from financials.models import AccountHolder, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
 from django.db.models import Sum
@@ -185,7 +185,7 @@ class LotDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
     
-# List installments debits of IPTU
+# List the lot's iptu installments
 class LotInstallmentsListView(LoginRequiredMixin, ListView):
     model = FinancialTransactionInstallment
     template_name = 'lot/list_installments.html'
@@ -315,6 +315,7 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
 # SALES CONTRACT
 # -----------------------------------
 
+# Create
 class SalesContractCreateView(LoginRequiredMixin, CreateView):
     model = SalesContract
     template_name = 'sales_contract/form.html'
@@ -329,6 +330,30 @@ class SalesContractCreateView(LoginRequiredMixin, CreateView):
         form.instance.lot = get_object_or_404(Lot, id=self.kwargs.get('lot_pk')) 
 
         messages.success(self.request, 'Operação realizada com sucesso')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
+    
+# Update CustomerSupplier - assignment of rights
+class SalesContractUpdateView(LoginRequiredMixin, UpdateView):
+    model = SalesContract
+    template_name = 'sales_contract/form.html'
+    form_class = SalesContractUpdateForm
+
+    def form_valid(self, form):
+
+        form.instance.updated_by_user = self.request.user
+
+        messages.success(self.request, 'Operação realizada com sucesso')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro')
         return super().form_valid(form)
     
     def get_success_url(self):
