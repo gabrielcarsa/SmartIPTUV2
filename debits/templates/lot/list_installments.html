@@ -28,15 +28,23 @@
     <div class="row g-3">
         <div class="col-sm-4">
             <div class="border p-3 rounded">
+                {% for sales_contract in lot.sales_contracts.all %}
+
+                {% if sales_contract.is_active == 1 %}
                 <p class="m-0 text-black fs-5 fw-bold">
-                    {{lot.sales_contracts.customer_supplier.name}}
+                    {{sales_contract.customer_supplier.name}}
                 </p>
                 <p class="m-0">
-                    {{lot.sales_contracts.customer_supplier.phone1}}, {{lot.sales_contracts.customer_supplier.phone2}}
+                    {{sales_contract.customer_supplier.phone1}},
+                    {{sales_contract.customer_supplier.phone2}}
                 </p>
                 <p class="m-0">
-                    Data da compra: {{lot.sales_contracts.contract_date|date:'d/m/Y'}}
+                    Data da compra: {{sales_contract.contract_date|date:'d/m/Y'}}
                 </p>
+                {% endif %}
+
+                {% endfor %}
+
             </div>
         </div>
         <div class="col-sm-4">

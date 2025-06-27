@@ -48,17 +48,33 @@
                         {{object.lot}}
                     </td>
                     <td>
-                        {{object.sales_contracts.customer_supplier.name}}
+                        {% for sales_contract in object.sales_contracts.all %}
+
+                        {% if sales_contract.is_active == 1 %}
+
+                        {{sales_contract.customer_supplier.name}}
                         <p class="m-0 text-secondary fs-7">
-                            {{object.sales_contracts.contract_date|date:'d/m/Y'}}
+                            {{sales_contract.contract_date|date:'d/m/Y'}}
                         </p>
+
+                        {% endif %}
+
+                        {% endfor %}
                     </td>
                     <td>
                         {{object.municipal_registration}}
                     </td>
                     <td class="fs-7">
-                        {{object.sales_contracts.customer_supplier.phone1}},
-                        {{object.sales_contracts.customer_supplier.phone2}}
+                        {% for sales_contract in object.sales_contracts.all %}
+
+                        {% if sales_contract.is_active == 1 %}
+
+                        {{sales_contract.customer_supplier.phone1}},
+                        {{sales_contract.customer_supplier.phone2}}
+
+                        {% endif %}
+
+                        {% endfor %}
                     </td>
                     <td>
                         {% if object.is_property_deed %}
