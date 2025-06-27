@@ -2,9 +2,9 @@
 
 
 <!-- SIDEBAR -->
-<div class="collapse collapse-horizontal show sticky" id="collapseSidebar">
+<div class="collapse collapse-horizontal show" id="collapseSidebar">
 
-    <div class="m-0 border-end border-bottom bg-white min-vh-100 py-3">
+    <div class="m-0 border-end border-bottom bg-white min-vh-100 py-3 sticky-top">
 
         <!-- ACCORDION -->
         <div class="accordion accordion-flush" id="accordionSidebar">
@@ -24,8 +24,7 @@
                     class="accordion-collapse collapse {% if 'debits' in request.path|urlencode %}show{% endif %}"
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
-                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
-                            style="border-left-width: 4px !important;">
+                        <ul class="fw-medium">
                             <li class="my-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'enterprise/' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
                                     href="{% url 'enterprise_list' %}">
@@ -66,8 +65,7 @@
                     class="accordion-collapse collapse {% if 'customer-supplier' in request.path|urlencode %}show{% endif %}"
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
-                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
-                            style="border-left-width: 4px !important;">
+                        <ul class="fw-medium">
                             <li class="my-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
                                     href="{% url 'customer_supplier_list' %}">
@@ -95,8 +93,7 @@
                     class="accordion-collapse collapse {% if 'financials' in request.path|urlencode %}show{% endif %}"
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
-                        <ul class="fw-medium border-start border-secondary mx-2 ps-2"
-                            style="border-left-width: 4px !important;">
+                        <ul class="fw-medium">
                             <li class="my-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_transaction_list' %}">
