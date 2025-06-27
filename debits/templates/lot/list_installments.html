@@ -28,11 +28,24 @@
     <div class="row g-3">
         <div class="col-sm-4">
             <div class="border p-3 rounded">
+                <p class="m-0 text-black fs-5 fw-bold">
+                    {{lot.sales_contracts.customer_supplier.name}}
+                </p>
+                <p class="m-0">
+                    {{lot.sales_contracts.customer_supplier.phone1}}, {{lot.sales_contracts.customer_supplier.phone2}}
+                </p>
+                <p class="m-0">
+                    Data da compra: {{lot.sales_contracts.contract_date|date:'d/m/Y'}}
+                </p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="border p-3 rounded">
                 <p class="m-0">
                     IPTU EMPRESA
                 </p>
                 <p class="m-0 fs-4 text-black">
-                    R$ {{amount_company}}
+                    R$ {{company_total_debt}}
                 </p>
             </div>
         </div>
@@ -42,7 +55,7 @@
                     IPTU CLIENTE
                 </p>
                 <p class="m-0 fs-4 text-black">
-                    R$ {{amount_costumer}}
+                    R$ {{costumer_total_debt}}
                 </p>
             </div>
 

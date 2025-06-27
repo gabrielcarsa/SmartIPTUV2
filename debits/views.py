@@ -194,13 +194,20 @@ class LotInstallmentsListView(LoginRequiredMixin, ListView):
         return FinancialTransactionInstallment.objects.filter(financial_transaction__lot = self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
+
+        # get Lot
         context['lot'] = get_object_or_404(Lot, id=self.kwargs['pk'])
-        context['amount_company'] = FinancialTransactionInstallment.objects.filter(
+
+        # total company debts
+        context['company_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
             financial_transaction__type = 0
         ).aggregate(total=Sum('amount'))['total'] or 0
-        context['amount_costumer'] = FinancialTransactionInstallment.objects.filter(
+
+        # total costumer debts
+        context['costumer_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
             financial_transaction__type = 1
         ).aggregate(total=Sum('amount'))['total'] or 0
