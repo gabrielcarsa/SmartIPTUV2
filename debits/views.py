@@ -1,7 +1,8 @@
 from datetime import datetime
 import re
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -321,6 +322,20 @@ class SalesContractCreateView(LoginRequiredMixin, CreateView):
     template_name = 'sales_contract/form.html'
     form_class = SalesContractForm
 
+    def dispatch(self, request, *args, **kwargs):
+
+        lot = get_object_or_404(Lot, id=self.kwargs.get('lot_pk')) 
+
+        sales_contract = SalesContract.objects.filter(lot=lot, is_active=1).first()
+
+        # if alredy exists active contract
+        if sales_contract:
+            messages.error(self.request, 'Já existe um contrato ativo para esse lote, faço primeiro o cancelamento do contrato atual!')
+            return redirect('lot_list', enterprise_pk=self.kwargs.get('enterprise_pk'))
+
+        return super().dispatch(request, *args, **kwargs)
+        
+
     def form_valid(self, form):
 
         # user to save
@@ -358,3 +373,16 @@ class SalesContractUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
+    
+# Cancel
+class SalesContractCancelView(LoginRequiredMixin, View):
+    template_name = 'sales_contract/cancel.html'
+
+    def get(self, request, *args, **kwargs):
+
+        sales_contract = get_object_or_404(SalesContract, id=kwargs.get('pk'))
+        sales_contract.is_active = 0
+        sales_contract.save()
+
+        messages.success(self.request, 'Contrato cancelado com sucesso')
+        return redirect('lot_list', enterprise_pk=self.kwargs.get('enterprise_pk'))

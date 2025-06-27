@@ -116,13 +116,19 @@
                                 <p class="fs-7 text-secondary mx-3 my-0">
                                     Contrato
                                 </p>
-                                {% if object.sales_contracts.all %}
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="{% url 'sales_contract_create' enterprise.id object.id %}">
+                                        Novo contrato
+                                    </a>
+                                </li>
 
                                 {% for sales_contract in object.sales_contracts.all %}
 
                                 {% if sales_contract.is_active == 1 %}
                                 <li>
-                                    <a class="dropdown-item text-danger" href="">
+                                    <a class="dropdown-item text-danger"
+                                        href="{% url 'sales_contract_cancel' enterprise.id sales_contract.id %}">
                                         Cancelar contrato
                                     </a>
                                 </li>
@@ -135,17 +141,6 @@
                                 {% endif %}
 
                                 {% endfor %}
-
-                                {% else %}
-                                <li>
-                                    <a class="dropdown-item"
-                                        href="{% url 'sales_contract_create' enterprise.id object.id %}">
-                                        Novo contrato
-                                    </a>
-                                </li>
-
-                                {% endif %}
-
                                 <hr>
                                 <p class="fs-7 text-secondary mx-3 my-0">
                                     Ações
