@@ -19,12 +19,13 @@ def extract_debits(pdf_path):
     debits = []
     municipal_registration = None
     statement_date = None
+    taxpayer = None
 
     # PDF Pumbler to open PDF and extract data
     with pdfplumber.open(pdf_path) as pdf:
 
         # for in pages
-        for page in pdf.pages:
+        for page_num, page in enumerate(pdf.pages):
 
             # extract text
             text = page.extract_text()
@@ -33,16 +34,17 @@ def extract_debits(pdf_path):
             lines = text.split('\n')
 
             # Search municipal registration only in the first page
-            if not municipal_registration:
+            if page_num == 0:  # Verifica apenas na primeira página
                 for line in lines:
                     if 'Inscrição Imóvel:' in line:
-
-                        # Match of municipal_registration and statement_date
                         match = re.search(r'Inscrição Imóvel:\s+(\d+)\s+(\d{2}/\d{2}/\d{4})\s+(\d{2}:\d{2}:\d{2})', line)
                         if match:
                             municipal_registration = match.group(1)
                             statement_date = datetime.strptime(f"{match.group(2)} {match.group(3)}", "%d/%m/%Y %H:%M:%S")
-                        break
+                    if 'Contribuinte:' in line:
+                        match = re.search(r'Contribuinte:\s+(.*)', line)
+                        if match:
+                            taxpayer = match.group(1).strip()
         
         
             # for in lines
@@ -65,7 +67,7 @@ def extract_debits(pdf_path):
                         'description': description.upper() if description else None,
                         'statement_date': statement_date,
                         'municipal_registration': municipal_registration,
-
+                        'taxpayer': taxpayer,
                     })
     return debits
 
@@ -252,11 +254,23 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                     sales_contract = SalesContract.objects.filter(lot=lot, is_active=1).first()
 
                     # get the Company register
-                    account_holder = AccountHolder.objects.filter(customer_supplier__type_customer_supplier__name__iexact='Empresa').first()
+                    account_holder = AccountHolder.objects.filter(
+                        customer_supplier__type_customer_supplier__name__iexact='Empresa'
+                    ).first()
 
                     if not account_holder:
                         messages.error(self.request, 'Não encontrado Titular de Conta com cadastro de Empresa.')
                         return super().form_invalid(form)
+                    
+                    # check if is property deed 
+                    if d['taxpayer'] != account_holder.customer_supplier.name:
+                        lot.is_property_deed = True
+                    else:
+                        lot.is_property_deed = False
+
+                    # update Lot
+                    lot.latest_update = d['statement_date']
+                    lot.save()
                     
                     # verify sales contract and date to define transaction type
                     if sales_contract:
@@ -303,9 +317,6 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                         updated_by_user=self.request.user,
                     )
 
-                    # update Lot
-                    lot.latest_update = d['statement_date']
-                    lot.save()
 
         messages.success(self.request, 'Operação realizada com sucesso')
         return super().form_valid(form)
