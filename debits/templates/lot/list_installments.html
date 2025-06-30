@@ -75,7 +75,7 @@
             <thead>
                 <tr>
                     <th scope="col">Tipo</th>
-                    <th scope="col">Data</th>
+                    <th scope="col">Vencimento</th>
                     <th scope="col">Categoria</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Valor Total</th>
@@ -84,23 +84,33 @@
             <tbody>
                 {% for object in financialtransactioninstallment_list %}
                 <tr>
-                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
+                    <td class="">
                         {% if object.financial_transaction.type == 0 %}
-                        EMPRESA
+                        <p class="m-0 icon-link bg-danger-subtle p-2 rounded-4 fs-7">
+                            <span class="material-symbols-outlined me-1 text-danger">
+                                call_received
+                            </span>
+                            A pagar
+                        </p>
                         {% else %}
-                        CLIENTE
+                        <p class="m-0 icon-link bg-success-subtle p-2 rounded-4 fs-7">
+                            <span class="material-symbols-outlined me-1 text-success">
+                                call_made
+                            </span>
+                            A receber
+                        </p>
                         {% endif %}
                     </td>
-                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
+                    <td class="">
                         {{object.due_date|date:'d/m/Y'}}
                     </td>
-                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
+                    <td class="">
                         {{object.financial_transaction.financial_category.name}}
                     </td>
-                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
+                    <td class="">
                         {{object.financial_transaction.description}}
                     </td>
-                    <td class="{% if object.financial_transaction.type == 1 %}bg-danger-subtle{% endif %}">
+                    <td class="">
                         {{object.amount}}
                     </td>
                 </tr>

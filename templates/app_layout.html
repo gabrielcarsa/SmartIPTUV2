@@ -34,7 +34,7 @@
                     menu_open
                 </span>
             </button>
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">
                 <img src="{% static 'images/logo.png' %}" width="60px" class="" alt="smart">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -46,7 +46,7 @@
                     {% block usertools %}
                     {% if user.is_authenticated %}
                     <div class="nav-item list-unstyled dropdown">
-                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        <button class="btn dropdown-toggle text-uppercase" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             {% firstof user.get_short_name user.get_username %}
                         </button>
