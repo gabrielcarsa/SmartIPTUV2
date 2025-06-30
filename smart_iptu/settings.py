@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-_-51_*0$)pp2rlot6f6a$^ej1=n1ud=tgq_26v2qm#cp06!baz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['smartiptu.ghctecnologia.com', 'www.smartiptu.ghctecnologia.com', '127.0.0.1']
 
 # Application definition
 
@@ -139,6 +139,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+STATIC_ROOT = '/var/www/smartiptu/staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
