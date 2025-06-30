@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView
+from django.db.models import Sum
+from financials.models import FinancialTransactionInstallment
 from .forms import EmailLoginForm
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,4 +17,19 @@ class CustomLoginView(LoginView):
 # INTENAL PAGE
 class DashboardTemplateView(LoginRequiredMixin, TemplateView):
    template_name = 'users/dashboard.html'
+
+   def get_context_data(self, **kwargs):
+      context = super().get_context_data(**kwargs)
+      context["total_debts"] = FinancialTransactionInstallment.objects.filter(
+         financial_transaction__lot__isnull=False, 
+      ).aggregate(Sum('amount'))
+      context["total_debts_company"] = FinancialTransactionInstallment.objects.filter(
+         financial_transaction__lot__isnull=False, 
+         financial_transaction__type = 0
+      ).aggregate(Sum('amount'))
+      context["total_debts_costumers"] = FinancialTransactionInstallment.objects.filter(
+         financial_transaction__lot__isnull=False, 
+         financial_transaction__type = 1
+      ).aggregate(Sum('amount'))
+      return context
 

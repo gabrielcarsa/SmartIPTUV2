@@ -1,7 +1,84 @@
 {% extends 'app_layout.html' %}
 
 {% block content %}
-dashboard
+
+<section class="m-3">
+    <p class="m-0">
+        Acesso rápido:
+    </p>
+    <div class="d-flex">
+        <div class="me-2">
+            <a href="{% url 'financial_movements_list' %}"
+                class="icon-link bg-white rounded p-2 text-decoration-none shadow shadow-sm text-dark">
+                <span class="material-symbols-outlined text-black-50">
+                    currency_exchange
+                </span>
+                Movimentações Financeiras
+            </a>
+        </div>
+        <div class="me-2">
+            <a href="{% url 'lot_debits_create' %}"
+                class="icon-link bg-white rounded p-2 text-decoration-none shadow shadow-sm text-dark">
+                <span class="material-symbols-outlined text-black-50">
+                    receipt
+                </span>
+                Importar extrato do IPTU
+            </a>
+        </div>
+        <div class="me-2">
+            <a href="{% url 'customer_supplier_create' %}"
+                class="icon-link bg-white rounded p-2 text-decoration-none shadow shadow-sm text-dark">
+                <span class="material-symbols-outlined text-black-50">
+                    groups
+                </span>
+                Cadastro de cliente ou Fornecedor
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="m-3">
+    <h2 class="m-0">
+        Controle de débitos
+    </h2>
+    <p>
+        Abaixo somente débitos relacionados ao lote, como IPTU.
+    </p>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <p class="m-0">
+                    Geral
+                </p>
+                <p class="m-0 fs-4 text-black">
+                    R$ {{total_debts.amount__sum}}
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <p class="m-0">
+                    Débitos a pagar (EMPRESA)
+                </p>
+                <p class="m-0 fs-4 text-black">
+                    R$ {{total_debts_company.amount__sum}}
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <p class="m-0">
+                    Débitos a receber (CLIENTES)
+                </p>
+                <p class="m-0 fs-4 text-black">
+                    R$ {{total_debts_costumers.amount__sum}}
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+</section>
 
 {% endblock %}
-
