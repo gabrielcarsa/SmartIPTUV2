@@ -13,6 +13,7 @@ from debits.models import Enterprise, Lot, SalesContract
 from financials.models import AccountHolder, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
 from django.db.models import Sum
 from django.db.models import OuterRef, Subquery
+from django.utils import timezone
 
 # Function do help extract data of debit statement
 def extract_debits(pdf_path):
@@ -136,7 +137,8 @@ class LotListView(LoginRequiredMixin, ListView):
         # query total debts per costumer
         costumer_total_debt = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = OuterRef("pk"), 
-            financial_transaction__type = 1
+            financial_transaction__type = 1,
+            due_date__lte= timezone.now(),
         ).values(
             'financial_transaction__lot' # groups the results by Lot.
         ).annotate(
@@ -221,13 +223,15 @@ class LotInstallmentsListView(LoginRequiredMixin, ListView):
         # total company debts
         context['company_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
-            financial_transaction__type = 0
+            financial_transaction__type = 0,
+            due_date__lte= timezone.now(),
         ).aggregate(total=Sum('amount'))['total'] or 0
 
         # total costumer debts
         context['costumer_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
-            financial_transaction__type = 1
+            financial_transaction__type = 1,
+            due_date__lte= timezone.now(),
         ).aggregate(total=Sum('amount'))['total'] or 0
 
         return context
