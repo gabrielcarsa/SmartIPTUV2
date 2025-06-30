@@ -78,21 +78,21 @@
                     </td>
                     <td>
                         {% if object.is_property_deed %}
-                        <p class="icon-link rounded-4 p-2 bg-primary-subtle text-dark fs-7 fw-bold">
+                        <div class="icon-link rounded-4 p-2 bg-primary-subtle text-dark fs-7 fw-bold">
                             <span class="material-symbols-outlined fill-icon">
                                 license
                             </span>
                             ESCRITURADO
-                        </p>
+                        </div>
                         {% else %}
 
                         {% if object.financial_transaction_lot.all %}
-                        <p class="icon-link rounded-4 p-2 bg-danger-subtle text-dark fs-7 fw-bold">
+                        <div class="icon-link rounded-4 p-2 bg-danger-subtle text-dark fs-7 fw-bold">
                             <span class="material-symbols-outlined fill-icon">
                                 error
                             </span>
-                            DÉBITOS
-                        </p>
+                            {{object.costumer_total_debt}}
+                        </div>
                         {% endif %}
 
                         {% endif %}

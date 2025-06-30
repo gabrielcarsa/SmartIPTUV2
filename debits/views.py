@@ -12,6 +12,7 @@ from debits.forms import LotDebitsForm, LotForm, SalesContractForm, SalesContrac
 from debits.models import Enterprise, Lot, SalesContract
 from financials.models import AccountHolder, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
 from django.db.models import Sum
+from django.db.models import OuterRef, Subquery
 
 # Function do help extract data of debit statement
 def extract_debits(pdf_path):
@@ -131,8 +132,22 @@ class LotListView(LoginRequiredMixin, ListView):
     template_name = 'lot/list.html'
 
     def get_queryset(self):
+
+        # query total debts per costumer
+        costumer_total_debt = FinancialTransactionInstallment.objects.filter(
+            financial_transaction__lot = OuterRef("pk"), 
+            financial_transaction__type = 1
+        ).values(
+            'financial_transaction__lot' # groups the results by Lot.
+        ).annotate(
+            total_debt=Sum('amount') # calculates the sum of the values of the installments in this Lot
+        ).values('total_debt') # subquery return only the total_debt column
+        
+        # Lot with total debts per costumer
         return Lot.objects.filter(
             block__enterprise=self.kwargs['enterprise_pk']
+        ).annotate(
+            costumer_total_debt=Subquery(costumer_total_debt)
         ).order_by('block__name', 'lot')
 
     def get_context_data(self, **kwargs):
