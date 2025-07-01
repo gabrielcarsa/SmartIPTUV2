@@ -26,6 +26,7 @@ env = environ.Env()
 
 # read the .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+print("DEBUG DB_HOST:", env("DB_HOST", default="NÃO DEFINIDO"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
