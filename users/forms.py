@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from .models import Profile
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class EmailLoginForm(AuthenticationForm):
     password = forms.CharField(
@@ -55,7 +57,7 @@ class RegisterForm(UserCreationForm):
             'autofocus': 'autofocus',
         })
     )
-        
+
     class Meta:
         model = User
         fields = ('first_name', 'email', 'phone', 'password1', 'password2')
