@@ -168,10 +168,17 @@ class FinancialCategoryForm(BaseForm):
 # ---------------------
 
 class OFXUploadForm(forms.Form):
-    file = forms.FileField(label='Selecione o arquivo OFX')
+    file = forms.FileField(label='Selecione o arquivo OFX', required=False)
 
 
 class OFXMovementForm(BaseForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            existing_classes = field.widget.attrs.get('class', '')
+            field.widget.attrs['class'] = f'{existing_classes} fs-7'.strip()
 
     class Meta:
         model = FinancialMovement
@@ -195,6 +202,6 @@ class OFXMovementForm(BaseForm):
         widget=forms.Select()
     )
 
-MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=0, can_delete=True)
+MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=10, can_delete=True)
 
         

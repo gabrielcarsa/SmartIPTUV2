@@ -2,6 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 import json
 from django.contrib import messages
+from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -10,7 +11,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from ofxparse import OfxParser
 from financials.filters import FinancialMovementFilter, FinancialTransactionInstallmentFilter
-from financials.forms import AccountHolderForm, CheckingAccountForm, FinancialCategoryForm, MovimentsFormSet, OFXUploadForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
+from financials.forms import AccountHolderForm, CheckingAccountForm, FinancialCategoryForm, MovimentsFormSet, OFXMovementForm, OFXUploadForm, TransactionForm, TransactionInstallmentAmountForm, TransactionInstallmentDueDateForm, TransactionInstallmentSettlementFormSet
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from dateutil.relativedelta import relativedelta
@@ -564,25 +565,35 @@ class MovementImportOFXView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
 
-        # catch file
-        ofx_file = form.cleaned_data['file']
-        ofx = OfxParser.parse(ofx_file)
 
         # array initial data
         initial_data = []
 
-        # for in transactions
-        for transaction in ofx.account.statement.transactions:
+        # catch file
+        ofx_file = form.cleaned_data['file']
 
-            # add on array transactions data
-            initial_data.append({
-                'movement_date': transaction.date,
-                'amount': Decimal(abs(transaction.amount)),
-                'description': transaction.memo,
-                'type': 1 if transaction.amount > 0 else 0,
-            })
+        if ofx_file:
+
+            ofx = OfxParser.parse(ofx_file)
+
+            # for in transactions
+            for transaction in ofx.account.statement.transactions:
+
+                # add on array transactions data
+                initial_data.append({
+                    'movement_date': transaction.date,
+                    'amount': Decimal(abs(transaction.amount)),
+                    'description': transaction.memo,
+                    'type': 1 if transaction.amount > 0 else 0,
+                })
 
         # define formset
+        MovimentsFormSet = formset_factory(
+            OFXMovementForm,
+            extra=0 if initial_data else 10,
+            can_delete=True
+        )
+
         formset = MovimentsFormSet(initial=initial_data)
 
         # render html to review before save
