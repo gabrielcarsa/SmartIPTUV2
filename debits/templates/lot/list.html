@@ -26,7 +26,7 @@
 <div class="card-smart">
 
     <div class="table-responsive">
-        <table class="table align-middle mb-3 text-center">
+        <table class="table table-striped align-middle mb-3 text-center">
             <thead>
                 <tr>
                     <th scope="col">Quadra</th>
@@ -78,8 +78,8 @@
                     </td>
                     <td>
                         {% if object.is_property_deed %}
-                        <div class="icon-link rounded-4 p-2 bg-primary-subtle text-dark fs-7 fw-bold">
-                            <span class="material-symbols-outlined fill-icon">
+                        <div class="icon-link rounded-4 p-2 bg-primary-subtle fw-medium text-dark fs-7">
+                            <span class="material-symbols-outlined fill-icon fs-5">
                                 license
                             </span>
                             ESCRITURADO
@@ -87,8 +87,8 @@
                         {% else %}
 
                         {% if object.financial_transaction_lot.all %}
-                        <div class="icon-link rounded-4 p-2 bg-danger-subtle text-dark fs-7 fw-bold">
-                            <span class="material-symbols-outlined fill-icon">
+                        <div class="icon-link rounded-4 p-2 bg-danger-subtle text-dark fs-7 fw-medium">
+                            <span class="material-symbols-outlined fill-icon fs-5">
                                 error
                             </span>
                             {{object.costumer_total_debt}}

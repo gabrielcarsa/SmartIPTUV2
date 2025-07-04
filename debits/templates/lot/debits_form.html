@@ -16,11 +16,39 @@
 <!-- FIM HEADER -->
 
 <div class="card-smart">
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Enviar" class="btn-smart my-3">
-    </form>
+
+    <div class="row">
+        <div class="col-md-6">
+            <span class="material-symbols-outlined text-white bg-smart p-2 rounded-circle">
+                article_shortcut
+            </span>
+            <p class="my-2">
+                Faça upload do extrato baixado da inscrição municipal para cadastrar os débitos e ter controle total.
+            </p>
+            <p>
+                Somente habilitado para extratos retirados no site:
+                <a href="https://iptu.campogrande.ms.gov.br/">
+                    https://iptu.campogrande.ms.gov.br/
+                </a>
+            </p>
+            <ul>
+                <li>
+                    Somente PDF.
+                </li>
+                <li>
+                    Máximo 30 arquivos por vez.
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Enviar" class="btn-smart my-3">
+            </form>
+        </div>
+    </div>
+
 
 </div>
 
