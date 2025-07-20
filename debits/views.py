@@ -312,7 +312,7 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                         )
 
                     # delete all transactions in the Lot to create news them below
-                    for t in FinancialTransaction.objects.filter(lot=lot):
+                    for t in FinancialTransaction.objects.filter(lot=lot, created_at__lt=timezone.now()):
                         t.delete()
 
                     # create transaction
