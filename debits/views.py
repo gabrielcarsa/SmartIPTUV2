@@ -311,6 +311,10 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                             updated_by_user=self.request.user,
                         )
 
+                    # delete all transactions in the Lot to create news them below
+                    for t in FinancialTransaction.objects.filter(lot=lot):
+                        t.delete()
+
                     # create transaction
                     transaction = FinancialTransaction.objects.create(
                         type=transaction_type,
