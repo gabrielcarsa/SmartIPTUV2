@@ -177,8 +177,8 @@
                 <tr>
                     <td class="text-secondary fs-7">
                         <a
-                            href="{% url 'financial_transaction_list' %}?id={{movement.financial_transaction_installment.id|int}}">
-                            #{{movement.financial_transaction_installment.id|int}}
+                            href="{% url 'financial_transaction_list' %}?id={{movement.financial_transaction_installment.id|cut:'.'}}">
+                            #{{movement.financial_transaction_installment.id|cut:'.'}}
                         </a>
                     </td>
                     <td>
