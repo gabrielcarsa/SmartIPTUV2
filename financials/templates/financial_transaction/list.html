@@ -146,11 +146,11 @@
                 <tr>
                     <td>
                         <p class="fs-7 text-secondary m-0">
-                            #{{installment.id}}
+                            #{{installment.id|cut:'.'}}
                         </p>
-                        <input data-bs-toggle="collapse" href="#collapseinstallment{{installment.id}}" role="button"
-                            aria-expanded="false" aria-controls="collapseinstallment{{installment.id}}" type="checkbox"
-                            id="" name="checkboxes[]" value="{{ installment.id }}" />
+                        <input data-bs-toggle="collapse" href="#collapseinstallment{{installment.id|cut:'.'}}" role="button"
+                            aria-expanded="false" aria-controls="collapseinstallment{{installment.id|cut:'.'}}" type="checkbox"
+                            id="" name="checkboxes[]" value="{{ installment.id|cut:'.' }}" />
                     </td>
                     <td>
                         {% if installment.financial_transaction.type == 0 %}
@@ -184,7 +184,7 @@
                     <td>R$ {{installment.amount}}</td>
                     <td>{% if installment.status == 0 %}Em aberto{%else%}Pago{%endif%}</td>
                 </tr>
-                <td colspan="11" class="collapse" id="collapseinstallment{{installment.id}}">
+                <td colspan="11" class="collapse" id="collapseinstallment{{installment.id|cut:'.'}}">
                     <div class="p-3 text-start bg-light">
                         <p class="m-0 fw-bold">
                             Descrição
