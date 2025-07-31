@@ -191,7 +191,7 @@ class OFXMovementForm(BaseForm):
     )
 
     customer_supplier = forms.ModelChoiceField(
-        queryset=CustomerSupplier.objects.all().filter('name'),
+        queryset=CustomerSupplier.objects.all().order_by('name'),
         required=True,
         widget=forms.Select()
     )
