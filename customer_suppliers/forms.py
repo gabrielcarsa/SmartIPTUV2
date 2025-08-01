@@ -13,7 +13,7 @@ class CustomerSupplierForm(BaseForm):
         model = CustomerSupplier
         fields = ['type_customer_supplier', 'name', 'email', 'phone1', 'phone2', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
         widgets = {
-            'type_customer_supplier': forms.CheckboxSelectMultiple,  # opcional, mais amigável
+            'type_customer_supplier': forms.CheckboxSelectMultiple(attrs={'required': 'required'}),
             'name': forms.TextInput(attrs={'placeholder': 'Ex.: Gabriel Henrique', 'autocomplete': 'off'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'Digite CPF, caso loja for pessoa física', 'autocomplete': 'off'}),
             'cnpj': forms.TextInput(attrs={'placeholder': 'Digite CNPJ, caso loja for pessoa jurídica', 'autocomplete': 'off'}),

@@ -13,7 +13,7 @@ class TypeCustomerSupplier(models.Model):
     
 
 class CustomerSupplier(models.Model):
-    type_customer_supplier = models.ManyToManyField(TypeCustomerSupplier, verbose_name='Tipo de cadastro')
+    type_customer_supplier = models.ManyToManyField(TypeCustomerSupplier, verbose_name='Tipo de cadastro', blank=False)
     name = models.CharField('Nome ou Razão Social', max_length=100)
     cnpj = models.CharField('CNPJ', max_length=20, null=True, blank=True)
     cpf = models.CharField('CPF', max_length=20, null=True, blank=True)

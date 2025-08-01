@@ -8,10 +8,12 @@ charset-normalizer==3.4.1
 cryptography==45.0.4
 cssselect2==0.8.0
 Django==5.1.6
+django-environ==0.12.0
 django-filter==25.1
 django-formtools==2.5.1
 django-json-widget==2.0.1
 django-ratelimit==4.1.0
+django-weasyprint==2.4.0
 django-widget-tweaks==1.5.0
 fonttools==4.58.4
 idna==3.10
@@ -36,6 +38,7 @@ sqlparse==0.5.3
 tinycss2==1.4.0
 tinyhtml5==2.0.0
 typing_extensions==4.12.2
+tzdata==2025.2
 urllib3==2.3.0
 weasyprint==65.1
 webencodings==0.5.1
