@@ -5,7 +5,7 @@ from financials.forms import BaseForm
 class CustomRadioSelect(forms.RadioSelect):
     option_template_name = 'widgets/custom_radio_option.html'
 
-class CustomCheckboxSelectMultiple(forms.RadioSelect):
+class CustomCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     option_template_name = 'widgets/custom_check_option.html'
 
 class CustomerSupplierForm(BaseForm):
@@ -13,7 +13,7 @@ class CustomerSupplierForm(BaseForm):
         model = CustomerSupplier
         fields = ['type_customer_supplier', 'name', 'email', 'phone1', 'phone2', 'cpf', 'cnpj', 'zip_code', 'street', 'neighborhood', 'city', 'state', 'number', 'complement']
         widgets = {
-            'type_customer_supplier': forms.CheckboxSelectMultiple(attrs={'required': 'required'}),
+            'type_customer_supplier': CustomCheckboxSelectMultiple(),
             'name': forms.TextInput(attrs={'placeholder': 'Ex.: Gabriel Henrique', 'autocomplete': 'off'}),
             'cpf': forms.TextInput(attrs={'placeholder': 'Digite CPF, caso loja for pessoa física', 'autocomplete': 'off'}),
             'cnpj': forms.TextInput(attrs={'placeholder': 'Digite CNPJ, caso loja for pessoa jurídica', 'autocomplete': 'off'}),
@@ -26,11 +26,9 @@ class CustomerSupplierForm(BaseForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Remove CSS class of "type_customer_supplier"
-        widget = self.fields['type_customer_supplier'].widget
-        widget.attrs.pop('class', None)
+        # Empty CSS class of "type_customer_supplier"
+        self.fields['type_customer_supplier'].widget.attrs['class'] = ''
 
-    
     def clean_phone(self):
         return BaseForm.clean_phone(self, 'phone1')
     

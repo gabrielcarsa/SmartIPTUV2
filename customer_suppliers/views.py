@@ -13,6 +13,9 @@ class CustomerSupplierListView(LoginRequiredMixin, ListView):
     template_name = 'customer_supplier/list.html'
     paginate_by = 50
 
+    def get_queryset(self):
+        return super().get_queryset().order_by('name')
+
 # Create
 class CustomerSupplierCreateView(LoginRequiredMixin, CreateView):
     model = CustomerSupplier
