@@ -184,6 +184,20 @@ class OFXMovementForm(BaseForm):
         model = FinancialMovement
         fields = ['type', 'customer_supplier', 'category', 'description', 'amount', 'movement_date', 'transaction_installment']
 
+    amount = forms.DecimalField(
+        localize=True,  
+        max_digits=10,
+        required=True,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))],
+        widget=forms.TextInput(attrs={'class': 'money-mask'})
+    )
+
+    movement_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True,
+    )
+
     category = forms.ModelChoiceField(
         queryset=FinancialCategory.objects.all(),
         required=True,
@@ -202,6 +216,6 @@ class OFXMovementForm(BaseForm):
         widget=forms.Select()
     )
 
-MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=10, can_delete=True)
+MovimentsFormSet = forms.modelformset_factory(model=FinancialMovement, form=OFXMovementForm, extra=10, can_delete=True)
 
         

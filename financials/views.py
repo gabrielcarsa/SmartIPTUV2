@@ -622,7 +622,7 @@ class MovementImportSaveView(LoginRequiredMixin, View):
             for form in formset:
 
                 # ignore forms marked by Delete
-                if form.cleaned_data.get('DELETE'):
+                if form.cleaned_data.get('DELETE') or not form.has_changed():
                     continue
 
                 # clean data of form
