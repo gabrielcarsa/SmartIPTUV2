@@ -565,7 +565,6 @@ class MovementImportOFXView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
 
-
         # array initial data
         initial_data = []
 
@@ -699,6 +698,9 @@ class MovementImportSaveView(LoginRequiredMixin, View):
             messages.success(request, f"{count} movimentações salvas com sucesso.")
             return redirect('financial_movements_list')
         else:
+            messages.error(self.request, formset.errors)
+            messages.error(self.request, formset.non_form_errors)
+
             return render(request, 'financial_movement/ofx_review.html', {
                 'formset': formset,
                 'account_holders': models.AccountHolder.objects.all(),
