@@ -26,7 +26,8 @@ class BaseForm(forms.ModelForm):
         # If form has errors, add 'is-invalid' class
         for field in self.errors:
             if field in self.fields:
-                self.fields[field].widget.attrs['class'] += ' is-invalid'
+                css_class = self.fields[field].widget.attrs.get('class', '')
+                self.fields[field].widget.attrs['class'] = (css_class + ' is-invalid').strip()
 
     # Clean phone fields to ensure they contain 10 or 11 digits
     def clean_phone(self, field_name):
