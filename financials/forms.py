@@ -217,6 +217,6 @@ class OFXMovementForm(BaseForm):
         widget=forms.Select()
     )
 
-MovimentsFormSet = forms.modelformset_factory(model=FinancialMovement, form=OFXMovementForm, extra=10, can_delete=True)
+MovimentsFormSet = forms.formset_factory(OFXMovementForm, extra=0, can_delete=True)
 
         
