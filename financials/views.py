@@ -608,7 +608,7 @@ class MovementImportSaveView(LoginRequiredMixin, View):
     def post(self, request):
         
         # formset
-        formset = MovimentsFormSet(request.POST)
+        formset = MovimentsFormSet(request.POST or None, queryset=models.FinancialMovement.objects.none())
 
         if formset.is_valid():
             
