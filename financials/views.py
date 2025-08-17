@@ -208,7 +208,8 @@ class TransactionInstallmentUpdateView(LoginRequiredMixin, View):
             for movement in movements:
 
                 balances = models.CheckingAccountBalance.objects.filter(
-                    balance_date__gte=movement.movement_date
+                    balance_date__gte=movement.movement_date, 
+                    checking_account=movement.checking_account,
                 )
 
                 # update balances
