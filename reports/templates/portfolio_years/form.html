@@ -1,0 +1,44 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="d-lg-flex justify-content-between m-3">
+    <div class="">
+        <h2 class="m-0 fw-bolder fs-3">
+            Relatórios
+        </h2>
+        <p class="m-0">
+            Relatório de Carteira Ambiente Empreendimentos obtidos do LoteMobile.
+        </p>
+    </div>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Ano</th>
+                <th scope="col">Rancho Alegre 1</th>
+                <th scope="col">Rancho Alegre 2</th>
+                <th scope="col">Rancho Alegre 3</th>
+                <th scope="col">Rancho Alegre 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for year, amount in results %}
+            <tr>
+                <td>{{year}}</td>
+                <td>{{amount}}</td>
+                <td>@mdo</td>
+                <td>@mdo</td>
+                <td>@mdo</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{%endblock%}

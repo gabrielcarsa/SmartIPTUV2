@@ -26,13 +26,13 @@
                     <div class="m-0 py-1">
                         <ul class="fw-light">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'enterprise/' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'enterprise/' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'enterprise_list' %}">
                                     Empreendimentos
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'debits/update' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'debits/update' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'lot_debits_list' %}">
                                     Atualização de débitos IPTU
                                 </a>
@@ -61,7 +61,7 @@
                     <div class="m-0 py-1">
                         <ul class="fw-medium">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'customer_supplier_list' %}">
                                     Clientes e Fornecedores
                                 </a>
@@ -89,25 +89,25 @@
                     <div class="m-0 py-1">
                         <ul class="fw-medium">
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_transaction_list' %}">
                                     Contas a pagar / receber
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'financial_movement' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'financial_movement' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_movements_list' %}">
                                     Movimentações
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'financial_category' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'financial_category' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_category_list' %}">
                                     Categorias
                                 </a>
                             </li>
                             <li class="my-2 list-unstyled">
-                                <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-benefit{%else%}text-secondary{% endif %}"
+                                <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'account_holder_list' %}">
                                     Titulares
                                 </a>
@@ -117,6 +117,34 @@
                 </div>
             </div>
             <!-- FIM ACCORDION ITEM -->
+
+            <!-- ACCORDION ITEM -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <a class="accordion-button fs-6 fw-light collapsed text-decoration-none" href=""
+                        data-bs-toggle="collapse" data-bs-target="#collapse-reports" aria-controls="collapse-reports">
+                        <span class="material-symbols-outlined me-2 fw-light text-secondary">
+                            location_city
+                        </span>
+                        Relatórios
+                    </a>
+                </div>
+                <div id="collapse-reports"
+                    class="accordion-collapse collapse {% if 'reports' in request.path|urlencode %}show{% endif %}"
+                    data-bs-parent="#accordionSidebar">
+                    <div class="m-0 py-1">
+                        <ul class="fw-light">
+                            <li class="my-2 list-unstyled">
+                                <a class="text-decoration-none {% if 'reports/portfolio-years' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
+                                    href="{% url 'portfolio_years' %}">
+                                    Carteira anos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+          <!-- FIM ACCORDION ITEM -->
 
         </div>
         <!-- FIM ACCORDION -->
