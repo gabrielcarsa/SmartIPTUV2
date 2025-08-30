@@ -18,7 +18,7 @@ class PortfolioYearsDataView(View):
             "password": "123Mudar#"
         }
 
-        login_response = session.post(login_url, data=payload)
+        login_response = session.post(login_url, data=payload, timeout=15)
         if login_response.status_code != 200:
             return JsonResponse({"error": "Erro ao fazer login."}, status=400)
 
@@ -33,7 +33,7 @@ class PortfolioYearsDataView(View):
 
         if enterprises.exists():
 
-            for i in range(24):
+            for i in range(5):
                 current_year_loop = current_year + i
                 inicio = current_date.strftime("%Y-%m-%d") if i == 0 else f"{current_year_loop}-01-01"
                 fim = f"{current_year_loop}-12-31"
@@ -48,7 +48,7 @@ class PortfolioYearsDataView(View):
                         "socio=&tipo_parcela=Parcela%20Financiamento"
                     )
 
-                    report_form_response = session.get(report_url)
+                    report_form_response = session.get(report_url, timeout=15)
                     if report_form_response.status_code != 200:
                         results[current_year_loop][enterprise.code_erp] = None
                         continue
