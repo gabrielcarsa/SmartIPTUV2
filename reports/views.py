@@ -12,6 +12,9 @@ class PortfolioYearsDataView(View):
     def get(self, request):
         login_url = "https://ambiente.ibsystemlote.com.br/"
         session = requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        })
 
         payload = {
             "username": "gabrielcarsa@hotmail.com",
@@ -33,7 +36,7 @@ class PortfolioYearsDataView(View):
 
         if enterprises.exists():
 
-            for i in range(5):
+            for i in range(24):
                 current_year_loop = current_year + i
                 inicio = current_date.strftime("%Y-%m-%d") if i == 0 else f"{current_year_loop}-01-01"
                 fim = f"{current_year_loop}-12-31"
