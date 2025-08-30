@@ -84,7 +84,7 @@ class EnterpriseListView(LoginRequiredMixin, ListView):
 
 class EnterpriseCreateView(LoginRequiredMixin, CreateView):
     model = Enterprise
-    fields = ['name', 'city', 'state', 'property_registration']
+    fields = ['name', 'city', 'state', 'property_registration', 'erp_code']
     template_name = 'enterprise/form.html'
     success_url = reverse_lazy('enterprise_list')
 
@@ -97,7 +97,7 @@ class EnterpriseCreateView(LoginRequiredMixin, CreateView):
     
 class EnterpriseUpdateView(LoginRequiredMixin, UpdateView):
     model = Enterprise
-    fields = ['name', 'city', 'state', 'property_registration']
+    fields = ['name', 'city', 'state', 'property_registration', 'erp_code']
     template_name = 'enterprise/form.html'
     success_url = reverse_lazy('enterprise_list')
 

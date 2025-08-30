@@ -8,6 +8,7 @@ class Enterprise(models.Model):
     city = models.CharField("Cidade", max_length=100)
     state = models.CharField("Estado", max_length=100)
     property_registration = models.CharField("Matrícula", max_length=30)
+    code_erp = models.CharField("Código ERP", max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enterprise_user_created', verbose_name="Criado por")

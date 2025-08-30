@@ -1,0 +1,80 @@
+{% extends 'app_layout.html' %}
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="d-lg-flex justify-content-between m-3">
+    <div class="">
+        <h2 class="m-0 fw-bolder fs-3">
+            Relatórios
+        </h2>
+        <p class="m-0">
+            Relatório de Carteira Ambiente Empreendimentos obtidos do LoteMobile.
+        </p>
+    </div>
+</div>
+<!-- FIM HEADER -->
+
+<div class="card-smart">
+    <table class="table" id="portfolio-table">
+        <thead>
+            <tr id="portfolio-headers">
+                <th scope="col">Ano</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="height: 200px;"> <!-- altura maior -->
+                <td colspan="5" class="text-center align-middle">
+                    <div class="d-flex flex-column justify-content-center align-items-center">
+                        <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <small class="mt-2 text-muted">Isso pode demorar alguns minutos...</small>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("{% url 'portfolio_years_data' %}")
+            .then(response => response.json())
+            .then(data => {
+                const thead = document.querySelector("#portfolio-headers");
+                const tbody = document.querySelector("#portfolio-table tbody");
+                tbody.innerHTML = "";
+
+                if (data.error) {
+                    tbody.innerHTML = `<tr><td colspan="${data.enterprises.length + 1}">${data.error}</td></tr>`;
+                    return;
+                }
+
+                // Criar cabeçalhos dinamicamente
+                data.enterprises.forEach(ent => {
+                    const th = document.createElement("th");
+                    th.textContent = ent.name;
+                    thead.appendChild(th);
+                });
+
+                // Criar linhas
+                for (const [year, enterprise_data] of Object.entries(data.results)) {
+                    const tr = document.createElement("tr");
+                    let rowHtml = `<td>${year}</td>`;
+
+                    data.enterprises.forEach(ent => {
+                        rowHtml += `<td>${enterprise_data[ent.code_erp] || '-'}</td>`;
+                    });
+
+                    tr.innerHTML = rowHtml;
+                    tbody.appendChild(tr);
+                }
+            })
+            .catch(err => {
+                document.querySelector("#portfolio-table tbody").innerHTML =
+                    `<tr><td colspan="5">Erro: ${err}</td></tr>`;
+            });
+    });
+</script>
+{% endblock %}
