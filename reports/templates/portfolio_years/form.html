@@ -27,13 +27,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for year, amount in results %}
+            {% for year, amounts in results.items %}
             <tr>
-                <td>{{year}}</td>
-                <td>{{amount}}</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
+                <td>{{ year }}</td>
+                <td>{{ amounts.1 }}</td>
+                <td>{{ amounts.2 }}</td>
+                <td>{{ amounts.3 }}</td>
+                <td>{{ amounts.4 }}</td>
             </tr>
             {% endfor %}
         </tbody>
