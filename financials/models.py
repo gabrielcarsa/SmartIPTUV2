@@ -87,6 +87,7 @@ class FinancialTransaction(models.Model):
     account_holder = models.ForeignKey(AccountHolder, on_delete=models.CASCADE, related_name="financial_transactions", verbose_name="Titular da conta")
     financial_category = models.ForeignKey(FinancialCategory, on_delete=models.CASCADE, related_name="transactions", verbose_name="Categorias")
     customer_supplier = models.ForeignKey(CustomerSupplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="transactions", verbose_name="Cliente / Fornecedor")
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='financial_transaction_user_created', verbose_name="Criado por")

@@ -52,7 +52,10 @@ def extract_debits(pdf_path):
             # for in lines
             for line in lines:
                 # Ex.: 2024 PARC IMOB FINANCIADO ... 179,84 AJUIZADO.
-                match = re.match(r'(\d{4})\s+(.*?)\s+[\d\s]+(\d{2}/\d{2}/\d{4})\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+(.*)', line)
+                match = re.match(
+                    r'(\d{4})\s+(.*?)\s+[\d\s]+(\d{2}/\d{2}/\d{4})\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)(?:\s+(.*))?$',
+                    line
+                )
                 
                 # extract useful data
                 if match:
@@ -60,13 +63,13 @@ def extract_debits(pdf_path):
                     debit = match.group(2).strip()
                     due_date = datetime.strptime(match.group(3), '%d/%m/%Y').date()
                     amount = float(match.group(7).replace('.', '').replace(',', '.'))
-                    description = match.group(8).strip().replace('.', '')
+                    description = match.group(8).strip().replace('.', '') if match.group(8) else 'IPTU ANUAL'
                     debits.append({
                         'year': year,
                         'debit': debit,
                         'amount': amount,
                         'due_date': due_date,
-                        'description': description.upper() if description else None,
+                        'description': description.upper(),
                         'statement_date': statement_date,
                         'municipal_registration': municipal_registration,
                         'taxpayer': taxpayer,
@@ -224,14 +227,12 @@ class LotInstallmentsListView(LoginRequiredMixin, ListView):
         context['company_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
             financial_transaction__type = 0,
-            due_date__lte= timezone.now(),
         ).aggregate(total=Sum('amount'))['total'] or 0
 
         # total costumer debts
         context['costumer_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
             financial_transaction__type = 1,
-            due_date__lte= timezone.now(),
         ).aggregate(total=Sum('amount'))['total'] or 0
 
         return context
@@ -255,6 +256,8 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
         # files
         debit_statement_file = form.cleaned_data["files"]
 
+        operation_hour = timezone.now()
+
         # for in files
         for file in debit_statement_file:
 
@@ -268,6 +271,9 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
 
                 # exists Lot
                 if lot:
+
+                    # delete all transactions in the Lot to create news them below
+                    FinancialTransaction.objects.filter(lot=lot, created_at__lt=operation_hour).delete()
                     
                     transaction_type = None
                     sales_contract = SalesContract.objects.filter(lot=lot, is_active=1).first()
@@ -311,9 +317,6 @@ class LotUpdateStatementCreateView(LoginRequiredMixin, FormView):
                             updated_by_user=self.request.user,
                         )
 
-                    # delete all transactions in the Lot to create news them below
-                    for t in FinancialTransaction.objects.filter(lot=lot, created_at__lt=timezone.now().date()):
-                        t.delete()
 
                     # create transaction
                     transaction = FinancialTransaction.objects.create(

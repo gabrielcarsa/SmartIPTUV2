@@ -26,11 +26,12 @@
         Última atualização: {{lot.latest_update}}
     </p>
     <div class="row g-3">
+        {% for sales_contract in lot.sales_contracts.all %}
+
+        {% if sales_contract.is_active == 1 %}
         <div class="col-sm-4">
             <div class="border p-3 rounded">
-                {% for sales_contract in lot.sales_contracts.all %}
 
-                {% if sales_contract.is_active == 1 %}
                 <p class="m-0 text-black fs-5 fw-bold">
                     {{sales_contract.customer_supplier.name}}
                 </p>
@@ -41,12 +42,13 @@
                 <p class="m-0">
                     Data da compra: {{sales_contract.contract_date|date:'d/m/Y'}}
                 </p>
-                {% endif %}
 
-                {% endfor %}
 
             </div>
         </div>
+        {% endif %}
+
+        {% endfor %}
         <div class="col-sm-4">
             <div class="border p-3 rounded">
                 <p class="m-0">
