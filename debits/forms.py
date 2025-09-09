@@ -57,3 +57,5 @@ class SalesContractUpdateForm(BaseForm):
         model = SalesContract
         fields = ['customer_supplier']
 
+class SalesContractUpdateExcelForm(forms.Form):
+    arquivo = forms.FileField(label="Selecione a planilha de contratos")

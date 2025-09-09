@@ -1,5 +1,8 @@
 from datetime import datetime
+import math
 import re
+import unicodedata
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -8,8 +11,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 import pdfplumber
-from debits.forms import LotDebitsForm, LotForm, SalesContractForm, SalesContractUpdateForm
-from debits.models import Enterprise, Lot, SalesContract
+import pandas as pd
+from customer_suppliers.models import CustomerSupplier
+from debits.forms import LotDebitsForm, LotForm, SalesContractForm, SalesContractUpdateExcelForm, SalesContractUpdateForm
+from debits.models import Block, Enterprise, Lot, SalesContract
 from financials.models import AccountHolder, FinancialCategory, FinancialTransaction, FinancialTransactionInstallment
 from django.db.models import Sum
 from django.db.models import OuterRef, Subquery
@@ -423,3 +428,152 @@ class SalesContractCancelView(LoginRequiredMixin, View):
 
         messages.success(self.request, 'Contrato cancelado com sucesso')
         return redirect('lot_list', enterprise_pk=self.kwargs.get('enterprise_pk'))
+
+class SalesContractUpdateExcelView(FormView):
+    template_name = "sales_contract/upload_excel.html"
+    form_class = SalesContractUpdateExcelForm
+
+    def form_valid(self, form):
+        file = form.cleaned_data["arquivo"]
+        updates_contracts = 0
+        created_contracts = 0
+
+        try:
+            df = pd.read_excel(file)
+
+            # Colunas obrigatórias
+            necessary_columns = [
+                "Cliente", "Data Venda", "Quadra", "Lote", "Valor Venda",
+                "Valor Entrada", "Valor Parcela Entrada", "Qtd Entrada",
+                "Qtd Parcelas", "Valor Parcela Financiamento", "1º Vencimento", "Status"
+            ]
+            if not all(col in df.columns for col in necessary_columns):
+                messages.error(self.request, f"Colunas esperadas: {necessary_columns}")
+                return self.form_invalid(form)
+
+            for _, row in df.iterrows():
+                try:
+                    # Dados básicos
+                    customer_name = str(row["Cliente"]).strip() if pd.notna(row["Cliente"]) else ""
+                    block_name = str(row["Quadra"]).strip() if pd.notna(row["Quadra"]) else ""
+                    lot_name = str(row["Lote"]).strip() if pd.notna(row["Lote"]) else ""
+                    status = str(row["Status"]).strip() if pd.notna(row["Status"]) else ""
+
+                    # Datas
+                    def parse_date(value):
+                        if pd.isna(value):
+                            return None
+                        if isinstance(value, datetime):
+                            return value.date()
+                        for fmt in ("%Y-%m-%d", "%d/%m/%Y"):
+                            try:
+                                return datetime.strptime(str(value), fmt).date()
+                            except ValueError:
+                                continue
+                        return None
+
+                    contract_date = parse_date(row["Data Venda"])
+                    start_date = parse_date(row["1º Vencimento"])
+
+                    # Valores numéricos
+                    def parse_decimal(value):
+                        if pd.isna(value):
+                            return None
+                        try:
+                            val = float(str(value).replace(",", "."))
+                            if math.isnan(val):
+                                return None
+                            return val
+                        except (ValueError, TypeError):
+                            return None
+
+                    sale_amount = parse_decimal(row["Valor Venda"])
+                    down_payment = parse_decimal(row["Valor Entrada"])
+                    down_payment_installment_value = parse_decimal(row["Valor Parcela Entrada"])
+                    number_of_installment_down_payment = int(row["Qtd Entrada"]) if pd.notna(row["Qtd Entrada"]) else None
+                    number_of_installment = int(row["Qtd Parcelas"]) if pd.notna(row["Qtd Parcelas"]) else None
+                    installment_value = parse_decimal(row["Valor Parcela Financiamento"])
+
+                    # Validação de dados obrigatórios
+                    if not all([customer_name, block_name, lot_name, status, contract_date, start_date]):
+                        messages.warning(self.request, f"Linha ignorada (dados incompletos) - Lote {lot_name}")
+                        continue
+
+                    # Busca objetos relacionados
+                    block = get_object_or_404(Block, name=block_name, enterprise__id=self.kwargs.get('enterprise_pk'))
+                    lot = get_object_or_404(Lot, lot=lot_name, block=block)
+                    customer_supplier = get_object_or_404(CustomerSupplier, name__iexact=customer_name)
+
+                    # Verifica contrato ativo
+                    active_contract = SalesContract.objects.filter(lot=lot, is_active=True).first()
+
+                    if active_contract:
+                        if active_contract.contract_date == contract_date:
+                            # Mesmo contrato → apenas atualiza dados
+                            active_contract.customer_supplier = customer_supplier
+                            active_contract.status = status
+                            active_contract.start_date = start_date
+                            active_contract.sale_amount = sale_amount
+                            active_contract.down_payment = down_payment
+                            active_contract.number_of_installment_down_payment = number_of_installment_down_payment
+                            active_contract.number_of_installment = number_of_installment
+                            active_contract.installment_value = installment_value
+                            active_contract.updated_by_user = self.request.user
+                            active_contract.save()
+                            updates_contracts += 1
+                        else:
+                            # Contrato diferente → inativa e cria novo
+                            active_contract.is_active = False
+                            active_contract.updated_by_user = self.request.user
+                            active_contract.save()
+
+                            SalesContract.objects.create(
+                                is_active=True,
+                                contract_date=contract_date,
+                                lot=lot,
+                                customer_supplier=customer_supplier,
+                                start_date=start_date,
+                                sale_amount=sale_amount,
+                                down_payment=down_payment,
+                                number_of_installment_down_payment=number_of_installment_down_payment,
+                                number_of_installment=number_of_installment,
+                                installment_value=installment_value,
+                                created_by_user=self.request.user,
+                                updated_by_user=self.request.user
+                            )
+                            created_contracts += 1
+                    else:
+                        # Cria contrato novo
+                        SalesContract.objects.create(
+                            is_active=True,
+                            contract_date=contract_date,
+                            lot=lot,
+                            customer_supplier=customer_supplier,
+                            start_date=start_date,
+                            sale_amount=sale_amount,
+                            down_payment=down_payment,
+                            number_of_installment_down_payment=number_of_installment_down_payment,
+                            number_of_installment=number_of_installment,
+                            installment_value=installment_value,
+                            created_by_user=self.request.user,
+                            updated_by_user=self.request.user
+                        )
+                        created_contracts += 1
+
+                except Exception as e:
+                    messages.error(self.request, f"Erro processando lote {row.get('Lote')}: {e}")
+                    continue
+
+            messages.success(
+                self.request,
+                f"{updates_contracts} contratos atualizados e {created_contracts} criados com sucesso."
+            )
+
+        except Exception as e:
+            messages.error(self.request, f"Erro ao processar a planilha: {e}")
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})

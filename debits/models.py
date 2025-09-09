@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from customer_suppliers.models import CustomerSupplier
 
@@ -75,7 +76,17 @@ class SalesContract(models.Model):
     start_date = models.DateField("Data inicial das parcelas", null=True, blank=True)
     number_of_installment = models.IntegerField("Número de parcelas", null=True, blank=True)
     installment_value = models.DecimalField("Valor das parcelas", max_digits=10, decimal_places=2,  blank=True, null=True)
+    sale_amount = models.DecimalField("Valor venda", max_digits=10, decimal_places=2,  blank=True, null=True)
+    down_payment = models.DecimalField("Valor entrada", max_digits=10, decimal_places=2,  blank=True, null=True)
+    number_of_installment_down_payment = models.IntegerField("Número de parcelas da entrada", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales_contract_user_created', verbose_name="Criado por")
     updated_by_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sales_contract_user_updated', verbose_name="Atualizado por")
+
+    class Meta:
+        verbose_name = 'Contratos de venda'
+        db_table = 'sales_contracts'
+
+        def __str__(self):
+            return self.customer_supplier.name

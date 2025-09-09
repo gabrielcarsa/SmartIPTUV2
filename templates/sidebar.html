@@ -25,13 +25,13 @@
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-light">
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'enterprise/' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'enterprise_list' %}">
                                     Empreendimentos
                                 </a>
                             </li>
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'debits/update' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'lot_debits_list' %}">
                                     Atualização de débitos IPTU
@@ -60,7 +60,7 @@
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-medium">
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'customer-supplier' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'customer_supplier_list' %}">
                                     Clientes e Fornecedores
@@ -88,25 +88,25 @@
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-medium">
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'financial_transaction' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_transaction_list' %}">
                                     Contas a pagar / receber
                                 </a>
                             </li>
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'financial_movement' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_movements_list' %}">
                                     Movimentações
                                 </a>
                             </li>
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'financial_category' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'financial_category_list' %}">
                                     Categorias
                                 </a>
                             </li>
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'account_holder' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'account_holder_list' %}">
                                     Titulares
@@ -134,7 +134,7 @@
                     data-bs-parent="#accordionSidebar">
                     <div class="m-0 py-1">
                         <ul class="fw-light">
-                            <li class="my-2 list-unstyled">
+                            <li class="my-2 me-2 list-unstyled">
                                 <a class="text-decoration-none {% if 'reports/portfolio-years' in request.path|urlencode %}fw-bold text-smart{%else%}text-secondary{% endif %}"
                                     href="{% url 'portfolio_years' %}">
                                     Carteira anos
@@ -144,7 +144,7 @@
                     </div>
                 </div>
             </div>
-          <!-- FIM ACCORDION ITEM -->
+            <!-- FIM ACCORDION ITEM -->
 
         </div>
         <!-- FIM ACCORDION -->
