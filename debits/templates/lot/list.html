@@ -18,8 +18,8 @@
         <a href="{% url 'lot_create' enterprise.id %}" class="btn btn-smart" style="width: 150px;">
             Novo
         </a>
-        <a href="{% url 'sales_contract_upload' enterprise.id %}" class="btn btn-outline-dark" style="width: 150px;">
-            Subir planilha
+        <a href="{% url 'sales_contract_upload' enterprise.id %}" class="btn btn-outline-dark">
+            Subir planilha Contratos
         </a>
     </div>
 
@@ -41,6 +41,12 @@
                     <th scope="col"></th>
                 </tr>
             </thead>
+            <div class="d-flex">
+                <a href="{% url 'lot_list_export_excel' enterprise.id %}" class="btn btn-outline-dark"
+                    style="width: 150px;">
+                    Excel
+                </a>
+            </div>
             <tbody>
                 {% for object in lot_list %}
                 <tr class="my-5">

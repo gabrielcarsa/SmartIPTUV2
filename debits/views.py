@@ -2,7 +2,7 @@ from datetime import datetime
 import math
 import re
 import unicodedata
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -164,6 +164,64 @@ class LotListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['enterprise'] = get_object_or_404(Enterprise, id=self.kwargs['enterprise_pk'])
         return context
+
+class LotExportExcelListView(View):
+
+    def get(self, request, *args, **kwargs):
+        enterprise_pk = self.kwargs['enterprise_pk']
+
+        costumer_total_debt = FinancialTransactionInstallment.objects.filter(
+            financial_transaction__lot=OuterRef("pk"),
+            financial_transaction__type=1,
+            due_date__lte=timezone.now(),
+        ).values(
+            'financial_transaction__lot'
+        ).annotate(
+            total_debt=Sum('amount')
+        ).values('total_debt')
+
+        company_total_debt = FinancialTransactionInstallment.objects.filter(
+            financial_transaction__lot=OuterRef("pk"),
+            financial_transaction__type=0,
+            due_date__lte=timezone.now(),
+        ).values(
+            'financial_transaction__lot'
+        ).annotate(
+            total_debt=Sum('amount')
+        ).values('total_debt')
+        
+        lots = Lot.objects.filter(
+            block__enterprise=enterprise_pk
+        ).annotate(
+            costumer_total_debt=Subquery(costumer_total_debt),
+            company_total_debt=Subquery(company_total_debt)
+        ).order_by('block__name', 'lot')
+
+        data = []
+        for lot in lots:
+            sales_contract = SalesContract.objects.filter(lot=lot, is_active=True).first() 
+            data.append({
+                'Empreendimento': lot.block.enterprise.name,
+                'Quadra': lot.block.name,
+                'Lote': lot.lot,
+                'Última atual.': lot.latest_update,
+                'Cliente': sales_contract.customer_supplier.name if sales_contract else 'LOTE LIVRE',
+                'Inscrição': lot.municipal_registration,
+                'IPTU Empresa': lot.company_total_debt or 0,
+                'IPTU Cliente ': lot.costumer_total_debt or 0,
+            })
+
+        df = pd.DataFrame(data)
+
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        response['Content-Disposition'] = 'attachment; filename=lots.xlsx'
+
+        with pd.ExcelWriter(response, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Lots')
+
+        return response
 
 # Create
 class LotCreateView(LoginRequiredMixin, CreateView):

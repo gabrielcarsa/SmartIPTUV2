@@ -14,6 +14,27 @@
 <!-- FIM HEADER -->
 
 <div class="card-smart">
+    <p>
+        Colunas necessárias:
+    </p>
+    <table class="table fs-7">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Data Venda</th>
+                <th>Quadra</th>
+                <th>Lote</th>
+                <th>Valor Venda</th>
+                <th>Valor Entrada</th>
+                <th>Valor Parcela Entrada</th>
+                <th>Qtd Entrada</th>
+                <th>Qtd Parcelas</th>
+                <th>Valor Parcela Financiamento</th>
+                <th>1º Vencimento</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+    </table>
     <form method="post" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Salvar" class="btn btn-smart">
