@@ -142,8 +142,8 @@ class LotListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
 
-        # query total debts per costumer
-        costumer_total_debt = FinancialTransactionInstallment.objects.filter(
+        # query total debts per customer
+        customer_total_debt = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = OuterRef("pk"), 
             financial_transaction__type = 1,
             due_date__lte= timezone.now(),
@@ -153,11 +153,11 @@ class LotListView(LoginRequiredMixin, ListView):
             total_debt=Sum('amount') # calculates the sum of the values of the installments in this Lot
         ).values('total_debt') # subquery return only the total_debt column
         
-        # Lot with total debts per costumer
+        # Lot with total debts per customer
         return Lot.objects.filter(
             block__enterprise=self.kwargs['enterprise_pk']
         ).annotate(
-            costumer_total_debt=Subquery(costumer_total_debt)
+            customer_total_debt=Subquery(customer_total_debt)
         ).order_by('block__name', 'lot')
 
     def get_context_data(self, **kwargs):
@@ -170,7 +170,7 @@ class LotExportExcelListView(View):
     def get(self, request, *args, **kwargs):
         enterprise_pk = self.kwargs['enterprise_pk']
 
-        costumer_total_debt = FinancialTransactionInstallment.objects.filter(
+        customer_total_debt = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot=OuterRef("pk"),
             financial_transaction__type=1,
             due_date__lte=timezone.now(),
@@ -193,7 +193,7 @@ class LotExportExcelListView(View):
         lots = Lot.objects.filter(
             block__enterprise=enterprise_pk
         ).annotate(
-            costumer_total_debt=Subquery(costumer_total_debt),
+            customer_total_debt=Subquery(customer_total_debt),
             company_total_debt=Subquery(company_total_debt)
         ).order_by('block__name', 'lot')
 
@@ -208,7 +208,7 @@ class LotExportExcelListView(View):
                 'Cliente': sales_contract.customer_supplier.name if sales_contract else 'LOTE LIVRE',
                 'Inscrição': lot.municipal_registration,
                 'IPTU Empresa': lot.company_total_debt or 0,
-                'IPTU Cliente ': lot.costumer_total_debt or 0,
+                'IPTU Cliente ': lot.customer_total_debt or 0,
             })
 
         df = pd.DataFrame(data)
@@ -292,8 +292,8 @@ class LotInstallmentsListView(LoginRequiredMixin, ListView):
             financial_transaction__type = 0,
         ).aggregate(total=Sum('amount'))['total'] or 0
 
-        # total costumer debts
-        context['costumer_total_debt'] = FinancialTransactionInstallment.objects.filter(
+        # total customer debts
+        context['customer_total_debt'] = FinancialTransactionInstallment.objects.filter(
             financial_transaction__lot = self.kwargs['pk'], 
             financial_transaction__type = 1,
         ).aggregate(total=Sum('amount'))['total'] or 0

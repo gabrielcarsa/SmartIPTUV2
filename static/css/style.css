@@ -30,6 +30,9 @@ body{
     background-color: #6702B4 !important;
 }
 
+.bg-smart-subtle{
+    background-color: #031633 !important;
+}
 .fs-6{
     font-size: 14px !important;
 }
@@ -54,6 +57,11 @@ BUTTONS STYLE
 
 .btn-smart:hover {
     background-color: #6702B4 !important;
+}
+
+.accordion-button::after {
+   filter: invert(1); 
+
 }
 
 

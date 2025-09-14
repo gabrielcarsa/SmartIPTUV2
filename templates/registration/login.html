@@ -3,40 +3,34 @@
 
 {% block content %}
 
-<div class="overflow-x-hidden p-3 min-vh-100 d-flex align-items-center">
-    <div class="row">
-        <div class="col-md-6 my-auto">
+<div class="bg-smart-subtle vh-100 d-flex align-items-center justify-content-center">
 
-            <div class="w-75 mx-auto">
+    <div class="card bg-white p-3" style="width: 350px;">
 
-                <img src="{% static 'images/logo.png' %}" width="150px" alt="smart" class="mx-auto d-block">
+        <img src="{% static 'images/logo.png' %}" width="100px" alt="smart" class="mx-auto d-block">
 
-                <p class="fw-semibold text-dark fs-6 my-3">
-                    Bem vindo novamente
-                </p>
-                <form method="post" class="my-auto">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn-smart w-100 mb-3">
-                        Entrar
-                    </button>
+        <p class="fw-semibold text-dark fs-6 my-3">
+            Bem vindo novamente
+        </p>
+        <form method="post" class="my-auto">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-smart w-100 mb-3">
+                Entrar
+            </button>
 
-                </form>
-                <p>
-                    <a href="{% url 'password_reset' %}">
-                        Esqueceu sua senha?
-                    </a>
-                </p>
-            </div>
-
-        </div>
-        <div class="col-md-6 d-flex align-items-center">
-            <img src="https://www.sinteseambiental.com.br/wp-content/uploads/2018/12/licenciamento-ambiental.jpg" class="w-100 rounded display-none-small-screen" alt="">
-
-        </div>
+        </form>
+        <p>
+            <a href="{% url 'password_reset' %}">
+                Esqueceu sua senha?
+            </a>
+        </p>
     </div>
-
-
 </div>
+
+
+
+
+
 
 {% endblock %}

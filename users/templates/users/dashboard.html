@@ -2,54 +2,58 @@
 
 {% block content %}
 
-<section class="m-3">
-    <p class="m-0">
-        Acesso rápido:
-    </p>
-    <div class="d-flex">
-        <div class="me-2">
-            <a href="{% url 'financial_movements_list' %}"
-                class="icon-link bg-white rounded p-2 text-decoration-none shadow shadow-sm text-dark">
-                <span class="material-symbols-outlined text-black-50">
-                    currency_exchange
-                </span>
-                Movimentações Financeiras
-            </a>
+<section class="m-3 row">
+    <div class="col">
+        <div class="bg-smart-subtle p-3 rounded">
+            <p class="fs-2 text-white m-0">
+                {{total_enterprise.count}}
+            </p>
+            <p class="fs-7 text-white-50 m-0">
+                Empreendimentos
+            </p>
         </div>
-        <div class="me-2">
-            <a href="{% url 'lot_debits_create' %}"
-                class="icon-link bg-white rounded p-2 text-decoration-none shadow shadow-sm text-dark">
-                <span class="material-symbols-outlined text-black-50">
-                    receipt
-                </span>
-                Importar extrato do IPTU
-            </a>
+    </div>
+
+    <div class="col">
+        <div class="bg-smart-subtle p-3 rounded">
+            <p class="fs-2 text-white m-0">
+                {{total_lots.count}}
+            </p>
+            <p class="fs-7 text-white-50 m-0">
+                Lotes
+            </p>
         </div>
-        <div class="me-2">
-            <a href="{% url 'customer_supplier_create' %}"
-                class="icon-link bg-white rounded p-2 text-decoration-none shadow shadow-sm text-dark">
-                <span class="material-symbols-outlined text-black-50">
-                    groups
-                </span>
-                Cadastro de cliente ou Fornecedor
-            </a>
+    </div>
+
+    <div class="col">
+        <div class="bg-smart-subtle p-3 rounded">
+            <p class="fs-2 text-white m-0">
+                {{total_customer_supplier.count}}
+            </p>
+            <p class="fs-7 text-white-50 m-0">
+                Clientes cadastrados
+            </p>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="bg-smart-subtle p-3 rounded">
+            <p class="fs-6 text-white m-0">
+                {{company}}
+            </p>
+            <p class="fs-7 text-white-50 m-0">
+                Empresa
+            </p>
         </div>
     </div>
 </section>
 
 <section class="m-3">
-    <h2 class="m-0">
-        Controle de débitos
-    </h2>
-    <p>
-        Abaixo somente débitos relacionados ao lote, como IPTU.
-    </p>
-
     <div class="row g-3">
-        <div class="col-md-7">
-            <div class="card p-3">
+        <div class="col-md-4">
+            <div class="rounded border p-3 shadow-sm">
                 <p class="m-0">
-                    Total
+                    Débitos de IPTU
                 </p>
                 <p class="m-0 fs-4 text-black">
                     R$ {{total_debts.amount__sum}}
@@ -59,36 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
-            <div class="card p-3">
-                <p class="m-0 fs-4 text-black">
-                    O que são esses valores?
-                </p>
-                <p class="m-0">
-                    Esses débitos são os IPTUs cadastrados, você mesmo pode cadastrar esses débitos somente com o
-                    <strong>extrato de débitos</strong> da inscrição municipal tirada no site da prefeitura.
-                </p>
-                <hr>
-                <p class="m-0 fs-4 text-black">
-                    Como fazer?
-                </p>
-                <p class="m-0">
-                    Para cadastrar basta acessar o <a href="https://iptu.campogrande.ms.gov.br/">site da prefeitura</a>,
-                    e baixar o extrato. Depois aqui no
-                    sistema vá em <strong>Controle de débitos > Atualização de débitos IPTU > Upload</strong>, ou clique
-                    no botão abaixo. E nessa
-                    seção selecione o extrato baixado e salve, pronto está atualizado os valores daquela inscrição.
-                </p>
-                <a href="{% url 'lot_debits_create' %}" class="btn btn-smart d-flex align-items-center justify-content-center mt-3">
-                    <span class="material-symbols-outlined me-2">
-                        receipt
-                    </span>
-                    Importar extrato do IPTU
-                </a>
-            </div>
-        </div>
     </div>
-
 
 </section>
 
@@ -98,9 +73,13 @@
 
 <script>
     const ctx = document.getElementById('totalDebitos').getContext('2d');
+    function parseNumberBr(value) {
+        if (!value) return 0;
+        return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+    }
 
-    let debitosCliente = parseFloat('{{ total_debts_costumers.amount__sum|default:0 }}');
-    let debitosEmpresa = parseFloat('{{ total_debts_company.amount__sum|default:0 }}');
+    let debitosCliente = parseNumberBr('{{ total_debts_costumers.amount__sum|default:0 }}');
+    let debitosEmpresa = parseNumberBr('{{ total_debts_company.amount__sum|default:0 }}');
 
     new Chart(ctx, {
         type: 'doughnut',
@@ -116,7 +95,9 @@
             plugins: {
                 datalabels: {
                     color: '#fff',
-                    formatter: (value) => 'R$ ' + value,
+                    formatter: (value) => {
+                        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    },
                     font: {
                         weight: 'bold',
                         size: 18
