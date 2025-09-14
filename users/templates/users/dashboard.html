@@ -78,7 +78,7 @@
         return parseFloat(value.replace(/\./g, '').replace(',', '.'));
     }
 
-    let debitosCliente = parseNumberBr('{{ total_debts_costumers.amount__sum|default:0 }}');
+    let debitosCliente = parseNumberBr('{{ total_debts_customers.amount__sum|default:0 }}');
     let debitosEmpresa = parseNumberBr('{{ total_debts_company.amount__sum|default:0 }}');
 
     new Chart(ctx, {
