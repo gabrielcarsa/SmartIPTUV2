@@ -7,113 +7,121 @@
 <!-- HEADER -->
 <div class="m-3 d-flex justify-content-between">
     <div>
-        <h2 class="m-0 fw-bolder fs-3">
+        <h2 class="m-0 fw-bolder fs-5">
             {{lot.block.enterprise.name}} -
             <span class="fw-semibold">
                 Qd. {{lot.block.name}} / Lt. {{lot.lot}}
             </span>
         </h2>
         <p class="m-0">
-            {{lot.municipal_registration}}
+            Inscrição Municipal: {{lot.municipal_registration}}
         </p>
     </div>
+    <div class="d-flex g-3">
+        <div class="btn-smart-sm">
+            Reajustar
+        </div>
+        <div class="btn-smart-sm mx-1">
+            Alterar vencimento
+        </div>
+        <div class="btn-smart-sm mx-1">
+            Adicionar parcelas
+        </div>
+        <div class="btn-smart-sm mx-1">
+            Vincular parcelas
+        </div>
+        <div class="btn-smart-sm">
+            Boletos
+        </div>
+    </div>
+
 </div>
 <!-- FIM HEADER -->
 
 <div class="card-smart">
 
-    <p>
-        Última atualização: {{lot.latest_update}}
+    {% for sales_contract in lot.sales_contracts.all %}
+
+    {% if sales_contract.is_active == 1 %}
+    <p class="m-0 text-black fs-5 fw-bold">
+        {{sales_contract.customer_supplier.name}}
     </p>
-    <div class="row g-3">
-        {% for sales_contract in lot.sales_contracts.all %}
 
-        {% if sales_contract.is_active == 1 %}
-        <div class="col-sm-4">
-            <div class="border p-3 rounded">
+    <p class="m-0 fs-7">
+        Data da compra: {{sales_contract.contract_date|date:'d/m/Y'}}
+    </p>
+    {% endif %}
 
-                <p class="m-0 text-black fs-5 fw-bold">
-                    {{sales_contract.customer_supplier.name}}
-                </p>
-                <p class="m-0">
-                    {{sales_contract.customer_supplier.phone1}},
-                    {{sales_contract.customer_supplier.phone2}}
-                </p>
-                <p class="m-0">
-                    Data da compra: {{sales_contract.contract_date|date:'d/m/Y'}}
-                </p>
-
-
-            </div>
-        </div>
-        {% endif %}
-
-        {% endfor %}
-        <div class="col-sm-4">
-            <div class="border p-3 rounded">
-                <p class="m-0">
-                    IPTU EMPRESA
-                </p>
-                <p class="m-0 fs-4 text-black">
-                    R$ {{company_total_debt}}
-                </p>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="bg-danger-subtle p-3 rounded">
-                <p class="m-0">
-                    IPTU CLIENTE
-                </p>
-                <p class="m-0 fs-4 text-black">
-                    R$ {{costumer_total_debt}}
-                </p>
-            </div>
-
-        </div>
-    </div>
-
+    {% endfor %}
+    <p class="fs-7">
+        Última atualização dos débitos de IPTU: {{lot.latest_update}}
+    </p>
     <div class="table-responsive mt-3">
         <table class="table align-middle mb-3 text-center">
             <thead>
                 <tr>
+                    <th scope="col"><input type="checkbox" name="" id=""></th>
+                    <th scope="col">ID</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Nº</th>
                     <th scope="col">Vencimento</th>
                     <th scope="col">Categoria</th>
                     <th scope="col">Descrição</th>
-                    <th scope="col">Valor Total</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Valor pago</th>
+                    <th scope="col">Data pagamento</th>
+                    <th scope="col">Vínculo</th>
+                    <th scope="col">Cód. Remessa</th>
                 </tr>
             </thead>
             <tbody>
                 {% for object in financialtransactioninstallment_list %}
-                <tr>
-                    <td class="">
+                <tr
+                    class="{% if object.due_date < today and object.status == 0 %}table-danger{% elif object.status == 1 %}table-primary{% endif %}">
+                    <td>
+                        <input type="checkbox" name="{{object.id}}" id="">
+                    </td>
+                    <td class="text-secondary">
+                        #{{object.id}}
+                    </td>
+                    <td>
                         {% if object.financial_transaction.type == 0 %}
-                        <p class="m-0 icon-link bg-danger-subtle p-2 rounded-4 fs-7">
-                            <span class="material-symbols-outlined me-1 text-danger">
-                                call_received
-                            </span>
+                        <p class="m-0 fs-6 text-danger fw-bold">
                             A pagar
                         </p>
                         {% else %}
-                        <p class="m-0 icon-link bg-success-subtle p-2 rounded-4 fs-7">
-                            <span class="material-symbols-outlined me-1 text-success">
-                                call_made
-                            </span>
+                        <p class="m-0 fs-6 text-success fw-bold">
                             A receber
                         </p>
                         {% endif %}
                     </td>
-                    <td class="">
+                    <td>
+                        {{object.installment_number}}/{{object.financial_transaction.number_of_installments}}
+                    </td>
+                    <td>
                         {{object.due_date|date:'d/m/Y'}}
                     </td>
-                    <td class="">
+                    <td>
                         {{object.financial_transaction.financial_category.name}}
                     </td>
-                    <td class="">
+                    <td>
                         {{object.financial_transaction.description}}
                     </td>
-                    <td class="">
-                        {{object.amount}}
+                    <td>
+                        R$ {{object.amount}}
+                    </td>
+                    <td>
+                        {% if object.paid_amount %}
+                        R$ {{object.paid_amount|default:''}}
+                        {% endif %}
+
+                    </td>
+                    <td>
+                        {{object.payment_date|date:'d/m/Y'|default:''}}
+                    </td>
+                    <td>
+                    </td>
+                    <td>
                     </td>
                 </tr>
                 {%endfor%}

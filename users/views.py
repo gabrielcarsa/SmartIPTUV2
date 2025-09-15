@@ -1,18 +1,25 @@
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView
 from django.db.models import Sum
+from django.urls import reverse
 from customer_suppliers.models import CustomerSupplier
 from debits.models import Enterprise, Lot
 from financials.models import AccountHolder, FinancialTransactionInstallment
 from .forms import EmailLoginForm
-from django.views.generic.base import TemplateView
+from django.views.generic.base import RedirectView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 
 # GUEST HOME PAGE
-class HomeTemplateView(TemplateView):
-   template_name = 'users/home.html'
+class HomeTemplateView(RedirectView):
+    permanent = False
+    query_string = True
 
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return reverse("dashboard")
+        return reverse("login")  
+    
 # LOGIN USER WITH EMAIL
 class CustomLoginView(LoginView):
     authentication_form = EmailLoginForm

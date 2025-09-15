@@ -271,7 +271,7 @@ class LotDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('lot_list', kwargs={'enterprise_pk': self.kwargs.get('enterprise_pk')})
     
-# List the lot's iptu installments
+# List the lot's installments
 class LotInstallmentsListView(LoginRequiredMixin, ListView):
     model = FinancialTransactionInstallment
     template_name = 'lot/list_installments.html'
@@ -285,18 +285,7 @@ class LotInstallmentsListView(LoginRequiredMixin, ListView):
 
         # get Lot
         context['lot'] = get_object_or_404(Lot, id=self.kwargs['pk'])
-
-        # total company debts
-        context['company_total_debt'] = FinancialTransactionInstallment.objects.filter(
-            financial_transaction__lot = self.kwargs['pk'], 
-            financial_transaction__type = 0,
-        ).aggregate(total=Sum('amount'))['total'] or 0
-
-        # total customer debts
-        context['customer_total_debt'] = FinancialTransactionInstallment.objects.filter(
-            financial_transaction__lot = self.kwargs['pk'], 
-            financial_transaction__type = 1,
-        ).aggregate(total=Sum('amount'))['total'] or 0
+        context['today'] = timezone.now().date()
 
         return context
     
