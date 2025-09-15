@@ -54,6 +54,7 @@ BUTTONS STYLE
 .btn-smart {
     background-color: #6702B4 !important;
     padding: 8px 30px !important;
+    max-width: 200px;
     color: #FFFF !important;
     font-weight: 600;
     border-radius: 2em !important;
