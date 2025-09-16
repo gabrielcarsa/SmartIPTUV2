@@ -78,6 +78,7 @@ class SalesContract(models.Model):
     installment_value = models.DecimalField("Valor das parcelas", max_digits=10, decimal_places=2,  blank=True, null=True)
     sale_amount = models.DecimalField("Valor venda", max_digits=10, decimal_places=2,  blank=True, null=True)
     down_payment = models.DecimalField("Valor entrada", max_digits=10, decimal_places=2,  blank=True, null=True)
+    down_payment_installment_value = models.DecimalField("Valor parcela da entrada", max_digits=10, decimal_places=2,  blank=True, null=True)
     number_of_installment_down_payment = models.IntegerField("Número de parcelas da entrada", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

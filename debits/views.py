@@ -19,6 +19,7 @@ from financials.models import AccountHolder, FinancialCategory, FinancialTransac
 from django.db.models import Sum
 from django.db.models import OuterRef, Subquery
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 # Function do help extract data of debit statement
 def extract_debits(pdf_path):
@@ -488,7 +489,6 @@ class SalesContractUpdateExcelView(FormView):
         try:
             df = pd.read_excel(file)
 
-            # Colunas obrigatórias
             necessary_columns = [
                 "Cliente", "Data Venda", "Quadra", "Lote", "Valor Venda",
                 "Valor Entrada", "Valor Parcela Entrada", "Qtd Entrada",
@@ -500,13 +500,12 @@ class SalesContractUpdateExcelView(FormView):
 
             for _, row in df.iterrows():
                 try:
-                    # Dados básicos
                     customer_name = str(row["Cliente"]).strip() if pd.notna(row["Cliente"]) else ""
                     block_name = str(row["Quadra"]).strip() if pd.notna(row["Quadra"]) else ""
                     lot_name = str(row["Lote"]).strip() if pd.notna(row["Lote"]) else ""
                     status = str(row["Status"]).strip() if pd.notna(row["Status"]) else ""
 
-                    # Datas
+                    # Dates
                     def parse_date(value):
                         if pd.isna(value):
                             return None
@@ -522,7 +521,7 @@ class SalesContractUpdateExcelView(FormView):
                     contract_date = parse_date(row["Data Venda"])
                     start_date = parse_date(row["1º Vencimento"])
 
-                    # Valores numéricos
+                    # Numbers
                     def parse_decimal(value):
                         if pd.isna(value):
                             return None
@@ -541,27 +540,40 @@ class SalesContractUpdateExcelView(FormView):
                     number_of_installment = int(row["Qtd Parcelas"]) if pd.notna(row["Qtd Parcelas"]) else None
                     installment_value = parse_decimal(row["Valor Parcela Financiamento"])
 
-                    # Validação de dados obrigatórios
+                    # Required data
                     if not all([customer_name, block_name, lot_name, status, contract_date, start_date]):
                         messages.warning(self.request, f"Linha ignorada (dados incompletos) - Lote {lot_name}")
                         continue
 
-                    # Busca objetos relacionados
+                    # Search related data
                     block = get_object_or_404(Block, name=block_name, enterprise__id=self.kwargs.get('enterprise_pk'))
                     lot = get_object_or_404(Lot, lot=lot_name, block=block)
                     customer_supplier = get_object_or_404(CustomerSupplier, name__iexact=customer_name)
+                    
+                    # get the Company register
+                    account_holder = AccountHolder.objects.filter(
+                        customer_supplier__type_customer_supplier__name__iexact='Empresa'
+                    ).first()
 
-                    # Verifica contrato ativo
+                    financial_category = FinancialCategory.objects.filter(
+                        is_default=True
+                    ).first()
+
+                    down_payment_category = FinancialCategory.objects.filter(
+                        name="ENTRADA FINANCIAMENTO"
+                    ).first()
+                    
                     active_contract = SalesContract.objects.filter(lot=lot, is_active=True).first()
 
                     if active_contract:
                         if active_contract.contract_date == contract_date:
-                            # Mesmo contrato → apenas atualiza dados
+                            # Same contract → just update
                             active_contract.customer_supplier = customer_supplier
                             active_contract.status = status
                             active_contract.start_date = start_date
                             active_contract.sale_amount = sale_amount
                             active_contract.down_payment = down_payment
+                            active_contract.down_payment_installment_value = down_payment_installment_value
                             active_contract.number_of_installment_down_payment = number_of_installment_down_payment
                             active_contract.number_of_installment = number_of_installment
                             active_contract.installment_value = installment_value
@@ -569,7 +581,7 @@ class SalesContractUpdateExcelView(FormView):
                             active_contract.save()
                             updates_contracts += 1
                         else:
-                            # Contrato diferente → inativa e cria novo
+                            # Different contract → deactivate and create a new
                             active_contract.is_active = False
                             active_contract.updated_by_user = self.request.user
                             active_contract.save()
@@ -583,6 +595,7 @@ class SalesContractUpdateExcelView(FormView):
                                 sale_amount=sale_amount,
                                 down_payment=down_payment,
                                 number_of_installment_down_payment=number_of_installment_down_payment,
+                                down_payment_installment_value = down_payment_installment_value,
                                 number_of_installment=number_of_installment,
                                 installment_value=installment_value,
                                 created_by_user=self.request.user,
@@ -590,7 +603,7 @@ class SalesContractUpdateExcelView(FormView):
                             )
                             created_contracts += 1
                     else:
-                        # Cria contrato novo
+                        # Create
                         SalesContract.objects.create(
                             is_active=True,
                             contract_date=contract_date,
@@ -599,6 +612,7 @@ class SalesContractUpdateExcelView(FormView):
                             start_date=start_date,
                             sale_amount=sale_amount,
                             down_payment=down_payment,
+                            down_payment_installment_value = down_payment_installment_value,
                             number_of_installment_down_payment=number_of_installment_down_payment,
                             number_of_installment=number_of_installment,
                             installment_value=installment_value,
@@ -606,6 +620,68 @@ class SalesContractUpdateExcelView(FormView):
                             updated_by_user=self.request.user
                         )
                         created_contracts += 1
+
+                    transaction = FinancialTransaction.objects.create(
+                        type=1,
+                        lot=lot,
+                        installment_value=installment_value,
+                        description="PARCELA DO FINANCIAMENTO",
+                        due_date=start_date,
+                        number_of_installments=number_of_installment,
+                        account_holder=account_holder,
+                        financial_category=financial_category,
+                        customer_supplier=customer_supplier,
+                        created_by_user_id = self.request.user.id,
+                        updated_by_user_id = self.request.user.id,
+                    )
+
+                    # save installments
+                    for i in range(1, number_of_installment + 1):
+
+                        # incrementing month in due date
+                        if i > 1:
+                            start_date += relativedelta(months=1)
+
+                        FinancialTransactionInstallment.objects.create(
+                            financial_transaction = transaction,
+                            installment_number = i,
+                            amount = installment_value,
+                            due_date = start_date,
+                            status = 0,
+                            created_by_user_id = self.request.user.id,
+                            updated_by_user_id = self.request.user.id,
+                        )
+
+                    transaction = FinancialTransaction.objects.create(
+                        type=1,
+                        lot=lot,
+                        installment_value=down_payment_installment_value,
+                        description="PARCELA DE ENTRADA",
+                        due_date=contract_date,
+                        number_of_installments=number_of_installment_down_payment,
+                        account_holder=account_holder,
+                        financial_category=down_payment_category,
+                        customer_supplier=customer_supplier,
+                        created_by_user_id = self.request.user.id,
+                        updated_by_user_id = self.request.user.id,
+                    )
+
+                    # save installments
+                    for i in range(1, number_of_installment_down_payment + 1):
+
+                        # incrementing month in due date
+                        if i > 1:
+                            contract_date += relativedelta(months=1)
+
+                        FinancialTransactionInstallment.objects.create(
+                            financial_transaction = transaction,
+                            installment_number = i,
+                            amount = down_payment_installment_value,
+                            due_date = contract_date,
+                            status = 0,
+                            created_by_user_id = self.request.user.id,
+                            updated_by_user_id = self.request.user.id,
+                        )
 
                 except Exception as e:
                     messages.error(self.request, f"Erro processando lote {row.get('Lote')}: {e}")
